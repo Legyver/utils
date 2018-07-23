@@ -53,7 +53,7 @@ public class ExceptionExtractorTest {
 		IvocationThrowingClass throwingClass = new IvocationThrowingClass();
 		Method method = IvocationThrowingClass.class.getMethod("throwException");
 		try {
-			method.invoke(throwingClass, null);
+			method.invoke(throwingClass);
 			fail("exception not thrown");
 		} catch (InvocationTargetException ex) {
 			CoreException extracted = new ExceptionExtractor<>(CoreException.class).extractException(ex);
