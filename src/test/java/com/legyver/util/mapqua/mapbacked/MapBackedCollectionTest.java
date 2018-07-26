@@ -1,6 +1,5 @@
 package com.legyver.util.mapqua.mapbacked;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -13,7 +12,7 @@ public class MapBackedCollectionTest {
 	@Test
 	public void addRemovePrimitiveValueList() {
 		Map map = new LinkedHashMap();
-		MapBackedCollection<List, String> mb = new MapBackedCollection(map, "field");
+		MapBackedCollection<List<String>, String> mb = new MapBackedCollection(map, "field");
 		Collection coll = (Collection) mb.get();
 		assertThat(coll.size(), is(0));
 		List rawValues = (List) map.get("field");
@@ -43,7 +42,7 @@ public class MapBackedCollectionTest {
 	@Test
 	public void addRemoveEntityValueList() {
 		Map map = new LinkedHashMap(); 
-		MapBackedCollection<List, Entity> mb = new MapBackedCollection(map, "field");
+		MapBackedCollection<List<Entity>, Entity> mb = new MapBackedCollection(map, "field");
 		
 		Entity entityOne = new Entity();
 		entityOne.setNumber(1);

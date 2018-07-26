@@ -5,14 +5,13 @@ import java.util.Map;
 import java.util.Optional;
 
 public class MapBackedString extends MapBackedProperty<String> {
-	private static final String EMPTY = "";
 	
 	public MapBackedString(Map sourceMap, String property, String valueIfMissing) {
 		super(sourceMap, property, valueIfMissing);
 	}
 	
 	public MapBackedString(Map sourceMap, String property) {
-		this(sourceMap, property, EMPTY);
+		this(sourceMap, property, null);
 	}
 
 	@Override

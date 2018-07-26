@@ -7,11 +7,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-public class MapBackedCollection<U extends Collection, T> extends MapBackedProperty<Collection> {
+public class MapBackedCollection<U extends Collection<T>, T> extends MapBackedProperty<Collection> {
 	private final EntityInstantiator entityInstantiator;
-	private Collection collectionReference;
+	private U collectionReference;
 	
 	public MapBackedCollection(Map sourceMap, String property, Collection valueIfMissing, EntityInstantiator entityInstantiator) {
 		super(sourceMap, property, valueIfMissing);
@@ -53,17 +52,23 @@ public class MapBackedCollection<U extends Collection, T> extends MapBackedPrope
 	public void sync() {
 		set(collectionReference);
 	}
+	
+	@Override
+	public U get() {
+		return transform(super.get());
+	}
 
 	@Override
 	protected Optional<Collection> queryOption() {
 		return new MapQuery.Query().collection(property).execute(sourceMap);
 	}
 	
-	@Override
-	protected Collection transform(Collection source) {
-		Stream<T> stream = source.stream().map(this::map);
-		collectionReference =  source instanceof List ? stream.collect(Collectors.toList())
-				: stream.collect(Collectors.toSet());
+	protected U transform(Collection source) {
+		if (source instanceof List) {
+			collectionReference = (U) source.stream().map(this::map).collect(Collectors.toList());
+		} else {
+			collectionReference = (U) source.stream().map(this::map).collect(Collectors.toSet());
+		}
 		return collectionReference;
 	}
 	
@@ -74,5 +79,5 @@ public class MapBackedCollection<U extends Collection, T> extends MapBackedPrope
 		}
 		return result;
 	}
-
+	
 }

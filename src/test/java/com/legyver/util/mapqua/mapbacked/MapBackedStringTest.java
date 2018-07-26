@@ -5,6 +5,7 @@ import java.util.Map;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 public class MapBackedStringTest {
@@ -13,8 +14,8 @@ public class MapBackedStringTest {
 	public void addValue() {
 		Map map = new LinkedHashMap();
 		MapBackedString mb = new MapBackedString(map, "field");
-		assertThat(mb.get(), is(""));
-		assertThat(map.get("field"), is(""));
+		assertThat(mb.get(), is(nullValue()));
+		assertThat(map.get("field"), is(nullValue()));
 		mb.set("my value");
 		assertThat(mb.get(), is("my value"));
 	}

@@ -19,7 +19,7 @@ public abstract class MapBackedProperty<T> {
 		Optional<T> option = queryOption();
 		T value;
 		if (option.isPresent()) {
-			value = transform(option.get());
+			value = option.get();
 		} else {
 			value = valueIfMissing;
 			set(value);
@@ -28,11 +28,11 @@ public abstract class MapBackedProperty<T> {
 	}
 	
 	public void set(T value) {
-		new MapQuery.Query().set(property, value).execute(sourceMap);
-	}
-	
-	protected T transform(T source) {
-		return source;
+		if (value == null) {
+			sourceMap.remove(property);
+		} else {
+			new MapQuery.Query().set(property, value).execute(sourceMap);
+		}
 	}
 	
 	protected abstract Optional<T> queryOption();
