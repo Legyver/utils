@@ -1,6 +1,10 @@
 package com.legyver.util.mapqua.mapbacked;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import org.junit.Test;
 
@@ -31,12 +35,30 @@ public class MapBackedStringTest {
 	}
 	
 	@Test
+	public void toJson() throws Exception {
+		Map map = new LinkedHashMap();
+		MapBackedString mb = new MapBackedString(map, "field");
+		mb.set("my value");
+		String result = new Gson().toJson(map);
+		assertThat(result, is("{\"field\":\"my value\"}"));
+	}
+	
+	@Test
 	public void entityMap() {
 		Entity entity = new Entity();
 		entity.setString1("first value");
 		entity.setString2("second value");
 		assertThat(entity.getString1(), is("first value"));
 		assertThat(entity.getString2(), is("second value"));
+	}
+	
+	@Test
+	public void entityToJson() {
+		Entity entity = new Entity();
+		entity.setString1("first value");
+		entity.setString2("second value");
+		String result = new Gson().toJson(entity.sourceMap);
+		assertThat(result, is("{\"field1\":\"first value\",\"field2\":\"second value\"}"));
 	}
 	
 	private class Entity {
