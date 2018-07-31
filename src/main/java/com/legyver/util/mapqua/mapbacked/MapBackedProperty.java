@@ -7,7 +7,7 @@ import java.util.Optional;
 public abstract class MapBackedProperty<T> {
 	protected final Map sourceMap;
 	protected final String property;
-	private final T valueIfMissing;
+	protected final T valueIfMissing;
 
 	public MapBackedProperty(Map sourceMap, String property, T valueIfMissing) {
 		this.sourceMap = sourceMap;
