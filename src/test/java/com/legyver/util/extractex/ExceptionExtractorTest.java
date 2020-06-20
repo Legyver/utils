@@ -37,6 +37,23 @@ public class ExceptionExtractorTest {
 	}
 
 	@Test
+	public void matchesExceptionBroadInstance() {
+		{
+			Exception extracted = new ExceptionExtractor<>(Exception.class).extractException(EXCEPTION);
+			assertThat(extracted, notNullValue());
+			//first one it finds should be the top-level exception
+			assertThat(extracted, instanceOf(ExceptionC.class));
+		}
+		{
+			Exception extracted = new ExceptionExtractor<>(Exception.class, true).extractException(EXCEPTION);
+			assertThat(extracted, notNullValue());
+			//by depth-first, the original exception should be found
+			assertThat(extracted, instanceOf(CoreException.class));
+		}
+
+	}
+
+	@Test
 	public void doesNotMatchWrongType() throws Exception {
 		ExceptionD extracted = new ExceptionExtractor<>(ExceptionD.class).extractException(EXCEPTION);
 		assertThat(extracted, nullValue());
