@@ -4,6 +4,7 @@ apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'maven-publish'
 
+version = "1.0.1.0"
 
 sourceCompatibility = 1.8
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
@@ -44,6 +45,5 @@ publishing {
     }
 }
 
-version = "1.0.0.0"
 
 task install(dependsOn: "publishToMavenLocal")
