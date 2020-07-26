@@ -26,7 +26,7 @@ build.version.format=`${major.version}.${minor.version}.${patch.number}.${build.
 #Result: build.version=1.0.0.0000
 
 build.message.format=`Build ${build.version}, built on ${build.date}`
-#Result: build.message=Build 1.0.0.0000, built on 11 May 2020
+#Result: build.message=Build 1.0.0.0000, built on 11 April 2020
 ```
 copyright.properties
 ```properties
