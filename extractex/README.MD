@@ -1,4 +1,4 @@
-#utils-extractex
+# utils-extractex
 Extract a specified exception by type from wrapped exception hell.
 
 ```gradle

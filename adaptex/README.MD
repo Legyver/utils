@@ -1,4 +1,4 @@
-#utils-adaptex
+# utils-adaptex
 Adapt a checked java.lang.Exception into a com.legyver.core.exception.CoreException.
 
 ```gradle
