@@ -3,7 +3,7 @@ Handy Java solutions to common problems.
 
 ## Features
 - Adaptex
-    - Adapt any exception into a CoreException
+    - Adapt any function throwing a checked Exception into a function throwing a CoreException
 - Extractex
     - Extract exceptions of specific types from wrapped exceptions
 - Graphrunner
