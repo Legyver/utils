@@ -1,4 +1,14 @@
 # Releases
+## 2.0
+### New stuff
+- Graphrunner: Run operations in order specified by a directed graph.
+### Refactoring
+- Split out into separate libraries to limit classpath contamination
+    - utils-adaptex
+    - utils-extractex
+    - utils-graphrunner
+    - utils-mapqua
+    - utils-nippe
 ## 1.0.1
 ### New stuff
 - Adaptex: Adapt checked exceptions to CoreException

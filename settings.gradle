@@ -1,1 +1,8 @@
-rootProject.name = 'legyver-utils'
+rootProject.name = 'utils'
+
+include ':extractex'
+include ':adaptex'
+include ':graphrunner'
+include ':mapqua'
+include ':nippe'
+
