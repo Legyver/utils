@@ -9,7 +9,6 @@
     - utils-graphrunner
     - utils-mapqua
     - utils-nippe
-
 ## 1.0.1
 ### New stuff
 - Adaptex: Adapt checked exceptions to CoreException
