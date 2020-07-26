@@ -1,0 +1,13 @@
+description = 'An extraction adapter'
+
+dependencies {
+    //exception
+    api group: 'com.legyver', name: 'core', version: legyverCoreVersion
+    
+    testImplementation project(':extractex')
+    testImplementation 'junit:junit:4.13'
+}
+
+test {
+    useJUnit()
+}
