@@ -41,7 +41,7 @@ public abstract class MapBackedCollection<U extends Collection<T>, T> extends Ma
 	 * Sync's the collection to the Map
 	 */
 	public void sync() {
-		set(deTransform(collectionReference));
+		set(deTransform(get()));
 	}
 
 	@Override
