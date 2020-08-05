@@ -1,25 +1,26 @@
 package com.legyver.util.graphrunner;
 
 import java.util.*;
+import java.util.function.BiFunction;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ContextGraphFactory {
+public class PropertyGraphFactory {
 
 	private final VariableExtractionOptions variableExtractionOptions;
 	private final VariableTransformationRule variableTransformationRule;
 
-	public ContextGraphFactory(VariableExtractionOptions variableExtractionOptions,
-							   VariableTransformationRule variableTransformationRule) {
+	public PropertyGraphFactory(VariableExtractionOptions variableExtractionOptions,
+								VariableTransformationRule variableTransformationRule) {
 		this.variableExtractionOptions = variableExtractionOptions;
 		this.variableTransformationRule = variableTransformationRule;
 	}
 
-	public ContextGraphFactory(VariableExtractionOptions variableExtractionOptions) {
+	public PropertyGraphFactory(VariableExtractionOptions variableExtractionOptions) {
 		this(variableExtractionOptions, null);
 	}
 
-	public ContextGraphFactory(Pattern tokenizerPattern, int group) {
+	public PropertyGraphFactory(Pattern tokenizerPattern, int group) {
 		this(new VariableExtractionOptions(tokenizerPattern, group));
 	}
 
@@ -38,20 +39,26 @@ public class ContextGraphFactory {
 	 *   build.date.format=`${build.date.day} ${build.date.month} ${build.date.year}`
 	 *   build.version.format=`${major.version}.${minor.version}.${patch.number}.${build.number}`
 	 *   build.message.format=`Build ${build.version}, built on ${build.date}`
-	  Note to make build.version resolve as the outcome of build.version.format, we need to use specify this in the {@link variableTransformationRule}
+	  Note to make build.version resolve as the outcome of build.version.format, we need to use specify this in the {@link #variableTransformationRule}
 	 * @param propertyMap: map containing properties
 	 * @return
 	 */
-	public ContextGraph make(Map<String, ? extends Object> propertyMap) {
-		ContextGraph contextGraph = new ContextGraph();
+	public Graph make(Map<String, Object> propertyMap, BiFunction<String, Object, Graph.Payload> newNodeFactory) {
+		Graph.Builder builder = new Graph.Builder();
+		//add all properties to graph
+		propertyMap.entrySet().stream().forEach(entry-> {
+			builder.nodes(newNodeFactory.apply(entry.getKey(), entry.getValue()));
+		});
 
 		List<DirectionalProperty> directionalProperties = link(propertyMap.entrySet());
 		for (DirectionalProperty directionalProperty : directionalProperties) {
 			for (String predecessor : directionalProperty.depends) {
-				contextGraph.accept(directionalProperty.key, predecessor);
+				builder.connect(new Graph.Connection()
+						.from(predecessor)
+						.to(directionalProperty.key));
 			}
 		}
-		return contextGraph;
+		return builder.build();
 	}
 
 	private List<DirectionalProperty> link(Set<? extends Map.Entry<String, ?>> propertiesToResolve) {

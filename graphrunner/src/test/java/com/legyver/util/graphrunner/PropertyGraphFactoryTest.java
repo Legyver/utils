@@ -3,9 +3,7 @@ package com.legyver.util.graphrunner;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -13,7 +11,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 
-public class ContextGraphFactoryTest {
+public class PropertyGraphFactoryTest {
 	public static final String JEXL_VARIABLE = "\\$\\{(([a-z\\.-])*)\\}";
 
 	/**
@@ -39,15 +37,21 @@ public class ContextGraphFactoryTest {
 		p.setProperty("build.date.day","12");
 		p.setProperty("build.date.month","April");
 		p.setProperty("build.date.year","2020");
+		PropertyMap propertyMap = PropertyMap.of(p);
 
-		ContextGraphFactory factory = new ContextGraphFactory(Pattern.compile(JEXL_VARIABLE), 1);
-		ContextGraph contextGraph = factory.make(PropertyMap.of(p));
+		PropertyGraphFactory factory = new PropertyGraphFactory(Pattern.compile(JEXL_VARIABLE), 1);
+
+		Graph contextGraph = factory.make(propertyMap, (s, o) -> new SharedMapCtx(s, propertyMap));
 		assertThat(contextGraph.graph.size(), is(3));
-		assertThat(contextGraph.graph.keySet(), containsInAnyOrder("build.date.day", "build.date.month", "build.date.year"));
-		for (String key : contextGraph.graph.keySet()) {
-			ContextGraph node = contextGraph.graph.get(key);
+		Set<String> keySet = contextGraph.graph.keySet();
+		assertThat(keySet, containsInAnyOrder("build.date.day", "build.date.month", "build.date.year"));
+
+		Map<String, Graph.GraphNode> rootGraphNodeChildMap = contextGraph.getChildMap();
+		for (String key : rootGraphNodeChildMap.keySet()) {
+			Graph.GraphNode node = (Graph.GraphNode) contextGraph.graph.get(key);
 			assertThat(node.graph.size(), is(1));
-			String depends = node.graph.keySet().iterator().next();
+			Map<String, Graph.GraphNode> childGraphNodeChildMap = node.getChildMap();
+			String depends = childGraphNodeChildMap.keySet().iterator().next();
 			assertThat(depends, is("build.date.format"));
 		}
 	}
@@ -67,57 +71,65 @@ public class ContextGraphFactoryTest {
 		p.setProperty("build.number","0000");
 
 		p.setProperty("build.message.format","`Build ${build.version}, built on ${build.date}`");
+		PropertyMap propertyMap = PropertyMap.of(p);
 
 		VariableExtractionOptions extractionOptions = new VariableExtractionOptions(Pattern.compile(JEXL_VARIABLE), 1);
 		VariableTransformationRule transformationRule = new VariableTransformationRule(Pattern.compile("\\.format$"),
 				TransformationOperation.upToLastIndexOf(".format"));
-		ContextGraphFactory factory = new ContextGraphFactory(extractionOptions, transformationRule);
-		ContextGraph contextGraph = factory.make(PropertyMap.of(p));
+		PropertyGraphFactory factory = new PropertyGraphFactory(extractionOptions, transformationRule);
+		Graph contextGraph = factory.make(propertyMap, (s, o) -> new SharedMapCtx(s, propertyMap));
 		assertNode(contextGraph, 0);
 	}
 
-	private void assertNode(ContextGraph contextGraph, int level) {
-		for (String key : contextGraph.graph.keySet()) {
+	private void assertNode(Graph contextGraph, int level) {
+		Map<String, Graph> childMap = contextGraph.getChildMap();
+		for (String key : childMap.keySet()) {
 			switch (key) {
 				case "build.date.day":
 				case "build.date.month":
-				case "build.date.year":
+				case "build.date.year": { //the brackets are for scoping
 					assertThat(level, is(level));
-					ContextGraph dateNode = contextGraph.graph.get(key);
-					assertThat(dateNode.graph.keySet(), containsInAnyOrder("build.date.format"));
-					assertNode(dateNode, level+1);
-					break;
+					Graph dateNode = childMap.get(key);
+					Map<String, Graph> nodeChildMap = dateNode.getChildMap();
+					assertThat(nodeChildMap.keySet(), containsInAnyOrder("build.date.format"));
+					assertNode(dateNode, level + 1);
+				} break;
 				case "major.version":
 				case "minor.version":
 				case "patch.number":
-				case "build.number":
+				case "build.number": {
 					assertThat(level, is(level));
-					ContextGraph versionNode = contextGraph.graph.get(key);
-					assertThat(versionNode.graph.keySet(), containsInAnyOrder("build.version.format"));
-					assertNode(versionNode, level+1);
-					break;
-				case "build.date.format":
+					Graph versionNode = childMap.get(key);
+					Map<String, Graph> nodeChildMap = versionNode.getChildMap();
+					assertThat(nodeChildMap.keySet(), containsInAnyOrder("build.version.format"));
+					assertNode(versionNode, level + 1);
+				} break;
+				case "build.date.format": {
 					assertThat(level, is(level));
-					ContextGraph dateFormatNode = contextGraph.graph.get(key);
-					assertThat(dateFormatNode.graph.keySet(), containsInAnyOrder("build.date"));
-					assertNode(dateFormatNode, level+1);
-					break;
-				case "build.version.format":
+					Graph dateFormatNode = childMap.get(key);
+					Map<String, Graph> nodeChildMap = dateFormatNode.getChildMap();
+					assertThat(nodeChildMap.keySet(), containsInAnyOrder("build.date"));
+					assertNode(dateFormatNode, level + 1);
+				} break;
+				case "build.version.format": {
 					assertThat(level, is(level));
-					ContextGraph versionFormatNode = contextGraph.graph.get(key);
-					assertThat(versionFormatNode.graph.keySet(), containsInAnyOrder("build.version"));
-					assertNode(versionFormatNode, level+1);
-					break;
+					Graph versionFormatNode = childMap.get(key);
+					Map<String, Graph> nodeChildMap = versionFormatNode.getChildMap();
+					assertThat(nodeChildMap.keySet(), containsInAnyOrder("build.version"));
+					assertNode(versionFormatNode, level + 1);
+				} break;
 				case "build.date":
-				case "build.version":
+				case "build.version": {
 					assertThat(level, is(level));
-					ContextGraph formatNode = contextGraph.graph.get(key);
-					assertThat(formatNode.graph.keySet(), containsInAnyOrder("build.message.format"));
-					break;
+					Graph formatNode = childMap.get(key);
+					Map<String, Graph> nodeChildMap = formatNode.getChildMap();
+					assertThat(nodeChildMap.keySet(), containsInAnyOrder("build.message.format"));
+				} break;
 				case "build.message.format":
 					assertThat(level, is(level));
-					ContextGraph messageFormatNode = contextGraph.graph.get(key);
-					assertThat(messageFormatNode.graph.keySet(), containsInAnyOrder("build.message"));
+					Graph messageFormatNode = childMap.get(key);
+					Map<String, Graph> nodeChildMap = messageFormatNode.getChildMap();
+					assertThat(nodeChildMap.keySet(), containsInAnyOrder("build.message"));
 					break;
 				default:
 					Assert.fail("Unexpected node: " + key);

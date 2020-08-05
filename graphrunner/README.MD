@@ -1,5 +1,5 @@
 # utils-graphrunner
-Process directed graph relations to guarantee all node operations are run in correct order
+Process directed graph relations to guarantee all node operations run in correct order
 ```gradle
 implementation group: 'com.legyver', name: 'utils-graphrunner', version: '2.0.0.0-alpha'
 ```
@@ -41,6 +41,7 @@ Properties buildProperties = new Properties();
 buildProperties.load(MyApplication.class.getResourceAsStream("build.properties"));
 Properties copyrightProperties = new Properties();
 copyrightProperties.load(MyApplication.class.getResourceAsStream("copyright.properties"));
+PropertyMap map = PropertyMap.of(buildProperties, copyrightProperties);
 
 //how to get the extract the variable for evaluation
 VariableExtractionOptions variableExtractionOptions = new VariableExtractionOptions(jexlVar, 1);
@@ -48,19 +49,18 @@ VariableExtractionOptions variableExtractionOptions = new VariableExtractionOpti
 VariableTransformationRule variableTransformationRule = new VariableTransformationRule(Pattern.compile("\\.format$"),
     TransformationOperation.upToLastIndexOf(".format"));
 
-ContextGraphFactory factory = new ContextGraphFactory(variableExtractionOptions, variableTransformationRule);
-ContextGraph contextGraph = factory.make(PropertyMap.of(buildProperties, copyrightProperties));
+PropertyGraphFactory factory = new PropertyGraphFactory(variableExtractionOptions, variableTransformationRule);
+Graph contextGraph = factory.make(map, (s, o) -> new SharedMapCtx(s, map));
 ...
-GraphRunner runner = new GraphRunner(map);
-runner.setCommand((nodeName, currentValue) -> {
-   //operation you want to run.  See GraphRunnerJexlExpressionTest for the Jexl example
+contextGraph.executeStrategy((nodeName, currentValue) -> {
+   //operation you want to run.  See JexlExpressionGraphTest for the Jexl example
 });
-runner.runGraph(contextGraph);
 ```
+
 Output
 ```java
 assertThat(map.get("build.version"), is("1.0.0.0000"));
 assertThat(map.get("build.message"), is("Build 1.0.0.0000, built on 11 April 2020"));
 assertThat(map.get("copyright"), is("Copyright © Legyver 2020-2020."));
 ```
-See GraphRunnerJexlExpressionTest for more information.
+See JexlExpressionGraphTest for more information.

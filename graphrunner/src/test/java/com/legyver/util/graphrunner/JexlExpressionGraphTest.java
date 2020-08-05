@@ -16,7 +16,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
  * Including this test as a POC.
  * jexl3 is a testCompile to avoid introducing a compile dependency on jexl3
  */
-public class GraphRunnerJexlExpressionTest {
+public class JexlExpressionGraphTest {
 	public static final String JEXL_VARIABLE = "\\$\\{(([a-z\\.-])*)\\}";
 
 	/**
@@ -30,7 +30,7 @@ public class GraphRunnerJexlExpressionTest {
 	@Test
 	public void evaluateSimpleJexl() throws Exception {
 		Properties buildProperties = new Properties();
-		buildProperties.load(GraphRunnerJexlExpressionTest.class.getResourceAsStream("build.properties"));
+		buildProperties.load(JexlExpressionGraphTest.class.getResourceAsStream("build.properties"));
 
 		Map<String, Object> map = PropertyMap.of(buildProperties);
 		evaluateGraph(map);
@@ -66,9 +66,9 @@ s	 */
 	@Test
 	public void evaluateGraphJexl() throws Exception {
 		Properties buildProperties = new Properties();
-		buildProperties.load(GraphRunnerJexlExpressionTest.class.getResourceAsStream("build.properties"));
+		buildProperties.load(JexlExpressionGraphTest.class.getResourceAsStream("build.properties"));
 		Properties copyrightProperties = new Properties();
-		copyrightProperties.load(GraphRunnerJexlExpressionTest.class.getResourceAsStream("copyright.properties"));
+		copyrightProperties.load(JexlExpressionGraphTest.class.getResourceAsStream("copyright.properties"));
 
 		Map<String, Object> map = PropertyMap.of(buildProperties, copyrightProperties);
 		evaluateGraph(map);
@@ -100,32 +100,34 @@ s	 */
 
 		VariableExtractionOptions variableExtractionOptions = new VariableExtractionOptions(jexlVar, 1);
 		VariableTransformationRule variableTransformationRule = new VariableTransformationRule(Pattern.compile("\\.format$"), TransformationOperation.upToLastIndexOf(".format"));
-		ContextGraphFactory factory = new ContextGraphFactory(variableExtractionOptions, variableTransformationRule);
-		ContextGraph contextGraph = factory.make(map);
+		PropertyGraphFactory factory = new PropertyGraphFactory(variableExtractionOptions, variableTransformationRule);
+		Graph contextGraph = factory.make(map, (s, o) -> new SharedMapCtx(s, map));
 
 		JexlEngine jexl = new JexlBuilder().create();
 		JexlContext context = new MapContext(map);
 
-		GraphRunner runner = new GraphRunner(map);
-
-		runner.setCommand((nodeName, currentValue) -> {
+		contextGraph.executeStrategy((nodeName, currentValue) -> {
 			try {
-				Matcher m = jexlVar.matcher((String) currentValue);
-				if (m.find()) {
-					JexlExpression expression = jexl.createExpression((String) currentValue);
-					String value = (String) expression.evaluate(context);
-					//update the map with the value
-					String key = nodeName;
-					//avoid overwriting the .format property
-					if (variableTransformationRule.matches(nodeName)) {
-						key = variableTransformationRule.transform(nodeName);
+				if (currentValue instanceof SharedMapCtx) {
+					SharedMapCtx keyValue = (SharedMapCtx) currentValue;
+					if (keyValue.getValue() != null) {
+						Matcher m = jexlVar.matcher((CharSequence) keyValue.getValue());
+						if (m.find()) {
+							JexlExpression expression = jexl.createExpression((String) keyValue.getValue());
+							String value = (String) expression.evaluate(context);
+							//update the map with the value
+							String key = nodeName;
+							//avoid overwriting the .format property
+							if (variableTransformationRule.matches(nodeName)) {
+								key = variableTransformationRule.transform(nodeName);
+							}
+							map.put(key, value);
+						}
 					}
-					map.put(key, value);
 				}
 			} catch (RuntimeException ex) {
 				throw new CoreException("Error evaluating expression: " + currentValue, ex);
 			}
 		});
-		runner.runGraph(contextGraph);
 	}
 }

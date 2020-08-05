@@ -7,7 +7,7 @@ public class VariableExtractionOptions {
 	private final int group;
 
 	/**
-	 * Match options to construct directional {@link ContextGraph}
+	 * Match options to construct directional {@link Graph}
 	 * @param tokenizerPattern : compatible with java.util.Matcher, used for matching variables to extract from value
 	 * @param group: Matcher.group(group) to extract
 	 * example: `${build.date.day} ${build.date.month} ${build.date.year}`
