@@ -1,10 +1,64 @@
 # utils-graphrunner
 Process directed graph relations to guarantee all node operations run in correct order
 ```gradle
-implementation group: 'com.legyver', name: 'utils-graphrunner', version: '2.0.0.0-alpha'
+implementation group: 'com.legyver', name: 'utils-graphrunner', version: '2.0.0.0-alpha-2'
 ```
 
 ## Features
+### Create a directed graph.
+```
+       preInit --> init --> postInit  //preInit always runs before init, init before postInit, etc
+      /
+start 
+      \
+       shutdown //shutdown can be triggered at any time 
+```
+The below code makes the graph denoted above
+
+```java
+Node preInit = new Node(LifecyclePhase.PRE_INIT);
+Node init = new Node(LifecyclePhase.INIT);
+Node postInit = new Node(LifecyclePhase.POST_INIT);
+Node shutdown = new Node(LifecyclePhase.SHUTDOWN);
+
+Graph graph = new Graph.Builder()
+    .nodes(preInit, init, postInit, shutdown)
+    .connect(new Graph.Connection()
+    	.from(preInit.getNodeName())
+    	.to(init.getNodeName()))
+    .connect(new Graph.Connection()
+    	.from(init.getNodeName())
+    	.to(postInit.getNodeName()))
+    .build();
+```
+### Execute up to a specific node (inclusive)
+```java
+//below will run 'preInit', 'init' and 'postInit' in order
+graph.setStrategy(new RunWithDependentsStrategy(postInit.getNodeName()));
+graph.executeStrategy((GraphExecutedCommand<Node>) (nodeName, phaseNode) -> {
+	//operation to run on node
+});
+```
+### Execute the full graph in order
+```java
+//below will run ordered nodes 'preInit', 'init' and 'postInit' in order,
+//and also 'shutdown' in the order it comes to it which can be either before or after
+graph.setStrategy(new RunAllStrategy());
+graph.executeStrategy((GraphExecutedCommand<Node>) (nodeName, phaseNode) -> {
+	//operation to run on node
+});
+```
+### Reset the graph
+```java
+graph.reset(new Graph.ResetOptions()
+		.evaluatedFlag()
+		.evaluationProgress());
+```
+or 
+```java
+graph.resetEvaluated();//does the same as the above
+```
+## Examples
 The below example evaluates JEXL expressions on properties to allow for cross-referencing of java properties.
 
 <p>build.properties</p>

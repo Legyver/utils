@@ -114,6 +114,36 @@ public class Graph<T> {
 		return filtered;
 	}
 
+	private void resetNode(ResetOptions options, GraphNode<T> graphNode) {
+		if (options.resetEvaluatedFlag) {
+			graphNode.evaluated = false;
+		}
+		if (options.resetEvaluationProgress) {
+			graphNode.satisfiedNodeNames.clear();
+		}
+		graphNode.satisfiedNodeNames.clear();
+		graphNode.graph.values().stream().forEach(node -> resetNode(options, node));
+	}
+
+	/**
+	 *
+	 * @param options: what to reset
+	 */
+	public void reset(ResetOptions options) {
+		this.graph.values().stream()
+				.forEach(node -> resetNode(options, node));
+	}
+
+	/**
+	 * Set all {@link GraphNode} evaluated flags to false
+	 * and clear all satisfied node names
+	 */
+	public void resetEvaluated() {
+		reset(new ResetOptions()
+				.evaluatedFlag()
+				.evaluationProgress());
+	}
+
 	static class GraphNode<T> extends Graph<T> {
 		private Set<String> requisiteNodeNames = new HashSet<>();
 		private Set<String> satisfiedNodeNames = new HashSet<>();
@@ -146,6 +176,11 @@ public class Graph<T> {
 		}
 	}
 
+	/**
+	 * Builder for Graph.
+	 * The individual nodes are specified as {@link Payload} payloads
+	 * The connections are specified with the {@link Connection} sub-builder
+	 */
 	public static class Builder {
 		private Graph graph = new Graph(null);
 
@@ -190,5 +225,30 @@ public class Graph<T> {
 	 */
 	public interface Payload {
 		String getNodeName();
+	}
+
+	/**
+	 * Options for resetting internal graph state
+	 */
+	public static class ResetOptions {
+		private boolean resetEvaluatedFlag;
+		private boolean resetEvaluationProgress;
+
+		/**
+		 * Set all {@link GraphNode} evaluated flags to false
+		 */
+		public ResetOptions evaluatedFlag() {
+			resetEvaluatedFlag = true;
+			return this;
+		}
+
+		/**
+		 * Clear all {@link GraphNode} satisfied node names
+		 */
+		public ResetOptions evaluationProgress() {
+			resetEvaluationProgress = true;
+			return this;
+		}
+
 	}
 }
