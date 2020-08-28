@@ -1,4 +1,6 @@
-package com.legyver.util.graphrunner;
+package com.legyver.util.graphrunner.ctx.shared;
+
+import com.legyver.util.graphrunner.Graph;
 
 import java.util.Map;
 

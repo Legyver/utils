@@ -1,0 +1,7 @@
+description = 'An if-not-null-then utility'
+
+dependencies {
+    api group: 'com.legyver', name: 'core', version: legyverCoreVersion
+
+    testImplementation 'junit:junit:4.13'
+}

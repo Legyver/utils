@@ -4,6 +4,7 @@ apply plugin: 'java'
 
 dependencies {
     api group: 'com.legyver', name: 'core', version: legyverCoreVersion
+    api project(':wrapadapt')
 
     //Expression language for conditional validation for POC GraphRunnerJexlExpressionTest
     testImplementation group: 'org.apache.commons', name: 'commons-jexl3', version: '3.1'

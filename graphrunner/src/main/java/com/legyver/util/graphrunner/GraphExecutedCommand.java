@@ -1,6 +1,7 @@
 package com.legyver.util.graphrunner;
 
 import com.legyver.core.exception.CoreException;
+import com.legyver.util.graphrunner.ctx.shared.SharedMapCtx;
 
 /**
  * Command attached to a graph to be run on all nodes in that graph as soon as they meet the evaluable prerequisites
