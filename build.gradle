@@ -9,13 +9,7 @@ allprojects {
 
 subprojects {
     ext {
-        legyverCoreVersion = '1.0.0.0'
+        legyverCoreVersion = '1.1.0.0'
+        publishBuildScript = 'https://raw.githubusercontent.com/Legyver/common-build/1.2/publish.gradle' //java 9+
     }
-    apply plugin: 'java-library'
-
-    apply plugin: 'maven-publish'
-    apply plugin: 'signing'
-    
-    apply from: 'https://raw.githubusercontent.com/Legyver/common-build/1.0/publish.gradle'
-
 }

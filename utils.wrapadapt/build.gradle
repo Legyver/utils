@@ -1,0 +1,13 @@
+description = 'A wrapper for executing typed command with an un-typed parameter'
+
+apply from: publishBuildScript
+
+dependencies {
+    api group: 'com.legyver', name: 'core', version: legyverCoreVersion
+
+    testImplementation 'junit:junit:4.13'
+}
+
+java {
+    modularity.inferModulePath = true
+}

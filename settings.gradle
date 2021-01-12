@@ -1,8 +1,10 @@
 rootProject.name = 'utils'
 
-include ':wrapadapt'
-include ':extractex'
-include ':adaptex'
-include ':graphrunner'
-include ':mapqua'
-include ':nippe'
+include ':utils.wrapadapt'
+include ':utils.extractex'
+include ':utils.adaptex'
+include ':utils.graphrunner'
+include ':utils.mapqua'
+include ':utils.nippe'
+include ':utils.slel'
+
