@@ -14,6 +14,10 @@ public class RunWithDependentsStrategy implements RunStrategy {
 	 */
 	private final String nodeToRun;
 
+	/**
+	 * Construct a RunWithDependentsStrategy starting at a specific node
+	 * @param nodeToRun the node to run
+	 */
 	public RunWithDependentsStrategy(String nodeToRun) {
 		this.nodeToRun = nodeToRun;
 	}

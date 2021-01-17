@@ -31,7 +31,7 @@ public class MapQuery {
 		this.nullable = nullable;
 	}
 
-	protected Optional execute(Map map) {
+	private Optional execute(Map map) {
 		return execute(map, keys.size());
 	}
 
@@ -112,17 +112,17 @@ public class MapQuery {
 		return objectMap;
 	}
 
-	protected void executeSet(Map map, Object value) {
+	private void executeSet(Map map, Object value) {
 		Map objectMap = getObjectMap(map);
 		objectMap.put(keys.get(keys.size() - 1).key, mapPojo(value));
 	}
-	
-	protected void executeMerge(Map map, Object value) {
+
+	private void executeMerge(Map map, Object value) {
 		Map objectMap = getObjectMap(map);
 		objectMap.merge(keys.get(keys.size() - 1).key, mapPojo(value), new MapMerge());
 	}
 
-	protected void executeAdd(Map map, Object value) {
+	private void executeAdd(Map map, Object value) {
 		Optional<Collection> optional = execute(map, keys.size() - 1);
 		Collection valueCollection = optional.get();
 		value = mapPojo(value);
@@ -282,7 +282,7 @@ public class MapQuery {
 
 	/**
 	 * Builder hook to continue building child query
-	 * @param <T>
+	 * @param <T> the expected type of the result
 	 */
 	public static class ChildQueryBuilder<T> extends ExecutableQueryBuilder<ChildQueryBuilder, T> {
 		private ChildQueryBuilder(List<Ctx> keys, boolean nullable) {
@@ -322,6 +322,9 @@ public class MapQuery {
 
 	}
 
+	/**
+	 * A child QueryBuilder when the value is expected to be set on the query result
+	 */
 	public static class SetQueryBuilder extends ExecutableQueryBuilder<SetQueryBuilder, Object> {
 		private final Object value;
 
@@ -336,7 +339,10 @@ public class MapQuery {
 			return Optional.of(value);
 		}
 	}
-	
+
+	/**
+	 * A child QueryBuilder when the value is expected to be merged with the current value present on the query result
+	 */
 	public static class MergeQueryBuilder extends ExecutableQueryBuilder<MergeQueryBuilder, Object> {
 		private final Object value;
 
@@ -352,6 +358,9 @@ public class MapQuery {
 		}
 	}
 
+	/**
+	 * A child QueryBuilder when the value is expected to be added the a collection located on the query result
+	 */
 	public static class AddQueryBuilder extends ExecutableQueryBuilder<AddQueryBuilder, Object> {
 
 		private final Object value;

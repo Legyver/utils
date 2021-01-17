@@ -11,10 +11,21 @@ import java.util.Map;
  */
 public class MapBackedNativeCollection<U extends Collection<T>, T> extends MapBackedCollection<Collection<T>, T> {
 
+	/**
+	 * Construct a MapBackedNativeCollection with a certain property name and default value
+	 * @param sourceMap Map to store the Collection in
+	 * @param property Key name of the property
+	 * @param valueIfMissing value to set if missing
+	 */
 	public MapBackedNativeCollection(Map sourceMap, String property, Collection valueIfMissing) {
 		super(sourceMap, property, valueIfMissing);
 	}
 
+	/**
+	 * Construct a MapBackedNativeCollection with a certain property name
+	 * @param sourceMap Map to store the Collection in
+	 * @param property Key name of the property
+	 */
 	public MapBackedNativeCollection(Map sourceMap, String property) {
 		super(sourceMap, property);
 	}

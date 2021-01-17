@@ -15,6 +15,11 @@ public class DepthFirstSearch<T extends Graph> implements TreeSearch {
 	private final Map<String, T> graph;
 	private final BiConsumer<String, T> matchHandler;
 
+	/**
+	 * Construct a DepthFirstSearch of a graph.
+	 * @param graph The graph nodes to search
+	 * @param matchHandler the handler applied to each matched node
+	 */
 	public DepthFirstSearch(Map<String, T> graph, BiConsumer<String, T> matchHandler) {
 		this.graph = graph;
 		this.matchHandler = matchHandler;

@@ -5,21 +5,39 @@ import java.util.function.BiFunction;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Factory to create a Graph from one or more property files by identifying properties with keys that are present in other keys' values
+ */
 public class PropertyGraphFactory {
 
 	private final VariableExtractionOptions variableExtractionOptions;
 	private final VariableTransformationRule variableTransformationRule;
 
+	/**
+	 * Construct a PropertyGraphFactory with the specified variable extraction options and transformation rules.
+	 * @param variableExtractionOptions the variable extraction options to use
+	 * @param variableTransformationRule the variable transformation rule to use
+	 */
 	public PropertyGraphFactory(VariableExtractionOptions variableExtractionOptions,
 								VariableTransformationRule variableTransformationRule) {
 		this.variableExtractionOptions = variableExtractionOptions;
 		this.variableTransformationRule = variableTransformationRule;
 	}
 
+	/**
+	 * Construct a PropertyGraphFactory with the specified variable extraction options.
+	 * The variable transformation rule will be null.  Use this if you do no need to do any transformation.
+	 * @param variableExtractionOptions the variable extraction options to use
+	 */
 	public PropertyGraphFactory(VariableExtractionOptions variableExtractionOptions) {
 		this(variableExtractionOptions, null);
 	}
 
+	/**
+	 * Construct a PropertyGraphFactory with the specified tokenizer pattern and group
+	 * @param tokenizerPattern the regular expression to use
+	 * @param group the group to extract
+	 */
 	public PropertyGraphFactory(Pattern tokenizerPattern, int group) {
 		this(new VariableExtractionOptions(tokenizerPattern, group));
 	}
@@ -40,8 +58,9 @@ public class PropertyGraphFactory {
 	 *   build.version.format=`${major.version}.${minor.version}.${patch.number}.${build.number}`
 	 *   build.message.format=`Build ${build.version}, built on ${build.date}`
 	  Note to make build.version resolve as the outcome of build.version.format, we need to use specify this in the {@link #variableTransformationRule}
-	 * @param propertyMap: map containing properties
-	 * @return
+	 * @param propertyMap map containing properties
+	 * @param newNodeFactory factory to use to construct new nodes based on a property's key and value
+	 * @return the graph of all nodes in the propertyMap
 	 */
 	public Graph make(Map<String, Object> propertyMap, BiFunction<String, Object, Graph.Payload> newNodeFactory) {
 		Graph.Builder builder = new Graph.Builder();

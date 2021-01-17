@@ -2,8 +2,17 @@ package com.legyver.utils.graphrunner;
 
 import java.util.regex.Pattern;
 
+/**
+ * The VariableExtractionOptions that identify a regular expression and group to extract
+ */
 public class VariableExtractionOptions {
+	/**
+	 * The Pattern to match
+	 */
 	private final Pattern tokenizerPattern;
+	/**
+	 * The group to extract
+	 */
 	private final int group;
 
 	/**
@@ -20,10 +29,18 @@ public class VariableExtractionOptions {
 		this.group = group;
 	}
 
+	/**
+	 * Return the tokenizer pattern
+	 * @return the tokenizer pattern
+	 */
 	public Pattern getTokenizerPattern() {
 		return tokenizerPattern;
 	}
 
+	/**
+	 * The {@link java.util.regex.Matcher#group(int)} to extract
+	 * @return the group index
+	 */
 	public int getGroup() {
 		return group;
 	}

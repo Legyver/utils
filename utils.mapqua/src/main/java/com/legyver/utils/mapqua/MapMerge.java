@@ -3,6 +3,9 @@ package com.legyver.utils.mapqua;
 import java.util.Map;
 import java.util.function.BiFunction;
 
+/**
+ * Merge function for merging values in a map
+ */
 public class MapMerge implements BiFunction {
 
 	@Override

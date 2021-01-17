@@ -9,5 +9,11 @@ import com.legyver.utils.graphrunner.ctx.shared.SharedMapCtx;
  */
 @FunctionalInterface
 public interface GraphExecutedCommand<T> {
+	/**
+	 * Command to execute on nodes in a graph
+	 * @param nodeName the name of the current node
+	 * @param object the value associated with the current node
+	 * @throws CoreException if the implementation throws a CoreException
+	 */
 	void execute(String nodeName, T object) throws CoreException;
 }

@@ -72,6 +72,11 @@ public class PropertyMap implements Map<String, Object> {
 		return internalMap.entrySet();
 	}
 
+	/**
+	 * Utility method to create a PropertyMap from one or more {@link java.util.Properties} files
+	 * @param properties to merge into a common Map
+	 * @return the resultant PropertyMap
+	 */
 	public static PropertyMap of(Properties...properties) {
 		PropertyMap propertyMap = new PropertyMap();
 		if (properties != null) {
