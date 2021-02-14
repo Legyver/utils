@@ -1,4 +1,6 @@
 # Releases
+## 2.0.0.1
+2.0.0.1: Non code change.  Fixed issue where the POM URL did not resolve correctly to the GitHub repo
 ## 2.0
 ### New stuff
 - Graphrunner: Run operations in order specified by a directed graph.
