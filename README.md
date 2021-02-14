@@ -2,16 +2,22 @@
 Handy Java solutions to common problems.
 
 ## Features
-- Adaptex
+- [utils.adaptex](utils.adaptex/README.MD)
     - Adapt any function throwing a checked Exception into a function throwing a CoreException
-- Extractex
+- [utils.extractex](utils.extractex/README.MD)
     - Extract exceptions of specific types from wrapped exceptions
-- Graphrunner
+- [utils.graphrunner](utils.graphrunner/README.MD)
     - Run functions in order defined in a directed graph
-- Mapqua
+- [utils.mapqua](utils.mapqua/README.MD)
     - A Map-based representation utility for POJOs
-- Nippe
+- [utils.nippe](utils.nippe/README.MD)
     - A Null Pointer Exception utility
+- [utils.propcross](utils.propcross/README.MD)
+    - A cross-referencing properties utility
+- [utils.slel](utils.slel/README.MD)
+    - A super-lightweight expression language for String concatenation
+- [utils.wrapadapt](utils.wrapadapt/README.MD)
+    - An if-instanceof-then-execute utility
 
 See the individual README for details
 
