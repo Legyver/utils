@@ -3,6 +3,7 @@ description = 'A Map-based representation utility for POJOs'
 apply from: publishBuildScript
 
 dependencies {
+    api group: 'com.legyver', name: 'core', version: legyverCoreVersion
     api 'com.google.code.gson:gson:2.8.6'
 
     testImplementation 'junit:junit:4.13'
