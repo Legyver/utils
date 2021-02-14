@@ -7,7 +7,7 @@ implementation group: 'com.legyver', name: 'utils-propcross', version: '2.0.0.0'
 
 ## Usage
 1. Create a property graph of all your properties you want to evaluate.
-    1. You may with to use PropertyMap.of(Properties...) to construct this
+    1. You may wish to use PropertyMap.of(Properties...) to construct this
 1. Declare an OperationContext to use.  This says what variables look like and identify the suffix for variables to be
     1. For example, you may want to have the result of an operation on a property be injected into another property by dropping the property suffix (Ex: subject.format being stored on a property called subject; see example below)
 1. Run the graph with that OperationContext
