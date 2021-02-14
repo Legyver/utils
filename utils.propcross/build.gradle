@@ -1,0 +1,15 @@
+description = 'A utility for constructing properties out of other properties'
+
+apply from: publishBuildScript
+
+dependencies {
+    api group: 'com.legyver', name: 'core', version: legyverCoreVersion
+    api project(':utils.graphrunner')
+    api project(':utils.slel')
+
+    testImplementation 'junit:junit:4.13'
+}
+
+java {
+    modularity.inferModulePath = true
+}

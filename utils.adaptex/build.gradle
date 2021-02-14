@@ -1,0 +1,20 @@
+description = 'An extraction adapter'
+
+apply from: publishBuildScript
+
+dependencies {
+    //exception
+    api group: 'com.legyver', name: 'core', version: legyverCoreVersion
+
+    testImplementation project(':utils.adaptex')
+    testImplementation 'junit:junit:4.13'
+}
+
+test {
+    useJUnit()
+}
+
+
+java {
+    modularity.inferModulePath = true
+}

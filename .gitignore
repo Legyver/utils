@@ -3,9 +3,4 @@
 *.iml
 .idea/**
 build/**
-/build/
-/adaptex/build/
-/extractex/build/
-/graphrunner/build/
-/mapqua/build/
-/nippe/build/
+*/build/**
