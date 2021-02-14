@@ -2,7 +2,7 @@
 An if-instanceof-then-execute utility
 
 ```gradle
-implementation group: 'com.legyver', name: 'utils-wrapadapt', version: '2.0.0.0-alpha'
+implementation group: 'com.legyver', name: 'utils-wrapadapt', version: '2.0.0.0'
 ```
 ## Features
 Get rid of the if-then mess

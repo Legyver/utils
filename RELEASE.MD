@@ -4,6 +4,7 @@
 - Graphrunner: Run operations in order specified by a directed graph.
 - Wrapadapt: A wrapper for executing typed command with an un-typed parameter
 - slEl: Super-light Expression Language
+- Propcross: A graph utility for evaluating cross-referencing properties
 ### Refactoring
 - Split out into separate libraries to limit classpath contamination
     - utils.adaptex
@@ -11,6 +12,7 @@
     - utils.graphrunner
     - utils.mapqua
     - utils.nippe
+    - utils.propcross
     - utils.slel
     - utils.wrapadapt
 - Modularized all sub projects

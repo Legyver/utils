@@ -1,5 +1,6 @@
 /**
  * An extraction adapter
+ * @since 2.0
  */
 module com.legyver.utils.adaptex {
 	requires com.legyver.core;

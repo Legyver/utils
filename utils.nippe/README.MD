@@ -2,7 +2,7 @@
 An if-not-null-then utility
 
 ```gradle
-implementation group: 'com.legyver', name: 'utils-nippe', version: '2.0.0.0-alpha'
+implementation group: 'com.legyver', name: 'utils-nippe', version: '2.0.0.0'
 ```
 ## Features
 Collapse this:
