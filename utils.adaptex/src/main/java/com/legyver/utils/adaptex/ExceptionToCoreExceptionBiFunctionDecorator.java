@@ -36,7 +36,7 @@ public class ExceptionToCoreExceptionBiFunctionDecorator<T, U, R> {
 
 
 	/**
-	 * A version of {@link java.util.function.Function} that throws an Exception
+	 * A version of {@link java.util.function.BiFunction} that throws an Exception
 	 * @param <T> the type of the function's first argument
 	 * @param <U> the type of the function's second argument
 	 * @param <R> the return type of the function
