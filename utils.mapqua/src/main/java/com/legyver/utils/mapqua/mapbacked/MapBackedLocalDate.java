@@ -1,5 +1,6 @@
 package com.legyver.utils.mapqua.mapbacked;
 
+import com.legyver.core.exception.CoreException;
 import com.legyver.utils.mapqua.MapQuery;
 import java.time.LocalDate;
 import java.util.Map;
@@ -30,7 +31,7 @@ public class MapBackedLocalDate extends MapBackedProperty<LocalDate> {
 	}
 
 	@Override
-	protected Optional<LocalDate> queryOption() {
+	protected Optional<LocalDate> queryOption() throws CoreException {
 		return new MapQuery.Query().localDate(property).execute(sourceMap);
 	}
 

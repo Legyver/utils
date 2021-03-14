@@ -1,5 +1,7 @@
 package com.legyver.utils.mapqua.mapbacked;
 
+import com.legyver.core.exception.CoreException;
+
 import java.util.Collection;
 import java.util.Map;
 
@@ -37,7 +39,7 @@ public class MapBackedEntityCollection<U extends Collection<T>, T extends RawMap
 	 * @return the raw map for the passed in Object
 	 */
 	@Override
-	protected Object toMap(T o) {
+	protected Object toMap(T o) throws CoreException {
 		return o.getRawMap();
 	}
 

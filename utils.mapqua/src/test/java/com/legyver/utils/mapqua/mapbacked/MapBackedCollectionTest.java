@@ -1,20 +1,17 @@
 package com.legyver.utils.mapqua.mapbacked;
 
-import com.google.gson.Gson;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import com.legyver.core.exception.CoreException;
 import org.junit.Test;
+
+import java.util.*;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-public class MapBackedCollectionTest {
+public class MapBackedCollectionTest extends AbstractJacksonSupportTest {
 
 	@Test
-	public void addRemovePrimitiveValueList() {
+	public void addRemovePrimitiveValueList() throws CoreException {
 		Map map = new LinkedHashMap();
 		MapBackedCollection<List<String>, String> mb = new MapBackedNativeCollection(map, "field");
 		Collection coll = (Collection) mb.get();
@@ -44,7 +41,7 @@ public class MapBackedCollectionTest {
 	}
 
 	@Test
-	public void addRemoveEntityValueList() {
+	public void addRemoveEntityValueList() throws CoreException {
 		Map map = new LinkedHashMap();
 		MapBackedCollection<List<Entity>, Entity> mb = new MapBackedEntityCollection(map, "field", m -> new Entity(m));
 
@@ -73,13 +70,13 @@ public class MapBackedCollectionTest {
 	}
 
 	@Test
-	public void entityListToJson() {
+	public void entityListToJson() throws Exception {
 		ListEntity listEntity = new ListEntity();
 		Entity entity = new Entity();
 		entity.setNumber(2);
 		entity.setText("number two");
 		listEntity.entityList.add(entity);
-		String result = new Gson().toJson(listEntity.getRawMap());
+		String result = getJson(listEntity.getRawMap());
 		assertThat(result, is("{\"entityList\":[{\"field1\":2,\"field2\":\"number two\"}]}"));
 	}
 
@@ -88,7 +85,7 @@ public class MapBackedCollectionTest {
 		private MapBackedCollection<List<Entity>, Entity> entityList = new MapBackedEntityCollection(sourceMap, "entityList", m -> new Entity(m));
 
 		@Override
-		public Map getRawMap() {
+		public Map getRawMap() throws CoreException {
 			entityList.sync();
 			return sourceMap;
 		}
@@ -108,19 +105,19 @@ public class MapBackedCollectionTest {
 		private Entity() {
 			this(new LinkedHashMap());
 		}
-		Integer getNumber() {
+		Integer getNumber() throws CoreException {
 			return number.get();
 		}
 
-		String getString() {
+		String getString() throws CoreException {
 			return text.get();
 		}
 
-		public void setNumber(Integer integer) {
+		public void setNumber(Integer integer) throws CoreException {
 			number.set(integer);
 		}
 
-		public void setText(String text) {
+		public void setText(String text) throws CoreException {
 			this.text.set(text);
 		}
 

@@ -1,5 +1,6 @@
 package com.legyver.utils.mapqua.mapbacked;
 
+import com.legyver.core.exception.CoreException;
 import com.legyver.utils.mapqua.MapQuery;
 
 import java.util.ArrayList;
@@ -65,23 +66,26 @@ public abstract class MapBackedCollection<U extends Collection<T>, T> extends Ma
 	/**
 	 * Add a value to the collection
 	 * @param value the value to be added
+	 * @throws CoreException if there is a problem marshalling to/from JSON
 	 */
-	public void add(T value) {
+	public void add(T value) throws CoreException {
 		get().add(value);
 	}
 
 	/**
 	 * Remove a value from the collection
 	 * @param value the value to be removed
+	 * @throws CoreException if there is a problem marshalling to/from JSON
 	 */
-	public void remove(T value) {
+	public void remove(T value) throws CoreException {
 		get().remove(value);
 	}
 
 	/**
 	 * Sync's the collection to the Map
+	 * @throws CoreException if there is a problem marshalling to/from JSON
 	 */
-	public void sync() {
+	public void sync() throws CoreException {
 		set(deTransform(get()));
 	}
 
@@ -89,9 +93,10 @@ public abstract class MapBackedCollection<U extends Collection<T>, T> extends Ma
 	 * Return the internal collection.
 	 * If the internal collection is null, it will create it via the {@link #transform(Collection)} method using super.get() as the parameter
 	 * @return the internal collection
+	 * @throws CoreException if there is a problem marshalling to/from JSON
 	 */
 	@Override
-	public U get() {
+	public U get() throws CoreException {
 		if (collectionReference == null) {
 			collectionReference = transform(super.get());
 		}
@@ -101,9 +106,10 @@ public abstract class MapBackedCollection<U extends Collection<T>, T> extends Ma
 	/**
 	 * Hook to allow the Collection to be queryable
 	 * @return the query option to use for the Collection
+	 * @throws CoreException if there is a problem marshalling to/from JSON
 	 */
 	@Override
-	protected Optional<Collection> queryOption() {
+	protected Optional<Collection> queryOption() throws CoreException {
 		return new MapQuery.Query().collection(property).execute(sourceMap);
 	}
 
@@ -125,13 +131,18 @@ public abstract class MapBackedCollection<U extends Collection<T>, T> extends Ma
 	 * Reverses the transformation of the {@link #transform(Collection)} method.  The internal collection reference is not updated.
 	 * @param source the collection to deTransform via the {@link #toMap(Object)} method
 	 * @return the source collection de-transformed
+	 * @throws CoreException if there is a problem marshalling to/from JSON
 	 */
-	protected Collection deTransform(Collection<T> source) {
+	protected Collection deTransform(Collection<T> source) throws CoreException {
 		Collection result;
 		if (source instanceof List) {
-			result = (Collection) source.stream().map(this::toMap).collect(Collectors.toList());
+			result = CoreException.unwrap(()  -> source.stream()
+					.map((o) -> CoreException.wrap(() -> toMap(o)))
+					.collect(Collectors.toList()));
 		} else {
-			result = (Collection) source.stream().map(this::toMap).collect(Collectors.toSet());
+			result = CoreException.unwrap(() -> source.stream()
+					.map((o) -> CoreException.wrap(() -> toMap(o)))
+					.collect(Collectors.toSet()));
 		}
 		return result;
 	}
@@ -140,8 +151,9 @@ public abstract class MapBackedCollection<U extends Collection<T>, T> extends Ma
 	 * Return the internal map where the MapBackedCollection is stored
 	 * @param o the object whose map will be returned
 	 * @return the raw map for the passed in Object
+	 * @throws CoreException if there is a problem marshalling to/from JSON
 	 */
-	protected abstract Object toMap(T o);
+	protected abstract Object toMap(T o) throws CoreException;
 
 	/**
 	 * Converts a map into an entity via the {@link #entityInstantiator}.  If the entityInstantiator is null, any Map will not be converted

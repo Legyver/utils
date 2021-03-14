@@ -2,6 +2,8 @@ package com.legyver.utils.mapqua.mapbacked;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+
+import com.legyver.core.exception.CoreException;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -12,7 +14,7 @@ import static org.junit.Assert.assertThat;
 public class MapBackedEntityTest {
 
 	@Test
-	public void entityMap() {
+	public void entityMap() throws Exception {
 		Map rootMap = new LinkedHashMap();
 		OuterEntity outerEntity = new OuterEntity(rootMap);
 		InnerEntity innerEntity = outerEntity.entity.get();
@@ -65,19 +67,19 @@ public class MapBackedEntityTest {
 			text =  new MapBackedString(sourceMap, "field2");
 		}
 
-		Integer getNumber() {
+		Integer getNumber() throws CoreException {
 			return number.get();
 		}
 
-		String getString() {
+		String getString() throws CoreException {
 			return text.get();
 		}
 
-		public void setNumber(Integer integer) {
+		public void setNumber(Integer integer) throws CoreException {
 			number.set(integer);
 		}
 
-		public void setText(String text) {
+		public void setText(String text) throws CoreException {
 			this.text.set(text);
 		}
 

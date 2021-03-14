@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.LinkedHashMap;
 import java.util.Map;
+
+import com.legyver.core.exception.CoreException;
 import org.exparity.hamcrest.date.LocalDateTimeMatchers;
 import org.junit.Test;
 
@@ -13,7 +15,7 @@ import static org.junit.Assert.assertThat;
 public class MapBackedLocalDateTimeTest {
 
 	@Test
-	public void addValue() {
+	public void addValue() throws Exception {
 		Map map = new LinkedHashMap();
 		MapBackedLocalDateTime mb = new MapBackedLocalDateTime(map, "field");
 		assertThat(mb.get(), LocalDateTimeMatchers.within(1, ChronoUnit.SECONDS, LocalDateTime.now()));
@@ -24,7 +26,7 @@ public class MapBackedLocalDateTimeTest {
 	}
 	
 	@Test
-	public void changeValue() {
+	public void changeValue() throws Exception {
 		Map map = new LinkedHashMap();
 		MapBackedLocalDateTime mb = new MapBackedLocalDateTime(map, "field");
 		LocalDateTime ld1 = LocalDateTime.now();
@@ -36,7 +38,7 @@ public class MapBackedLocalDateTimeTest {
 	}
 	
 	@Test
-	public void entityMap() {
+	public void entityMap() throws Exception {
 		Entity entity = new Entity();
 		LocalDateTime ld1 = LocalDateTime.now();
 		LocalDateTime ld2 = LocalDateTime.now().minusDays(1).minusMonths(1).minusYears(1);
@@ -53,19 +55,19 @@ public class MapBackedLocalDateTimeTest {
 		private MapBackedLocalDateTime mb1 =  new MapBackedLocalDateTime(sourceMap, "field1");
 		private MapBackedLocalDateTime mb2 =  new MapBackedLocalDateTime(sourceMap, "field2");
 		
-		LocalDateTime getLocalDateTime1() {
+		LocalDateTime getLocalDateTime1() throws CoreException {
 			return mb1.get();
 		}
 		
-		LocalDateTime getLocalDateTime2() {
+		LocalDateTime getLocalDateTime2() throws CoreException {
 			return mb2.get();
 		}
 		
-		public void setLocalDateTime1(LocalDateTime localDate) {
+		public void setLocalDateTime1(LocalDateTime localDate) throws CoreException {
 			mb1.set(localDate);
 		}
 		
-		public void setLocalDateTime2(LocalDateTime localDate) {
+		public void setLocalDateTime2(LocalDateTime localDate) throws CoreException {
 			mb2.set(localDate);
 		}
 	}

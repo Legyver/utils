@@ -2,6 +2,8 @@ package com.legyver.utils.mapqua.mapbacked;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+
+import com.legyver.core.exception.CoreException;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -10,7 +12,7 @@ import static org.junit.Assert.assertThat;
 public class MapBackedDoubleTest {
 
 	@Test
-	public void addValue() {
+	public void addValue() throws Exception {
 		Map map = new LinkedHashMap();
 		MapBackedDouble mb = new MapBackedDouble(map, "field");
 		assertThat(mb.get(), is(0.0));
@@ -20,7 +22,7 @@ public class MapBackedDoubleTest {
 	}
 	
 	@Test
-	public void changeValue() {
+	public void changeValue() throws Exception {
 		Map map = new LinkedHashMap();
 		MapBackedDouble mb = new MapBackedDouble(map, "field");
 		mb.set(2.0);
@@ -30,7 +32,7 @@ public class MapBackedDoubleTest {
 	}
 	
 	@Test
-	public void entityMap() {
+	public void entityMap() throws Exception {
 		Entity entity = new Entity();
 		entity.setDouble1(1.1);
 		entity.setDouble2(1.2);
@@ -43,19 +45,19 @@ public class MapBackedDoubleTest {
 		private MapBackedDouble mb1 =  new MapBackedDouble(sourceMap, "field1");
 		private MapBackedDouble mb2 =  new MapBackedDouble(sourceMap, "field2");
 		
-		Double getDouble1() {
+		Double getDouble1() throws CoreException {
 			return mb1.get();
 		}
 		
-		Double getDouble2() {
+		Double getDouble2() throws CoreException {
 			return mb2.get();
 		}
 		
-		public void setDouble1(Double integer) {
+		public void setDouble1(Double integer) throws CoreException {
 			mb1.set(integer);
 		}
 		
-		public void setDouble2(Double integer) {
+		public void setDouble2(Double integer) throws CoreException {
 			mb2.set(integer);
 		}
 	}

@@ -1,15 +1,12 @@
 package com.legyver.utils.mapqua;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
-import com.google.gson.reflect.TypeToken;
+import com.legyver.core.exception.CoreException;
+import com.legyver.utils.jackiso.JacksonObjectMapper;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.time.temporal.Temporal;
+import java.util.*;
 import java.util.function.Predicate;
 
 /**
@@ -31,11 +28,11 @@ public class MapQuery {
 		this.nullable = nullable;
 	}
 
-	private Optional execute(Map map) {
+	private Optional execute(Map map) throws CoreException {
 		return execute(map, keys.size());
 	}
 
-	private Optional execute(Map map, int stop) {
+	private Optional execute(Map map, int stop) throws CoreException {
 		Object val = null;
 
 		int i = 0;
@@ -78,7 +75,7 @@ public class MapQuery {
 	}
 
 	//FIXME: encapsulate in a strategy
-	private Object adjustForType(Object value, Class toClass) {
+	private Object adjustForType(Object value, Class toClass) throws CoreException {
 		Object result = value;
 		if (toClass.equals(int.class) || toClass.equals(Integer.class)) {
 			if (value instanceof Double) {
@@ -86,23 +83,19 @@ public class MapQuery {
 				result = doubleValue.intValue();
 			}
 		} else if (toClass.equals(LocalDateTime.class)) {
-			result = mapToType(value, new TypeToken<LocalDateTime>() {
-			});
+			result = mapToType(value, toClass);
 		} else if (toClass.equals(LocalDate.class)) {
-			result = mapToType(value, new TypeToken<LocalDate>() {
-			});
+			result = mapToType(value, toClass);
 		}
 		return result;
 	}
 
-	private Object mapToType(Object value, TypeToken typeToken) throws JsonSyntaxException {
-		Object result;
-		String json = new Gson().toJson(value);
-		result = new Gson().fromJson(json, typeToken.getType());
-		return result;
+	private <T> T mapToType(Object value, Class<T> klass) throws CoreException {
+		String json = JacksonObjectMapper.INSTANCE.writeValueAsString(value);
+		return JacksonObjectMapper.INSTANCE.readValue(json, klass);
 	}
 	
-	private Map getObjectMap(Map map) {
+	private Map getObjectMap(Map map) throws CoreException {
 		Map objectMap;
 		if (keys.size() == 1) {
 			objectMap = map;
@@ -112,27 +105,33 @@ public class MapQuery {
 		return objectMap;
 	}
 
-	private void executeSet(Map map, Object value) {
+	private void executeSet(Map map, Object value) throws CoreException {
 		Map objectMap = getObjectMap(map);
 		objectMap.put(keys.get(keys.size() - 1).key, mapPojo(value));
 	}
 
-	private void executeMerge(Map map, Object value) {
+	private void executeMerge(Map map, Object value) throws CoreException {
 		Map objectMap = getObjectMap(map);
 		objectMap.merge(keys.get(keys.size() - 1).key, mapPojo(value), new MapMerge());
 	}
 
-	private void executeAdd(Map map, Object value) {
+	private void executeAdd(Map map, Object value) throws CoreException {
 		Optional<Collection> optional = execute(map, keys.size() - 1);
 		Collection valueCollection = optional.get();
 		value = mapPojo(value);
 		valueCollection.add(value);
 	}
 
-	private Object mapPojo(Object value) throws JsonSyntaxException {
-		if (value != null && !(value.getClass().isPrimitive() || value instanceof String || value instanceof Number || value instanceof Collection)) {//things we can write without further ado
-			value = mapToType(value, new TypeToken<Map>() {
-			});
+	private Object mapPojo(Object value) throws CoreException {
+		//things we can write without further ado
+		if (value != null && !(value.getClass().isPrimitive()
+				|| value instanceof String
+				|| value instanceof Number
+				|| value instanceof Collection
+				|| value instanceof Temporal
+		)) {
+			//write POJO's as a map
+			value = mapToType(value, Map.class);
 		}
 		return value;
 	}
@@ -154,8 +153,9 @@ public class MapQuery {
 		 * Executes the query against the map
 		 * @param map the Map to query
 		 * @return Optional.ofNullable() if the query has no result, else the result of the query
+		 * @throws CoreException if there is a problem marshalling to/from JSON
 		 */
-		public Optional<U> execute(Map map) {
+		public Optional<U> execute(Map map) throws CoreException {
 			return new MapQuery(keys, nullable).execute(map);
 		}
 	}
@@ -334,7 +334,7 @@ public class MapQuery {
 		}
 
 		@Override
-		public Optional execute(Map map) {
+		public Optional execute(Map map) throws CoreException {
 			new MapQuery(keys, nullable).executeSet(map, value);
 			return Optional.of(value);
 		}
@@ -352,7 +352,7 @@ public class MapQuery {
 		}
 
 		@Override
-		public Optional execute(Map map) {
+		public Optional execute(Map map) throws CoreException {
 			new MapQuery(keys, nullable).executeMerge(map, value);
 			return Optional.of(value);
 		}
@@ -371,7 +371,7 @@ public class MapQuery {
 		}
 
 		@Override
-		public Optional execute(Map map) {
+		public Optional execute(Map map) throws CoreException {
 			new MapQuery(keys, nullable).executeAdd(map, value);
 			return Optional.of(value);
 		}

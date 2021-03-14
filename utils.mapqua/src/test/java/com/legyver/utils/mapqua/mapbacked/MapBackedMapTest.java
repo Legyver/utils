@@ -10,7 +10,7 @@ import static org.junit.Assert.assertThat;
 public class MapBackedMapTest {
 
 	@Test
-	public void addRemovePrimitiveValueList() {
+	public void addRemovePrimitiveValueList() throws Exception {
 		Map rootMap = new LinkedHashMap();
 		MapBackedMap mb = new MapBackedMap(rootMap, "field");
 		Map mapMap = mb.get();

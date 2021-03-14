@@ -1,5 +1,6 @@
 package com.legyver.utils.mapqua.mapbacked;
 
+import com.legyver.core.exception.CoreException;
 import com.legyver.utils.mapqua.MapQuery;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -28,7 +29,7 @@ public class MapBackedEntity<T extends MapSyncable> extends MapBackedProperty<T>
 	 * @return the existing entity or an new Entity instantiated from the EntityInstantiator
 	 */
 	@Override
-	public T get() {
+	public T get() throws CoreException {
 		if (entity == null) {
 			Optional<Object> option = new MapQuery.Query().object(property).execute(sourceMap);
 			Map map;
