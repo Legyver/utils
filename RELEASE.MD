@@ -1,4 +1,6 @@
 # Releases
+## 2.1.0.1
+- Jackiso: Add pretty print option when writing JSON
 ## 2.1
 Breaking change due to gson library replacement effecting **utils.mapqua** module.  Other modules not effected.
 - Dates and Times will now be stored in ISO-8601 format replacing the gson custom format.

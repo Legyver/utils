@@ -4,6 +4,7 @@ apply from: publishBuildScript
 
 dependencies {
     api group: 'com.legyver', name: 'core', version: legyverCoreVersion
+    api project(':utils.adaptex')
 
     api group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.12.2'
     api group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.12.2'

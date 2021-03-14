@@ -7,6 +7,8 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.legyver.core.exception.CoreException;
+import com.legyver.utils.adaptex.ExceptionToCoreExceptionFunctionDecorator;
+import com.legyver.utils.adaptex.ExceptionToCoreExceptionFunctionDecorator.ThrowingFunction;
 
 import java.time.temporal.Temporal;
 
@@ -35,6 +37,7 @@ public enum JacksonObjectMapper {
 	public ObjectMapper getObjectMapper() {
 		return objectMapper;
 	}
+
 
 	/**
 	 * Register a Jackson Module
@@ -73,16 +76,30 @@ public enum JacksonObjectMapper {
 	 * @throws CoreException if there is a problem marshalling to/from JSON
 	 */
 	public String writeValueAsString(Object value) throws CoreException {
-		String result = null;
-		try {
-			result = objectMapper.writeValueAsString(value);
-		} catch (JsonProcessingException e) {
-			throw new CoreException("Error converting value to String: " + e.getMessage(), e);
-		}
+		return writeValueAsString(value, new ExceptionToCoreExceptionFunctionDecorator((o) -> {
+			return objectMapper.writeValueAsString(value);
+		}));
+	}
+
+	/**
+	 * Write a POJO to a String with PrettyPrint on
+	 * @param value the value to write
+	 * @return the pretty print string
+	 * @throws CoreException if there is a problem marshalling to/from JSON
+	 */
+	public String writeValueAsStringWithPrettyPrint(Object value) throws CoreException {
+		return writeValueAsString(value, new ExceptionToCoreExceptionFunctionDecorator((o) -> {
+			return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(value);
+		}));
+	}
+
+	private String writeValueAsString(Object value, ExceptionToCoreExceptionFunctionDecorator<Object, String> action) throws CoreException {
+		String result = action.apply(value);
 		if (value instanceof Temporal) {
 			//remove the extra quotes that for some reason are included
 			if (result.startsWith("\"")) {
-				result = result.substring(1, result.length() - 1);
+				int lastQuote = result.lastIndexOf('"');
+				result = result.substring(1, lastQuote - 1);
 			}
 		}
 		return result;
