@@ -1,5 +1,6 @@
 package com.legyver.utils.mapqua.mapbacked;
 
+import com.legyver.core.exception.CoreException;
 import com.legyver.utils.mapqua.MapQuery;
 import java.util.Map;
 import java.util.Optional;
@@ -33,7 +34,7 @@ public class MapBackedInteger extends MapBackedProperty<Integer> {
 	 * @return the query option to use for the Integer
 	 */
 	@Override
-	protected Optional<Integer> queryOption() {
+	protected Optional<Integer> queryOption() throws CoreException {
 		return new MapQuery.Query().integer(property).execute(sourceMap);
 	}
 

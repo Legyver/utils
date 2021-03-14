@@ -2,8 +2,8 @@
  * @since 2.0
  */
 module com.legyver.utils.mapqua {
-	requires com.google.gson;
 	requires com.legyver.core;
+	requires transitive com.legyver.utils.jackiso;
 
 	exports com.legyver.utils.mapqua;
 	exports com.legyver.utils.mapqua.mapbacked;

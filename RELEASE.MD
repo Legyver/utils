@@ -1,6 +1,11 @@
 # Releases
-## 2.0.0.1
-2.0.0.1: Non code change.  Fixed issue where the POM URL did not resolve correctly to the GitHub repo
+## 2.1
+Breaking change due to gson library replacement effecting **utils.mapqua** module.  Other modules not effected.
+- Dates and Times will now be stored in ISO-8601 format replacing the gson custom format.
+### New stuff
+- Jackiso: A JSON utility for with support for marshalling java.time API to/from ISO-8601 format
+### Refactoring
+- Mapqua: Replaced the gson library with Jackson, since gson is in maintenance mode and Moshi is not Java 15 friendly yet.
 ## 2.0
 ### New stuff
 - Graphrunner: Run operations in order specified by a directed graph.

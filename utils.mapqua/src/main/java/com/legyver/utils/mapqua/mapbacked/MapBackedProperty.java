@@ -1,5 +1,6 @@
 package com.legyver.utils.mapqua.mapbacked;
 
+import com.legyver.core.exception.CoreException;
 import com.legyver.utils.mapqua.MapQuery;
 import java.util.Map;
 import java.util.Optional;
@@ -42,8 +43,9 @@ public abstract class MapBackedProperty<T> {
 	 * Return the value of the the property.  This is analogous to the standard getter on a POJO.
 	 * If the value has not been set, it will be defaulted to the {@link #valueIfMissing}.
 	 * @return the property
+	 * @throws CoreException if there is a problem marshalling to/from JSON
 	 */
-	public T get() {
+	public T get() throws CoreException {
 		Optional<T> option = queryOption();
 		T value;
 		if (option.isPresent()) {
@@ -58,8 +60,9 @@ public abstract class MapBackedProperty<T> {
 	/**
 	 * Set the value of the property. This is analogous to a standard setter on a POJO.
 	 * @param value the value to set
+	 * @throws CoreException if there is a problem marshalling to/from JSON
 	 */
-	public void set(T value) {
+	public void set(T value) throws CoreException {
 		if (value == null) {
 			sourceMap.remove(property);
 		} else {
@@ -70,7 +73,8 @@ public abstract class MapBackedProperty<T> {
 	/**
 	 * Hook to allow the property to be queryable
 	 * @return the query option to use for the Property
+	 * @throws CoreException if there is a problem marshalling to/from JSON
 	 */
-	protected abstract Optional<T> queryOption();
+	protected abstract Optional<T> queryOption() throws CoreException;
 	
 }
