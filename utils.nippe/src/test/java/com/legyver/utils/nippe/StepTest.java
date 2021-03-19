@@ -9,7 +9,7 @@ import static org.junit.Assert.assertThat;
 public class StepTest {
 
 	@Test
-	public void testOriginalNull() {
+	public void testOriginalNull() throws Exception {
 		ClassA classA = null;
 		String value = new Step<>(new Step<>(new Step<>(new Base<>(classA),
 				c -> c.classB),
@@ -19,7 +19,7 @@ public class StepTest {
 	}
 
 	@Test
-	public void testNothingNull() {
+	public void testNothingNull() throws Exception {
 		ClassA classA = new ClassA(new ClassB(new ClassC("test text")));
 		String value = new Step<>(new Step<>(new Step<>(new Base<>(classA),
 				c -> c.classB),
@@ -29,7 +29,7 @@ public class StepTest {
 	}
 
 	@Test
-	public void testMiddleNull() {
+	public void testMiddleNull() throws Exception {
 		ClassA classA = new ClassA(new ClassB(new ClassC("test text")));
 		classA.classB = null;
 

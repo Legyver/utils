@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import com.legyver.core.exception.CoreException;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -11,7 +12,7 @@ import static org.junit.Assert.assertThat;
 
 public class MapBackedLocalDateTest {
 	@Test
-	public void addValue() {
+	public void addValue() throws Exception {
 		Map map = new LinkedHashMap();
 		MapBackedLocalDate mb = new MapBackedLocalDate(map, "field");
 		assertThat(mb.get(), is(LocalDate.now()));
@@ -22,7 +23,7 @@ public class MapBackedLocalDateTest {
 	}
 	
 	@Test
-	public void changeValue() {
+	public void changeValue() throws Exception {
 		Map map = new LinkedHashMap();
 		MapBackedLocalDate mb = new MapBackedLocalDate(map, "field");
 		LocalDate ld1 = LocalDate.now();
@@ -34,7 +35,7 @@ public class MapBackedLocalDateTest {
 	}
 	
 	@Test
-	public void entityMap() {
+	public void entityMap() throws Exception {
 		Entity entity = new Entity();
 		LocalDate ld1 = LocalDate.now();
 		LocalDate ld2 = LocalDate.now().minusDays(1).minusMonths(1).minusYears(1);
@@ -49,19 +50,19 @@ public class MapBackedLocalDateTest {
 		private MapBackedLocalDate mb1 =  new MapBackedLocalDate(sourceMap, "field1");
 		private MapBackedLocalDate mb2 =  new MapBackedLocalDate(sourceMap, "field2");
 		
-		LocalDate getLocalDate1() {
+		LocalDate getLocalDate1() throws CoreException {
 			return mb1.get();
 		}
 		
-		LocalDate getLocalDate2() {
+		LocalDate getLocalDate2() throws CoreException {
 			return mb2.get();
 		}
 		
-		public void setLocalDate1(LocalDate localDate) {
+		public void setLocalDate1(LocalDate localDate) throws CoreException {
 			mb1.set(localDate);
 		}
 		
-		public void setLocalDate2(LocalDate localDate) {
+		public void setLocalDate2(LocalDate localDate) throws CoreException {
 			mb2.set(localDate);
 		}
 	}

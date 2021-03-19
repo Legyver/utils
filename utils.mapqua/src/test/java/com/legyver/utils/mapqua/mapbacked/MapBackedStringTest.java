@@ -1,19 +1,19 @@
 package com.legyver.utils.mapqua.mapbacked;
 
-import com.google.gson.Gson;
-
 import java.util.LinkedHashMap;
 import java.util.Map;
+
+import com.legyver.core.exception.CoreException;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
-public class MapBackedStringTest {
+public class MapBackedStringTest extends AbstractJacksonSupportTest {
 
 	@Test
-	public void addValue() {
+	public void addValue() throws Exception {
 		Map map = new LinkedHashMap();
 		MapBackedString mb = new MapBackedString(map, "field");
 		assertThat(mb.get(), is(nullValue()));
@@ -23,7 +23,7 @@ public class MapBackedStringTest {
 	}
 	
 	@Test
-	public void changeValue() {
+	public void changeValue() throws Exception {
 		Map map = new LinkedHashMap();
 		MapBackedString mb = new MapBackedString(map, "field");
 		mb.set("my value");
@@ -37,12 +37,12 @@ public class MapBackedStringTest {
 		Map map = new LinkedHashMap();
 		MapBackedString mb = new MapBackedString(map, "field");
 		mb.set("my value");
-		String result = new Gson().toJson(map);
+		String result = getJson(map);
 		assertThat(result, is("{\"field\":\"my value\"}"));
 	}
 	
 	@Test
-	public void entityMap() {
+	public void entityMap() throws Exception {
 		Entity entity = new Entity();
 		entity.setString1("first value");
 		entity.setString2("second value");
@@ -51,11 +51,11 @@ public class MapBackedStringTest {
 	}
 	
 	@Test
-	public void entityToJson() {
+	public void entityToJson() throws Exception {
 		Entity entity = new Entity();
 		entity.setString1("first value");
 		entity.setString2("second value");
-		String result = new Gson().toJson(entity.sourceMap);
+		String result = getJson(entity.sourceMap);
 		assertThat(result, is("{\"field1\":\"first value\",\"field2\":\"second value\"}"));
 	}
 	
@@ -64,19 +64,19 @@ public class MapBackedStringTest {
 		private MapBackedString mb1 =  new MapBackedString(sourceMap, "field1");
 		private MapBackedString mb2 =  new MapBackedString(sourceMap, "field2");
 		
-		String getString1() {
+		String getString1() throws CoreException {
 			return mb1.get();
 		}
 		
-		String getString2() {
+		String getString2() throws CoreException {
 			return mb2.get();
 		}
 		
-		public void setString1(String string) {
+		public void setString1(String string) throws CoreException {
 			mb1.set(string);
 		}
 		
-		public void setString2(String string) {
+		public void setString2(String string) throws CoreException {
 			mb2.set(string);
 		}
 	}

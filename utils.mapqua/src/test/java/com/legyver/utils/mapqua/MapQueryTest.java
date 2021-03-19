@@ -1,13 +1,14 @@
 package com.legyver.utils.mapqua;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
-import com.google.gson.internal.LinkedTreeMap;
-import com.google.gson.reflect.TypeToken;
+import com.legyver.core.exception.CoreException;
+import com.legyver.utils.jackiso.JacksonObjectMapper;
 import com.legyver.utils.mapqua.MapQuery.KeyValueFilter;
 import com.legyver.utils.mapqua.MapQuery.KeyValueFilter.Cond;
+import org.apache.commons.io.IOUtils;
+import org.junit.Test;
+
 import java.io.IOException;
-import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
@@ -15,14 +16,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import org.apache.commons.io.IOUtils;
-import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class MapQueryTest {
 
@@ -39,7 +35,7 @@ public class MapQueryTest {
 
 	@Test
 	public void queryJson() throws Exception {
-		LinkedTreeMap<String, Map> map = getJsonAsMap();
+		Map<String, Object> map = getJsonAsMap();
 		Optional name = new MapQuery.Query().string(NAME_FIELD).execute(map);
 		assertThat(name.get(), is(NAME_VALUE));
 
@@ -97,7 +93,7 @@ public class MapQueryTest {
 
 	@Test
 	public void setJson() throws Exception {
-		LinkedTreeMap<String, Map> map = getJsonAsMap();
+		Map<String, Object> map = getJsonAsMap();
 		new MapQuery.Query().set(NAME_FIELD, "new name").execute(map);
 		Optional newName = new MapQuery.Query().string(NAME_FIELD).execute(map);
 		assertThat(newName.get(), is("new name"));
@@ -145,7 +141,7 @@ public class MapQueryTest {
 	
 	@Test
 	public void mergeJson() throws Exception {
-		LinkedTreeMap<String, Map> map = getJsonAsMap();
+		Map<String, Object> map = getJsonAsMap();
 		new MapQuery.Query().merge("new attr", "new name").execute(map);
 		Optional newName = new MapQuery.Query().string("new attr").execute(map);
 		assertThat(newName.get(), is("new name"));
@@ -198,7 +194,7 @@ public class MapQueryTest {
 
 	@Test
 	public void addJson() throws Exception {
-		LinkedTreeMap<String, Map> map = getJsonAsMap();
+		Map<String, Object> map = getJsonAsMap();
 		new MapQuery.Query().object(CONFIG_FIELD)
 				.collection(CONFIG_SETTINGS_FIELD)
 				.add(new Setting("new settings key", "new value"))
@@ -217,8 +213,8 @@ public class MapQueryTest {
 
 	private class Setting {
 
-		private String key1;
-		private String key2;
+		public String key1;
+		public String key2;
 
 		public Setting(String key, String value) {
 			this.key1 = key;
@@ -226,11 +222,8 @@ public class MapQueryTest {
 		}
 	}
 
-	private LinkedTreeMap<String, Map> getJsonAsMap() throws JsonSyntaxException, IOException {
-		String json = IOUtils.toString(getClass().getResourceAsStream("SimpleTestModel.json"), "UTF-8");
-		Type type = new TypeToken<Map>() {
-		}.getType();
-		LinkedTreeMap<String, Map> map = new Gson().fromJson(json, type);
-		return map;
+	private Map<String, Object> getJsonAsMap() throws IOException, CoreException {
+		String json = IOUtils.toString(getClass().getResourceAsStream("SimpleTestModel.json"), StandardCharsets.UTF_8);
+		return JacksonObjectMapper.INSTANCE.readValue(json, Map.class);
 	}
 }

@@ -1,5 +1,6 @@
 package com.legyver.utils.mapqua.mapbacked;
 
+import com.legyver.core.exception.CoreException;
 import com.legyver.utils.mapqua.MapQuery;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -35,7 +36,7 @@ public class MapBackedMap extends MapBackedProperty<Map> {
 	 * @return the Map associated with the property name specified in the constructor
 	 */
 	@Override
-	public Map get() {
+	public Map get() throws CoreException {
 		if (map == null) {
 			Optional<Object> option = new MapQuery.Query().object(property).execute(sourceMap);
 			if (option.isPresent()) {
