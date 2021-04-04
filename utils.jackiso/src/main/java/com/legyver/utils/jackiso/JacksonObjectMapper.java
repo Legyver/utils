@@ -99,7 +99,7 @@ public enum JacksonObjectMapper {
 			//remove the extra quotes that for some reason are included
 			if (result.startsWith("\"")) {
 				int lastQuote = result.lastIndexOf('"');
-				result = result.substring(1, lastQuote - 1);
+				result = result.substring(1, lastQuote);
 			}
 		}
 		return result;
