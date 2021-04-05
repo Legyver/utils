@@ -11,7 +11,6 @@ public abstract class AbstractStepExecutor<T> {
 	/**
 	 * Take a step
 	 * @return the result of the step
-	 * @throws CoreException of the step throws a CoreException
 	 */
-	public abstract T execute() throws CoreException;
+	public abstract T execute();
 }
