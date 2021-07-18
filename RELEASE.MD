@@ -1,4 +1,10 @@
 # Releases
+## 2.1.0.3
+- Addressed lint issues with generics
+  - ExtractEx
+  - Graphrunner
+  - Jackiso
+  - PropCross
 ## 2.1.0.2
 - Jackiso: Fixed bug with dates being truncated
 - Nippe: reverted the change in 2.1.0.1 as it makes the API unnecessarily messy.  It's preferable to handle exections the same way as we do with the Java Streaming API.

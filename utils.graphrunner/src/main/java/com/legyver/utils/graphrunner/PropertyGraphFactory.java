@@ -60,10 +60,11 @@ public class PropertyGraphFactory {
 	  Note to make build.version resolve as the outcome of build.version.format, we need to use specify this in the {@link #variableTransformationRule}
 	 * @param propertyMap map containing properties
 	 * @param newNodeFactory factory to use to construct new nodes based on a property's key and value
+	 * @param <T> type of the graph payload
 	 * @return the graph of all nodes in the propertyMap
 	 */
-	public Graph make(Map<String, Object> propertyMap, BiFunction<String, Object, Graph.Payload> newNodeFactory) {
-		Graph.Builder builder = new Graph.Builder();
+	public <T extends Graph.Payload> Graph<T> make(Map<String, Object> propertyMap, BiFunction<String, Object, T> newNodeFactory) {
+		Graph.Builder<T> builder = new Graph.Builder<>();
 		//add all properties to graph
 		propertyMap.entrySet().stream().forEach(entry-> {
 			builder.nodes(newNodeFactory.apply(entry.getKey(), entry.getValue()));

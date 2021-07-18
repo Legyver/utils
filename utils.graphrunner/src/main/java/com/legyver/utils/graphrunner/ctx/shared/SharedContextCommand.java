@@ -13,7 +13,7 @@ public class SharedContextCommand implements GraphExecutedCommand<SharedMapCtx>,
 	public void execute(String nodeName, SharedMapCtx sharedMapCtx) throws CoreException {
 		if (sharedMapCtx != null) {
 			Object value = sharedMapCtx.getValue();
-			new WrapAdapter(nodeName, value).execute(this);
+			new WrapAdapter<>(nodeName, value).execute(this);
 		}
 	}
 

@@ -31,16 +31,15 @@ public class DepthFirstSearch<T extends Graph> implements TreeSearch {
 			T graphNode = graph.get(s);
 			//not combining these methods because we only want to add the root nodes
 			//additionally we want to exhaustively search all the root nodes, but return on first positive for all child branches
-			if (s.equals(searchString)  || branchContains(searchString, (Map<String, T>) graphNode.getChildMap())) {
+			if (s.equals(searchString)  || branchContains(searchString, graphNode.getChildMap())) {
 				matchHandler.accept(s, graphNode);
 			}
 		}
 	}
 
-	private boolean branchContains(String searchString, Map<String, T> branch) {
-		for (String s : branch.keySet()) {
-			T graphNode = branch.get(s);
-			if (s.equals(searchString)  /*|| branchContains(searchString, (Map<String, T>) graphNode.getChildMap())*/) {
+	private boolean branchContains(String searchString, Map branch) {
+		for (Object key : branch.keySet()) {
+			if (searchString.equals(key)  /*|| branchContains(searchString, (Map<String, T>) graphNode.getChildMap())*/) {
 				return true;//return on first positive
 			}
 		}

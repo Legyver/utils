@@ -8,7 +8,7 @@ import com.legyver.core.exception.CoreException;
 public class RunAllStrategy implements RunStrategy {
 
 	@Override
-	public <T> void execute(Graph graph, GraphExecutedCommand<T> command) throws CoreException {
+	public <T> void execute(Graph<T> graph, GraphExecutedCommand<T> command) throws CoreException {
 		graph.run(command);
 	}
 }

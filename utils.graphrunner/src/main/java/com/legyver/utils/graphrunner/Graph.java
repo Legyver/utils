@@ -60,24 +60,24 @@ public class Graph<T> {
 		return graph;
 	}
 
-	void addPrerequisite(Graph.GraphNode graphNode) {
+	void addPrerequisite(Graph.GraphNode<T> graphNode) {
 		//noop.  Root nodes have no pre-requisites
 	}
 
-	void addDependent(GraphNode graphNode) {
+	void addDependent(GraphNode<T> graphNode) {
 		graph.put(graphNode.name, graphNode);
 	}
 
 	void accept(String dependent, String predecessor) {
-		GraphNode graphNode = find(predecessor);
+		GraphNode<T> graphNode = find(predecessor);
 		if (graphNode == null) {
-			graphNode = new GraphNode(predecessor, values);
+			graphNode = new GraphNode<>(predecessor, values);
 			graph.put(predecessor, graphNode);
 		}
 
-		GraphNode dependentNode = find(dependent);
+		GraphNode<T> dependentNode = find(dependent);
 		if (dependentNode == null) {
-			dependentNode = new GraphNode(dependent, values);
+			dependentNode = new GraphNode<>(dependent, values);
 		}
 
 		if (!dependent.equals(predecessor)) {
@@ -90,15 +90,15 @@ public class Graph<T> {
 		}
 	}
 
-	GraphNode find(String name) {
+	GraphNode<T> find(String name) {
 		Iterator<String> topIt = graph.keySet().iterator();
 		if (graph.containsKey(name)) {
 			return graph.get(name);
 		}
-		GraphNode graphNode = graph.get(name);
+		GraphNode<T> graphNode = graph.get(name);
 		while (topIt.hasNext() && graphNode == null) {
 			String next = topIt.next();
-			GraphNode temp = graph.get(next);
+			GraphNode<T> temp = graph.get(next);
 			graphNode = temp.find(name);
 		}
 		return graphNode;
@@ -115,7 +115,7 @@ public class Graph<T> {
 
 	void run(GraphExecutedCommand<T> command) throws CoreException {
 		for (String s: graph.keySet()) {
-			GraphNode graphNode = graph.get(s);
+			GraphNode<T> graphNode = graph.get(s);
 			if (graphNode != null) {
 				graphNode.run(command);
 			}
@@ -127,9 +127,9 @@ public class Graph<T> {
 	 * @param nodeToRun the node to use as the basis of the new graph
 	 * @return the filtered Graph
 	 */
-	public Graph filter(String nodeToRun) {
-		Graph filtered = new Graph(null, values);
-		new DepthFirstSearch(graph, new BiConsumer<String, GraphNode<T>>() {
+	public Graph<T> filter(String nodeToRun) {
+		Graph<T> filtered = new Graph<>(null, values);
+		new DepthFirstSearch<>(graph, new BiConsumer<String, GraphNode<T>>() {
 			@Override
 			public void accept(String s, GraphNode<T> graphNode) {
 				filtered.graph.put(s, graphNode);
@@ -183,14 +183,14 @@ public class Graph<T> {
 		}
 
 		@Override
-		void run(GraphExecutedCommand command) throws CoreException {
+		void run(GraphExecutedCommand<T> command) throws CoreException {
 			if (satisfiedNodeNames.size() == requisiteNodeNames.size() && !evaluated) {
 				T target = values.get(name);
 				command.execute(name, target);
 				evaluated = true;
 
 				for (String s: graph.keySet()) {
-					GraphNode graphNode = graph.get(s);
+					GraphNode<T> graphNode = graph.get(s);
 					if (graphNode != null) {
 						graphNode.satisfiedNodeNames.add(name);
 						graphNode.run(command);
@@ -205,14 +205,14 @@ public class Graph<T> {
 	 * The individual nodes are specified as {@link Payload} payloads
 	 * The connections are specified with the {@link Connection} sub-builder
 	 */
-	public static class Builder {
-		private Graph graph = new Graph(null);
+	public static class Builder<T extends Payload> {
+		private Graph<T> graph = new Graph<T>(null);
 
 		/**
 		 * Build the graph
 		 * @return the Graph
 		 */
-		public Graph build() {
+		public Graph<T> build() {
 			return graph;
 		}
 
@@ -224,7 +224,8 @@ public class Graph<T> {
 		 * @param payloads the values to be associated with each node
 		 * @return the Builder to further allow construction of the Graph
 		 */
-		public Builder nodes(Payload... payloads) {
+		@SafeVarargs
+		public final Builder nodes(T... payloads) {
 			if (payloads != null) {
 				Stream.of(payloads).forEach(payload -> {
 					graph.graph.put(payload.getNodeName(), new GraphNode<>(payload.getNodeName(), graph.values));//all nodes seeded with reference to same value map
@@ -240,7 +241,7 @@ public class Graph<T> {
 		 * @param connection the connection to apply
 		 * @return the Builder to continue building the graph
 		 */
-		public Builder connect(Connection connection) {
+		public Builder<T> connect(Connection connection) {
 			graph.accept(connection.to, connection.from);
 			return this;
 		}

@@ -14,5 +14,5 @@ public interface RunStrategy {
 	 * @param <T> The type the parameter that the command expects
 	 * @throws CoreException if the command throws a CoreException
 	 */
-	<T> void execute(Graph graph, GraphExecutedCommand<T> command) throws CoreException;
+	<T> void execute(Graph<T> graph, GraphExecutedCommand<T> command) throws CoreException;
 }

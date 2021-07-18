@@ -8,7 +8,6 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.legyver.core.exception.CoreException;
 import com.legyver.utils.adaptex.ExceptionToCoreExceptionFunctionDecorator;
-import com.legyver.utils.adaptex.ExceptionToCoreExceptionFunctionDecorator.ThrowingFunction;
 
 import java.time.temporal.Temporal;
 
@@ -76,7 +75,7 @@ public enum JacksonObjectMapper {
 	 * @throws CoreException if there is a problem marshalling to/from JSON
 	 */
 	public String writeValueAsString(Object value) throws CoreException {
-		return writeValueAsString(value, new ExceptionToCoreExceptionFunctionDecorator((o) -> {
+		return writeValueAsString(value, new ExceptionToCoreExceptionFunctionDecorator<>((o) -> {
 			return objectMapper.writeValueAsString(value);
 		}));
 	}
@@ -88,7 +87,7 @@ public enum JacksonObjectMapper {
 	 * @throws CoreException if there is a problem marshalling to/from JSON
 	 */
 	public String writeValueAsStringWithPrettyPrint(Object value) throws CoreException {
-		return writeValueAsString(value, new ExceptionToCoreExceptionFunctionDecorator((o) -> {
+		return writeValueAsString(value, new ExceptionToCoreExceptionFunctionDecorator<>((o) -> {
 			return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(value);
 		}));
 	}

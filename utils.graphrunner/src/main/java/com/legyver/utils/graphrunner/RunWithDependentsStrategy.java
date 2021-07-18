@@ -23,8 +23,8 @@ public class RunWithDependentsStrategy implements RunStrategy {
 	}
 
 	@Override
-	public <T> void execute(Graph graph, GraphExecutedCommand<T> command) throws CoreException {
-		Graph filtered = graph.filter(nodeToRun);
+	public <T> void execute(Graph<T> graph, GraphExecutedCommand<T> command) throws CoreException {
+		Graph<T> filtered = graph.filter(nodeToRun);
 		filtered.run(command);
 	}
 }
