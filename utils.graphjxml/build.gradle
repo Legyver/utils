@@ -1,0 +1,22 @@
+description = 'A Java Graph to XML conversion utility'
+
+apply from: publishBuildScript
+
+dependencies {
+    //exception
+    api group: 'com.legyver', name: 'core', version: legyverCoreVersion
+    //logging
+    api group: 'org.apache.logging.log4j', name: 'log4j-core', version: commonsLogVersion
+
+    testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.7.0'
+    testCompile("org.assertj:assertj-core:3.11.1")
+}
+
+test {
+    useJUnit()
+}
+
+
+java {
+    modularity.inferModulePath = true
+}

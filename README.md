@@ -6,8 +6,10 @@ Handy Java solutions to common problems.
     - Adapt any function throwing a checked Exception into a function throwing a CoreException
 - [utils.extractex](utils.extractex/README.MD)
     - Extract exceptions of specific types from wrapped exceptions
+- [utils.graphjxml](utils.graphjxml/README.MD)
+    - A Java-based directed graph to XML conversion utility
 - [utils.graphrunner](utils.graphrunner/README.MD)
-    - Run functions in order defined in a directed graph
+  - Run functions in order defined in a directed graph
 - [utils.jackiso](utils.jackiso/README.MD)
     - Jackson wrapper with built-in Java Time API support for ISO 8601 dates
 - [utils.mapqua](utils.mapqua/README.MD)

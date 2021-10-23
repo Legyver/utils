@@ -1,4 +1,7 @@
 # Releases
+## 2.1.1
+### New Stuff
+- GraphJXML: A Java utility to represent a graph as XML.
 ## 2.1.0.3
 - Addressed lint issues with generics
   - ExtractEx

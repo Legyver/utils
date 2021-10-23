@@ -8,5 +8,6 @@ include ':utils.mapqua'
 include ':utils.nippe'
 include ':utils.slel'
 include ':utils.propcross'
-include 'utils.jackiso'
+include ':utils.jackiso'
+include ':utils.graphjxml'
 

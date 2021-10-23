@@ -1,0 +1,23 @@
+<?xml version='1.0' ?>
+<root>
+    <course>
+        <reg_num>10577</reg_num>
+        <subj>ANTH</subj>
+        <crs>211</crs>
+        <sect>F01</sect>
+        <title>Introduction to Anthropology</title>
+        <credit>1.0</credit>
+        <section>
+            <instructor>Brightman</instructor>
+            <days>M-W</days>
+            <times>
+                <start>03:10PM</start>
+                <end>04:30</end>
+            </times>
+            <place>
+                <building>ELIOT</building>
+                <room>414</room>
+            </place>
+        </section>
+    </course>
+</root>

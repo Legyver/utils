@@ -34,6 +34,7 @@ public class ExceptionExtractor<T extends Exception> {
 	 * @param e the exception to analyze
 	 * @return the root exception
 	 */
+	@SuppressWarnings("unchecked")
 	public T extractException(Throwable e) {
 		T exception = null;
 		if (depthFirst) {
