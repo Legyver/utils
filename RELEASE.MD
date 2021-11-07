@@ -1,4 +1,8 @@
 # Releases
+## 2.1.1.1
+### Refactoring
+- GraphJXML
+  - Should pretty-print graph output
 ## 2.1.1
 ### New Stuff
 - GraphJXML: A Java utility to represent a graph as XML.
