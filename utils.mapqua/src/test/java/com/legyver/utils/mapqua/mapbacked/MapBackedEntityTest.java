@@ -4,12 +4,11 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.legyver.core.exception.CoreException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class MapBackedEntityTest {
 
@@ -19,25 +18,25 @@ public class MapBackedEntityTest {
 		OuterEntity outerEntity = new OuterEntity(rootMap);
 		InnerEntity innerEntity = outerEntity.entity.get();
 		assertNotNull(innerEntity);
-		assertThat(innerEntity.getNumber(), is(0));
+		assertThat(innerEntity.getNumber()).isEqualTo(0);
 		assertNull(innerEntity.getString());
 
 		innerEntity.setNumber(1);
 		innerEntity.setText("One");
-		assertThat(innerEntity.getNumber(), is(1));
-		assertThat(innerEntity.getString(), is("One"));
+		assertThat(innerEntity.getNumber()).isEqualTo(1);
+		assertThat(innerEntity.getString()).isEqualTo("One");
 		{
 			Map innerMap = innerEntity.getRawMap();
 			assertNotNull(innerMap);
-			assertThat(innerMap.get("field1"), is(1));
-			assertThat(innerMap.get("field2"), is("One"));
+			assertThat(innerMap.get("field1")).isEqualTo(1);
+			assertThat(innerMap.get("field2")).isEqualTo("One");
 		}
 		Map outerMap = outerEntity.getRawMap();
 		{
 			Map innerMap = (Map) outerMap.get("entity");
 			assertNotNull(innerMap);
-			assertThat(innerMap.get("field1"), is(1));
-			assertThat(innerMap.get("field2"), is("One"));
+			assertThat(innerMap.get("field1")).isEqualTo(1);
+			assertThat(innerMap.get("field2")).isEqualTo("One");
 		}
 	}
 

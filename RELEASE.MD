@@ -1,4 +1,11 @@
 # Releases
+## 2.1.1.2
+### Refactoring
+- GraphJXML
+  - Fixed bug pretty-printing XML with empty elements.
+  - Fixed bug parsing XML files starting with blank lines.
+  - Fixed bug parsing XML that has HTML tags embedded in the characters text.
+  - @depreacted XmlGraph.pop() as it serves no purpose given the empty root has been eliminated
 ## 2.1.1.1
 ### Refactoring
 - GraphJXML

@@ -1,7 +1,7 @@
 # utils-graphjxml
 A Java Graph to XML conversion utility
 ```gradle
-implementation group: 'com.legyver', name: 'utils-graphjxml', version: '2.1.1.0'
+implementation group: 'com.legyver', name: 'utils-graphjxml', version: '2.1.1.2'
 ```
 
 ## Features
@@ -23,3 +23,14 @@ File file = etcFile("poc.xml");
 xmlFileWriter.writeToFile(xmlGraph,  file);
 ```
 Check out the [demo](src/main/java/com/legyver/utils/graphjxml/poc/WriterPOC.java)
+
+### Merge multiple XML files into a single graph
+```java
+XmlGraph first = xmlFileReader.parse(etcFile("simple.xml"));
+XmlGraph second = xmlFileReader.parse(etcFile("uwm.xml"));
+
+XmlGraph merged = new XmlGraph(null, null, XmlGraph.NodeType.ELEMENT);
+merged.accept(first);
+merged.accept(second);
+```
+Check out the [demo](src/main/java/com/legyver/utils/graphjxml/poc/MergePOC.java)

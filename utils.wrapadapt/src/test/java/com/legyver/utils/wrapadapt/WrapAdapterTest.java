@@ -1,7 +1,7 @@
 package com.legyver.utils.wrapadapt;
 
 import com.legyver.core.exception.CoreException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZonedDateTime;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class WrapAdapterTest {
 

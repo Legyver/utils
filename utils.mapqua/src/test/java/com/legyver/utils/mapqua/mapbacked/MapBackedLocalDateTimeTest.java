@@ -6,11 +6,10 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.legyver.core.exception.CoreException;
-import org.exparity.hamcrest.date.LocalDateTimeMatchers;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.within;
 
 public class MapBackedLocalDateTimeTest {
 
@@ -18,11 +17,11 @@ public class MapBackedLocalDateTimeTest {
 	public void addValue() throws Exception {
 		Map map = new LinkedHashMap();
 		MapBackedLocalDateTime mb = new MapBackedLocalDateTime(map, "field");
-		assertThat(mb.get(), LocalDateTimeMatchers.within(1, ChronoUnit.SECONDS, LocalDateTime.now()));
-	
+		assertThat(mb.get()).isCloseTo(LocalDateTime.now(), within(1, ChronoUnit.SECONDS));
+
 		LocalDateTime ld2 = LocalDateTime.now().minusDays(1).minusMonths(1).minusYears(1);
 		mb.set(ld2);
-		assertThat(mb.get(), is(ld2));
+		assertThat(mb.get()).isEqualTo(ld2);
 	}
 	
 	@Test
@@ -32,9 +31,9 @@ public class MapBackedLocalDateTimeTest {
 		LocalDateTime ld1 = LocalDateTime.now();
 		LocalDateTime ld2 = LocalDateTime.now().minusDays(1).minusMonths(1).minusYears(1);
 		mb.set(ld1);
-		assertThat(mb.get(), is(ld1));
+		assertThat(mb.get()).isEqualTo(ld1);
 		mb.set(ld2);
-		assertThat(mb.get(), is(ld2));
+		assertThat(mb.get()).isEqualTo(ld2);
 	}
 	
 	@Test
@@ -44,8 +43,8 @@ public class MapBackedLocalDateTimeTest {
 		LocalDateTime ld2 = LocalDateTime.now().minusDays(1).minusMonths(1).minusYears(1);
 		entity.setLocalDateTime1(ld1);
 		entity.setLocalDateTime2(ld2);
-		assertThat(entity.getLocalDateTime1(), is(ld1));
-		assertThat(entity.getLocalDateTime2(), is(ld2));
+		assertThat(entity.getLocalDateTime1()).isEqualTo(ld1);
+		assertThat(entity.getLocalDateTime2()).isEqualTo(ld2);
 	}
 
 	

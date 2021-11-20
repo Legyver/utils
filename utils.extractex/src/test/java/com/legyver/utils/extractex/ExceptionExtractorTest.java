@@ -1,16 +1,14 @@
 package com.legyver.utils.extractex;
 
 import com.legyver.core.exception.CoreException;
+import org.junit.jupiter.api.Test;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import org.junit.Test;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.fail;
+
 
 public class ExceptionExtractorTest {
 
@@ -21,18 +19,18 @@ public class ExceptionExtractorTest {
 	public void matchesExceptionInstance() throws Exception {
 		{
 			CoreException extracted = new ExceptionExtractor<>(CoreException.class).extractException(EXCEPTION);
-			assertThat(extracted, notNullValue());
-			assertThat(extracted.getMessage(), is(MESSAGE));
+			assertThat(extracted).isNotNull();
+			assertThat(extracted.getMessage()).isEqualTo(MESSAGE);
 		}
 		{
 			ExceptionB extracted = new ExceptionExtractor<>(ExceptionB.class).extractException(EXCEPTION);
-			assertThat(extracted, notNullValue());
-			assertThat(extracted.getCause(), instanceOf(CoreException.class));
+			assertThat(extracted).isNotNull();
+			assertThat(extracted.getCause()).isInstanceOf(CoreException.class);
 		}
 		{
 			ExceptionC extracted = new ExceptionExtractor<>(ExceptionC.class).extractException(EXCEPTION);
-			assertThat(extracted, notNullValue());
-			assertThat(extracted.getCause(), instanceOf(ExceptionB.class));
+			assertThat(extracted).isNotNull();
+			assertThat(extracted.getCause()).isInstanceOf(ExceptionB.class);
 		}
 	}
 
@@ -40,15 +38,15 @@ public class ExceptionExtractorTest {
 	public void matchesExceptionBroadInstance() {
 		{
 			Exception extracted = new ExceptionExtractor<>(Exception.class).extractException(EXCEPTION);
-			assertThat(extracted, notNullValue());
+			assertThat(extracted).isNotNull();
 			//first one it finds should be the top-level exception
-			assertThat(extracted, instanceOf(ExceptionC.class));
+			assertThat(extracted).isInstanceOf(ExceptionC.class);
 		}
 		{
 			Exception extracted = new ExceptionExtractor<>(Exception.class, true).extractException(EXCEPTION);
-			assertThat(extracted, notNullValue());
+			assertThat(extracted).isNotNull();
 			//by depth-first, the original exception should be found
-			assertThat(extracted, instanceOf(CoreException.class));
+			assertThat(extracted).isInstanceOf(CoreException.class);
 		}
 
 	}
@@ -56,13 +54,13 @@ public class ExceptionExtractorTest {
 	@Test
 	public void doesNotMatchWrongType() throws Exception {
 		ExceptionD extracted = new ExceptionExtractor<>(ExceptionD.class).extractException(EXCEPTION);
-		assertThat(extracted, nullValue());
+		assertThat(extracted).isNull();
 	}
 
 	@Test
 	public void nullSafety() throws Exception {
 		CoreException extracted = new ExceptionExtractor<>(CoreException.class).extractException(null);
-		assertThat(extracted, nullValue());
+		assertThat(extracted).isNull();
 	}
 
 	@Test
@@ -74,9 +72,9 @@ public class ExceptionExtractorTest {
 			fail("exception not thrown");
 		} catch (InvocationTargetException ex) {
 			CoreException extracted = new ExceptionExtractor<>(CoreException.class).extractException(ex);
-			assertThat(extracted, notNullValue());
+			assertThat(extracted).isNotNull();
 
-			assertThat(extracted.getMessage(), is(MESSAGE));
+			assertThat(extracted.getMessage()).isEqualTo(MESSAGE);
 		}
 
 	}

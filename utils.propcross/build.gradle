@@ -7,12 +7,19 @@ dependencies {
     api project(':utils.graphrunner')
     api project(':utils.slel')
 
-    testImplementation 'junit:junit:4.13'
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.7.0'
+    testImplementation("org.assertj:assertj-core:3.11.1")
 }
 
 java {
     modularity.inferModulePath = true
 }
+
+
+test {
+    useJUnitPlatform()
+}
+
 
 tasks.withType(JavaCompile) {
     options.compilerArgs << '-Xlint:unchecked'

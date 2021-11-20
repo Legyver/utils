@@ -1,0 +1,58 @@
+
+<?xml version='1.0' ?>
+
+<root>
+    <course_listing>
+        <note></note>
+        <course>820-799</course>
+        <title>ADVANCED INDEPENDENT STUDY</title>
+        <credits>1-6</credits>
+        <level>G</level>
+        <restrictions>; ; RETAKABLE W/CHG IN TOPIC. PREREQ: GRAD ST &amp; SPONSORSHIP BY A FACULTY MEMBER ; ; TBA WITH INSTR. FOR SECTION NUMBER, USE INSTR CODE. SEE <A HREF="#instructors">INSTR KEY</A> AT HEAD OF DEPT LISTING. AVAILABLE SECTIONS ARE SE 004-019, 021 &amp; 027</restrictions>
+        <section_listing>
+            <section_note>#</section_note>
+            <section>Se 101</section>
+            <days>S</days>
+            <hours>
+                <start>9:00am</start>
+                <end>1:00pm</end>
+            </hours>
+            <bldg_and_rm>
+                <bldg>OFC</bldg>
+                <rm>UCCE</rm>
+            </bldg_and_rm>
+            <instructor>Acad Staff</instructor>
+            <comments>TOPIC: TRAUMA COUNSELING I  2 CR  UCCE, 161 W WISCONSIN AVE, RM 6000  MEETS SAT 9/9 - 10/28 </comments>
+        </section_listing>
+        <section_listing>
+            <section_note>#e</section_note>
+            <section>Se 102</section>
+            <days>W</days>
+            <hours>
+                <start>6:30pm</start>
+                <end>8:20pm</end>
+            </hours>
+            <bldg_and_rm>
+                <bldg>OFC</bldg>
+                <rm>UCCE</rm>
+            </bldg_and_rm>
+            <instructor>Acad Staff</instructor>
+            <comments>TOPIC: TRAUMA COUNSELING II  2 CR  UCCE, 161 W WISCONSIN AVE, RM 6000 </comments>
+        </section_listing>
+        <section_listing>
+            <section_note>#</section_note>
+            <section>Se 104</section>
+            <days>S</days>
+            <hours>
+                <start>9:00am</start>
+                <end>5:00pm</end>
+            </hours>
+            <bldg_and_rm>
+                <bldg>OFC</bldg>
+                <rm>UCCE</rm>
+            </bldg_and_rm>
+            <instructor>Acad Staff</instructor>
+            <comments>TOPIC: CORPORATE COUNSELING III  3 CR  U.C.C.E, 161 W. WISCONSIN AVE, RM 6000  MEETS SAT/SUN 10/7-8, 11/4-5, &amp; 12/2-3 </comments>
+        </section_listing>
+    </course_listing>
+</root>

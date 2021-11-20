@@ -10,7 +10,8 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.events.XMLEvent;
 import java.io.Reader;
-import java.util.StringJoiner;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Read and parse an XML file into a graph
@@ -59,37 +60,72 @@ public class GraphXmlReader {
 
     private XmlGraph parse(XMLStreamReader xmlr, XmlGraph graph) throws XMLStreamException {
         XmlGraph parent = graph;
+        int lastReadProcessed = -1;
+        Deque<String> embeddedTags = new ArrayDeque<>();
+        List<String> valueParts = new ArrayList<>();
         while (xmlr.hasNext()) {
             switch (xmlr.next()) {
                 case XMLEvent.START_ELEMENT:
                     QName qName = xmlr.getName();
                     String currentElement = qName.getLocalPart();
-                    XmlGraph child = new XmlGraph(currentElement, parent, XmlGraph.NodeType.ELEMENT);
-                    child.appendContext("<").append(currentElement);
-                    addAttributes(xmlr, child);
-                    child.appendContext(">");
-                    if (parent != null) {
-                        parent.accept(child);
+                    if (lastReadProcessed == XMLEvent.CHARACTERS || !embeddedTags.isEmpty()) {
+                       embeddedTags.push(currentElement);
+                    } else {
+                        XmlGraph child = new XmlGraph(currentElement, parent, XmlGraph.NodeType.ELEMENT);
+                        child.appendContext("<").append(currentElement);
+                        addAttributes(xmlr, child);
+                        child.appendContext(">");
+                        if (parent != null) {
+                            parent.accept(child);
+                        }
+                        parent = child;
                     }
-                    parent = child;
+                    lastReadProcessed = XMLEvent.START_ELEMENT;
                     break;
                 case XMLEvent.CHARACTERS:
                     String content = xmlr.getText().trim();
-                    parent.setValue(content);
-                    parent.appendContext(content);
+                    if (!(content == null || content.isEmpty())) {
+                        valueParts.add(content);
+                        lastReadProcessed = XMLEvent.CHARACTERS;
+                    }
                     break;
                 case XMLEvent.END_ELEMENT:
-                    if (parent.getName() != null) {
-                        parent.appendContext("</").append(parent.getName()).append(">");
+                    if (!embeddedTags.isEmpty()) {
+                        QName qNameCheck = xmlr.getName();
+                        String currentElementCheck = qNameCheck.getLocalPart();
+
+                        String lastElement = embeddedTags.peek();
+                        if (lastElement.equals(currentElementCheck)) {
+                            embeddedTags.pop();
+                        } else {
+                            embeddedTags.push(currentElementCheck);
+                        }
+                    } else {
+                        QName qNameCheck = xmlr.getName();
+                        String currentElementCheck = qNameCheck.getLocalPart();
+                        setValue(parent, valueParts);
+                        if (parent.getName() != null) {
+                            parent.appendContext("</").append(parent.getName()).append(">");
+                        }
+                        if (parent.getParent() != null) {
+                            parent = parent.getParent();
+                        }
                     }
-                    if (parent.getParent() != null) {
-                        parent = parent.getParent();
-                    }
+                    lastReadProcessed = XMLEvent.END_ELEMENT;
                     break;
                 default: //noop
             }
         }
+        setValue(parent, valueParts);
         return parent;
+    }
+
+    private void setValue(XmlGraph parent, List<String> valueParts) {
+        if (!valueParts.isEmpty()) {
+            String joined = valueParts.stream().collect(Collectors.joining(" "));
+            parent.setValue(joined);
+            valueParts.clear();
+        }
     }
 
     private void addAttributes(XMLStreamReader xmlr, XmlGraph parent) {
@@ -104,4 +140,5 @@ public class GraphXmlReader {
         }
         parent.appendContext(stringJoiner.toString());
     }
+
 }

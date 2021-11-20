@@ -2,6 +2,7 @@ package com.legyver.utils.graphjxml;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * XmlGraph that represents the XML as a graph.
@@ -11,7 +12,7 @@ public class XmlGraph {
     /**
      * The name of the node.  This will be either the element name or the attribute name
      */
-    private final String name;
+    private String name;
     /**
      * The parent of the node
      */
@@ -31,7 +32,7 @@ public class XmlGraph {
     /**
      * Child nodes
      */
-    private final List<XmlGraph> children = new ArrayList<>();
+    protected final List<XmlGraph> children = new ArrayList<>();
 
     /**
      * Construct an XML Graph node
@@ -50,7 +51,19 @@ public class XmlGraph {
      * @param child the node to add
      */
     public void accept(XmlGraph child) {
-        children.add(child);
+        if (child.getParent() == null) {
+            //We're accepting a root graph node so assume its name
+            if (name == null) {
+                name = child.getName();
+            }
+            //children must be added independently
+            for (XmlGraph grandchild : child.children) {
+                accept(grandchild);
+            }
+        } else {
+            //we're adding a new node
+            children.add(child);
+        }
     }
 
     /**
@@ -124,13 +137,24 @@ public class XmlGraph {
     /**
      * Get the first child node
      * @return the first child node
+     * @deprecated There is no reason to use this as we no longer have a common node hanging off the root
      */
+    @Deprecated
     public XmlGraph pop() {
         return children.isEmpty() ? null : children.iterator().next();
     }
 
-    private XmlGraph find(String name) {
-        return children.stream().filter(graph -> graph.name.equals(name)).findFirst().orElse(null);
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        XmlGraph xmlGraph = (XmlGraph) o;
+        return Objects.equals(name, xmlGraph.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
     }
 
     /**

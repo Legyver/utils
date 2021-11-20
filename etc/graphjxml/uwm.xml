@@ -1,0 +1,107 @@
+<?xml version='1.0' ?>
+<root>
+    <course>
+        <note>#</note>
+        <crs>216-088</crs>
+        <title>NEW STUDENT ORIENTATION</title>
+        <credit>0</credit>
+        <level>U</level>
+        <restrictions>; ; REQUIRED OF ALL NEW STUDENTS. PREREQ: NONE</restrictions>
+        <section>
+            <section_note></section_note>
+            <sect>Se 001</sect>
+            <days>W</days>
+            <hours>
+                <start>1:30pm</start>
+                <end></end>
+            </hours>
+            <place>
+                <building>BUS</building>
+                <room>S230</room>
+            </place>
+            <instructor>Gusavac</instructor>
+            <comments>9 WKS BEGINNING WEDNESDAY, 9/6/00 </comments>
+        </section>
+        <section>
+            <section_note></section_note>
+            <sect>Se 002</sect>
+            <days>F</days>
+            <hours>
+                <start>11:30am</start>
+                <end></end>
+            </hours>
+            <place>
+                <building>BUS</building>
+                <room>S171</room>
+            </place>
+            <instructor>Gusavac</instructor>
+            <comments>9 WKS BEGINNING FRIDAY, 9/8/00 </comments>
+        </section>
+    </course>
+    <course>
+        <note>#</note>
+        <crs>216-293</crs>
+        <title>BUSINESS ETHICS</title>
+        <credit>3</credit>
+        <level>U</level>
+        <restrictions>; ; PREREQ: NONE</restrictions>
+        <section>
+            <section_note></section_note>
+            <sect>Se 001</sect>
+            <days>R</days>
+            <hours>
+                <start>2:30pm</start>
+                <end>5:10pm</end>
+            </hours>
+            <place>
+                <building>BUS</building>
+                <room>S230</room>
+            </place>
+            <instructor>Silberg</instructor>
+        </section>
+    </course>
+    <course>
+        <note>#</note>
+        <crs>216-782</crs>
+        <title>OPERATIONS MODELING AND SIMULATION</title>
+        <credit>2</credit>
+        <level>G</level>
+        <restrictions>; ; PREREQ: GRAD ST; BUS ADM 780(P)</restrictions>
+        <section>
+            <section_note>e</section_note>
+            <sect>Se 001</sect>
+            <days>T</days>
+            <hours>
+                <start>5:30pm</start>
+                <end>7:10pm</end>
+            </hours>
+            <place>
+                <building>BUS</building>
+                <room>N110</room>
+            </place>
+            <instructor>Liu</instructor>
+        </section>
+    </course>
+    <course>
+        <note></note>
+        <crs>360-960</crs>
+        <title>SEMINAR: ADMINISTRATION/SUPERVISION OF PROGRAMS FOR EXCEPTIONAL INDIVIDUALS</title>
+        <credit>3</credit>
+        <level>G</level>
+        <restrictions>; ; PREREQ: GRAD ST; EXCEDUC 300 OR 600</restrictions>
+        <section>
+            <section_note>e</section_note>
+            <sect>Se 001</sect>
+            <days>W</days>
+            <hours>
+                <start>6:30pm</start>
+                <end>9:10pm</end>
+            </hours>
+            <place>
+                <building>MER</building>
+                <room>G32</room>
+            </place>
+            <instructor>Luebke</instructor>
+        </section>
+    </course>
+</root>

@@ -5,7 +5,7 @@ import com.legyver.utils.jackiso.JacksonObjectMapper;
 import com.legyver.utils.mapqua.MapQuery.KeyValueFilter;
 import com.legyver.utils.mapqua.MapQuery.KeyValueFilter.Cond;
 import org.apache.commons.io.IOUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -17,8 +17,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class MapQueryTest {
 
@@ -37,21 +37,22 @@ public class MapQueryTest {
 	public void queryJson() throws Exception {
 		Map<String, Object> map = getJsonAsMap();
 		Optional name = new MapQuery.Query().string(NAME_FIELD).execute(map);
-		assertThat(name.get(), is(NAME_VALUE));
+		assertThat(name.get()).isEqualTo(NAME_VALUE);
 
 		Optional number = new MapQuery.Query().integer(NUMBER_FIELD).execute(map);
-		assertThat("Wrong Integer", number.get(), is(NUMBER_INT_VALUE));
+		assertThat(number.get()).isEqualTo(NUMBER_INT_VALUE);
 
 		{
 			Optional settings = new MapQuery.Query().object(CONFIG_FIELD)
 					.collection(CONFIG_SETTINGS_FIELD).execute(map);
 			List settingsList = (List) settings.get();
-			assertThat(settingsList.size(), is(1));
+			assertThat(settingsList.size()).isEqualTo(1);
 
 			Map setting = (Map) settingsList.get(0);
-			assertNotNull(setting);
-			assertThat(setting.get(SETTINGS_KEY_KEY), is(SETTINGS_KEY_VALUE));
-			assertThat(setting.get("key2"), is("my value2"));
+			assertThat(setting).isNotNull();
+			assertThat(setting).isNotEmpty();
+			assertThat(setting.get(SETTINGS_KEY_KEY)).isEqualTo(SETTINGS_KEY_VALUE);
+			assertThat(setting.get("key2")).isEqualTo("my value2");
 		}
 
 		{
@@ -60,7 +61,7 @@ public class MapQueryTest {
 					.execute(map);
 			Map settingMap = (Map) setting.get();
 			assertNotNull(settingMap);
-			assertThat(settingMap.get(SETTINGS_KEY_KEY), is(SETTINGS_KEY_VALUE));
+			assertThat(settingMap.get(SETTINGS_KEY_KEY)).isEqualTo(SETTINGS_KEY_VALUE);
 		}
 
 		{
@@ -70,25 +71,25 @@ public class MapQueryTest {
 					.execute(map);
 			String settingValue = (String) settingKey.get();
 			assertNotNull(settingValue);
-			assertThat(settingValue, is(SETTINGS_KEY_VALUE));
+			assertThat(settingValue).isEqualTo(SETTINGS_KEY_VALUE);
 		}
 
 		Optional<LocalDateTime> ldtOption = new MapQuery.Query().localDateTime(LOCAL_DATE_TIME_FIELD).execute(map);
-		assertThat(ldtOption.isPresent(), is(true));
+		assertThat(ldtOption.isPresent()).isEqualTo(true);
 		LocalDateTime ldt = ldtOption.get();
-		assertThat(ldt.getYear(), is(2018));
-		assertThat(ldt.getMonth(), is(Month.JULY));
-		assertThat(ldt.getDayOfMonth(), is(14));
-		assertThat(ldt.getHour(), is(17));
-		assertThat(ldt.getMinute(), is(10));
-		assertThat(ldt.getSecond(), is(57));
+		assertThat(ldt.getYear()).isEqualTo(2018);
+		assertThat(ldt.getMonth()).isEqualTo(Month.JULY);
+		assertThat(ldt.getDayOfMonth()).isEqualTo(14);
+		assertThat(ldt.getHour()).isEqualTo(17);
+		assertThat(ldt.getMinute()).isEqualTo(10);
+		assertThat(ldt.getSecond()).isEqualTo(57);
 
 		Optional<LocalDate> ldOption = new MapQuery.Query().localDate(LOCAL_DATE_FIELD).execute(map);
-		assertThat(ldOption.isPresent(), is(true));
+		assertThat(ldOption.isPresent()).isEqualTo(true);
 		LocalDate ld = ldOption.get();
-		assertThat(ld.getYear(), is(2018));
-		assertThat(ld.getMonth(), is(Month.JULY));
-		assertThat(ld.getDayOfMonth(), is(14));
+		assertThat(ld.getYear()).isEqualTo(2018);
+		assertThat(ld.getMonth()).isEqualTo(Month.JULY);
+		assertThat(ld.getDayOfMonth()).isEqualTo(14);
 	}
 
 	@Test
@@ -96,11 +97,11 @@ public class MapQueryTest {
 		Map<String, Object> map = getJsonAsMap();
 		new MapQuery.Query().set(NAME_FIELD, "new name").execute(map);
 		Optional newName = new MapQuery.Query().string(NAME_FIELD).execute(map);
-		assertThat(newName.get(), is("new name"));
+		assertThat(newName.get()).isEqualTo("new name");
 
 		new MapQuery.Query().set(NUMBER_FIELD, 623).execute(map);
 		Optional number = new MapQuery.Query().integer(NUMBER_FIELD).execute(map);
-		assertThat("Wrong Integer", number.get(), is(623));
+		assertThat(number.get()).isEqualTo(623);
 
 		new MapQuery.Query().object(CONFIG_FIELD)
 				.collection(CONFIG_SETTINGS_FIELD).filter(new KeyValueFilter(SETTINGS_KEY_KEY, Cond.EQ, SETTINGS_KEY_VALUE))
@@ -109,34 +110,35 @@ public class MapQueryTest {
 		Optional setting = new MapQuery.Query().object(CONFIG_FIELD)
 				.collection(CONFIG_SETTINGS_FIELD).filter(new KeyValueFilter(SETTINGS_KEY_KEY, Cond.EQ, SETTINGS_KEY_VALUE))
 				.execute(map);
-		assertFalse("Old value still present", setting.isPresent());
+		assertThat(setting.isPresent()).isFalse();
 		setting = new MapQuery.Query().object(CONFIG_FIELD)
 				.collection(CONFIG_SETTINGS_FIELD).filter(new KeyValueFilter(SETTINGS_KEY_KEY, Cond.EQ, "new Key"))
 				.execute(map);
 		Map settingMap = (Map) setting.get();
-		assertNotNull(settingMap);
-		assertThat(settingMap.get(SETTINGS_KEY_KEY), is("new Key"));
+		assertThat(settingMap).isNotNull();
+		assertThat(settingMap).isNotEmpty();
+		assertThat(settingMap.get(SETTINGS_KEY_KEY)).isEqualTo("new Key");
 
 		LocalDate nowDate = LocalDate.now();
 		new MapQuery.Query().set(LOCAL_DATE_FIELD, nowDate).execute(map);
 		Optional<LocalDate> ldOption = new MapQuery.Query().localDate(LOCAL_DATE_FIELD).execute(map);
-		assertThat(ldOption.isPresent(), is(true));
+		assertThat(ldOption.isPresent()).isEqualTo(true);
 		LocalDate ld = ldOption.get();
-		assertThat(ld.getYear(), is(nowDate.getYear()));
-		assertThat(ld.getMonth(), is(nowDate.getMonth()));
-		assertThat(ld.getDayOfMonth(), is(nowDate.getDayOfMonth()));
+		assertThat(ld.getYear()).isEqualTo(nowDate.getYear());
+		assertThat(ld.getMonth()).isEqualTo(nowDate.getMonth());
+		assertThat(ld.getDayOfMonth()).isEqualTo(nowDate.getDayOfMonth());
 
 		LocalDateTime nowDateTime = LocalDateTime.now();
 		new MapQuery.Query().set(LOCAL_DATE_TIME_FIELD, nowDateTime).execute(map);
 		Optional<LocalDateTime> ldtOption = new MapQuery.Query().localDateTime(LOCAL_DATE_TIME_FIELD).execute(map);
-		assertThat(ldtOption.isPresent(), is(true));
+		assertThat(ldtOption.isPresent()).isEqualTo(true);
 		LocalDateTime ldt = ldtOption.get();
-		assertThat(ldt.getYear(), is(nowDateTime.getYear()));
-		assertThat(ldt.getMonth(), is(nowDateTime.getMonth()));
-		assertThat(ldt.getDayOfMonth(), is(nowDateTime.getDayOfMonth()));
-		assertThat(ldt.getHour(), is(nowDateTime.getHour()));
-		assertThat(ldt.getMinute(), is(nowDateTime.getMinute()));
-		assertThat(ldt.getSecond(), is(nowDateTime.getSecond()));
+		assertThat(ldt.getYear()).isEqualTo(nowDateTime.getYear());
+		assertThat(ldt.getMonth()).isEqualTo(nowDateTime.getMonth());
+		assertThat(ldt.getDayOfMonth()).isEqualTo(nowDateTime.getDayOfMonth());
+		assertThat(ldt.getHour()).isEqualTo(nowDateTime.getHour());
+		assertThat(ldt.getMinute()).isEqualTo(nowDateTime.getMinute());
+		assertThat(ldt.getSecond()).isEqualTo(nowDateTime.getSecond());
 	}
 	
 	@Test
@@ -144,15 +146,15 @@ public class MapQueryTest {
 		Map<String, Object> map = getJsonAsMap();
 		new MapQuery.Query().merge("new attr", "new name").execute(map);
 		Optional newName = new MapQuery.Query().string("new attr").execute(map);
-		assertThat(newName.get(), is("new name"));
+		assertThat(newName.get()).isEqualTo("new name");
 		Optional name = new MapQuery.Query().string(NAME_FIELD).execute(map);
-		assertThat(name.get(), is(NAME_VALUE));
+		assertThat(name.get()).isEqualTo(NAME_VALUE);
 		
 		new MapQuery.Query().merge("new num", 623).execute(map);
 		Optional newNumber = new MapQuery.Query().integer("new num").execute(map);
-		assertThat("Wrong Integer", newNumber.get(), is(623));
+		assertThat(newNumber.get()).isEqualTo(623);
 		Optional number = new MapQuery.Query().integer(NUMBER_FIELD).execute(map);
-		assertThat("Wrong Integer", number.get(), is(NUMBER_INT_VALUE));
+		assertThat(number.get()).isEqualTo(NUMBER_INT_VALUE);
 		
 		new MapQuery.Query().object(CONFIG_FIELD)
 				.collection(CONFIG_SETTINGS_FIELD).filter(new KeyValueFilter(SETTINGS_KEY_KEY, Cond.EQ, SETTINGS_KEY_VALUE))
@@ -161,35 +163,36 @@ public class MapQueryTest {
 		Optional setting = new MapQuery.Query().object(CONFIG_FIELD)
 				.collection("new settings key").filter(new KeyValueFilter(SETTINGS_KEY_KEY, Cond.EQ, SETTINGS_KEY_VALUE))
 				.execute(map);
-		assertFalse("Old value still present", setting.isPresent());
+		assertThat(setting.isPresent()).isFalse();
 		setting = new MapQuery.Query().object(CONFIG_FIELD)
 				.collection(CONFIG_SETTINGS_FIELD).filter(new KeyValueFilter("new settings key", Cond.EQ, "new Key"))
 				.execute(map);
 		Map settingMap = (Map) setting.get();
-		assertNotNull(settingMap);
-		assertThat(settingMap.get(SETTINGS_KEY_KEY), is(SETTINGS_KEY_VALUE));
-		assertThat(settingMap.get("new settings key"), is("new Key"));
+		assertThat(settingMap).isNotNull();
+		assertThat(settingMap).isNotEmpty();
+		assertThat(settingMap.get(SETTINGS_KEY_KEY)).isEqualTo(SETTINGS_KEY_VALUE);
+		assertThat(settingMap.get("new settings key")).isEqualTo("new Key");
 		
 		LocalDate nowDate = LocalDate.now();
 		new MapQuery.Query().merge(LOCAL_DATE_FIELD, nowDate).execute(map);
 		Optional<LocalDate> ldOption = new MapQuery.Query().localDate(LOCAL_DATE_FIELD).execute(map);
-		assertThat(ldOption.isPresent(), is(true));
+		assertThat(ldOption.isPresent()).isEqualTo(true);
 		LocalDate ld = ldOption.get();
-		assertThat(ld.getYear(), is(nowDate.getYear()));
-		assertThat(ld.getMonth(), is(nowDate.getMonth()));
-		assertThat(ld.getDayOfMonth(), is(nowDate.getDayOfMonth()));
+		assertThat(ld.getYear()).isEqualTo(nowDate.getYear());
+		assertThat(ld.getMonth()).isEqualTo(nowDate.getMonth());
+		assertThat(ld.getDayOfMonth()).isEqualTo(nowDate.getDayOfMonth());
 
 		LocalDateTime nowDateTime = LocalDateTime.now();
 		new MapQuery.Query().merge(LOCAL_DATE_TIME_FIELD, nowDateTime).execute(map);
 		Optional<LocalDateTime> ldtOption = new MapQuery.Query().localDateTime(LOCAL_DATE_TIME_FIELD).execute(map);
-		assertThat(ldtOption.isPresent(), is(true));
+		assertThat(ldtOption.isPresent()).isEqualTo(true);
 		LocalDateTime ldt = ldtOption.get();
-		assertThat(ldt.getYear(), is(nowDateTime.getYear()));
-		assertThat(ldt.getMonth(), is(nowDateTime.getMonth()));
-		assertThat(ldt.getDayOfMonth(), is(nowDateTime.getDayOfMonth()));
-		assertThat(ldt.getHour(), is(nowDateTime.getHour()));
-		assertThat(ldt.getMinute(), is(nowDateTime.getMinute()));
-		assertThat(ldt.getSecond(), is(nowDateTime.getSecond()));
+		assertThat(ldt.getYear()).isEqualTo(nowDateTime.getYear());
+		assertThat(ldt.getMonth()).isEqualTo(nowDateTime.getMonth());
+		assertThat(ldt.getDayOfMonth()).isEqualTo(nowDateTime.getDayOfMonth());
+		assertThat(ldt.getHour()).isEqualTo(nowDateTime.getHour());
+		assertThat(ldt.getMinute()).isEqualTo(nowDateTime.getMinute());
+		assertThat(ldt.getSecond()).isEqualTo(nowDateTime.getSecond());
 	}
 
 	@Test
@@ -203,12 +206,12 @@ public class MapQueryTest {
 				.collection(CONFIG_SETTINGS_FIELD)
 				.execute(map);
 		Collection settings = (Collection) setting.get();
-		assertNotNull(settings);
-		assertThat(settings.size(), is(2));
+		assertThat(settings).isNotNull();
+		assertThat(settings.size()).isEqualTo(2);
 		Optional<Map> newFound = settings.stream().filter(m -> ((Map) m).get(SETTINGS_KEY_KEY).equals("new settings key")).findFirst();
-		assertTrue("Updated value not found in collection", newFound.isPresent());
+		assertThat(newFound.isPresent()).isTrue();
 		Map foundValue = newFound.get();
-		assertThat(foundValue.get(SETTINGS_KEY_KEY), is("new settings key"));
+		assertThat(foundValue.get(SETTINGS_KEY_KEY)).isEqualTo("new settings key");
 	}
 
 	private class Setting {

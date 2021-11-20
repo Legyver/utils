@@ -1,11 +1,10 @@
 package com.legyver.utils.adaptex;
 
 import com.legyver.core.exception.CoreException;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class ExceptionToCoreExceptionConsumerDecoratorTest {
 
@@ -19,18 +18,18 @@ public class ExceptionToCoreExceptionConsumerDecoratorTest {
 		});
 		try {
 			decorator.accept(VALUE);
-			Assert.fail("Expected an exception to be thrown");
+			fail("Expected an exception to be thrown");
 		} catch (CoreException ex) {
 			//okay
 			Exception originalException = (Exception) ex.getCause();
-			assertThat(originalException.getMessage(), is(EXCEPTION_MESSAGE));
+			assertThat(originalException.getMessage()).isEqualTo(EXCEPTION_MESSAGE);
 		}
 	}
 
 	@Test
 	public void checkedException_noException() throws Exception {
 		ExceptionToCoreExceptionConsumerDecorator decorator = new ExceptionToCoreExceptionConsumerDecorator((value)-> {
-			assertThat(value, is(VALUE));
+			assertThat(value).isEqualTo(VALUE);
 		});
 		decorator.accept(VALUE);
 	}

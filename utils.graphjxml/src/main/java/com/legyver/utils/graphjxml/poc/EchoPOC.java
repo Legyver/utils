@@ -19,11 +19,27 @@ public class EchoPOC {
      * @param args ignored
      */
     public static void main(String[] args) {
+        DemoIO writeBug = new DemoIO("problematic.xml", "echo-writebug.xml");
+        DemoIO readBug = new DemoIO("unabletoread.xml", "echo-readbug.xml");
+        runBug(readBug);
+    }
+
+    private static void runBug(DemoIO bug) {
         XmlFileReader xmlFileReader = new XmlFileReader(new GraphXmlReader());
         XmlFileWriter xmlFileWriter = new XmlFileWriter(new GraphXmlWriter());
         //original graph
-        XmlGraph simple = xmlFileReader.parse(etcFile("simple.xml"));
-        File file = etcFile("echo.xml");
+        XmlGraph simple = xmlFileReader.parse(etcFile(bug.inName));
+        File file = etcFile(bug.outName);
         xmlFileWriter.writeToFile(simple,  file);
+    }
+
+    private static class DemoIO {
+        private final String inName;
+        private final String outName;
+
+        private DemoIO(String inName, String outName) {
+            this.inName = inName;
+            this.outName = outName;
+        }
     }
 }

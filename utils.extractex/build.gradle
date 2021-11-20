@@ -5,12 +5,13 @@ apply from: publishBuildScript
 dependencies {
     //exception
     api group: 'com.legyver', name: 'core', version: legyverCoreVersion
-    
-    testImplementation 'junit:junit:4.13'
+
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.7.0'
+    testImplementation("org.assertj:assertj-core:3.11.1")
 }
 
 test {
-    useJUnit()
+    useJUnitPlatform()
 }
 
 java {

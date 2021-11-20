@@ -1,10 +1,8 @@
 package com.legyver.utils.nippe;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class StepTest {
 
@@ -15,7 +13,7 @@ public class StepTest {
 				c -> c.classB),
 				c -> c.classC),
 				c -> c.text).execute();
-		assertThat(value, nullValue());
+		assertThat(value).isNull();
 	}
 
 	@Test
@@ -25,7 +23,7 @@ public class StepTest {
 				c -> c.classB),
 				c -> c.classC),
 				c -> c.text).execute();
-		assertThat(value, is("test text"));
+		assertThat(value).isEqualTo("test text");
 	}
 
 	@Test
@@ -37,7 +35,7 @@ public class StepTest {
 				c -> c.classB),
 				c -> c.classC),
 				c -> c.text).execute();
-		assertThat(value, nullValue());
+		assertThat(value).isNull();
 	}
 
 	private class ClassA {

@@ -59,16 +59,22 @@ public class GraphXmlWriter {
         }
         writeIndentation(depth, streamWriter);
         boolean endsWithNewLine = false;
+        boolean emptyElement = false;
         switch (nodeType) {
             case ELEMENT:
-                if (valueEmptyOrNull(value) && xmlGraph.getChildren().isEmpty()) {
+                if (value == null && xmlGraph.getChildren().isEmpty()) {
                     streamWriter.writeEmptyElement(name);
+                    emptyElement = true;
                 } else {
                     streamWriter.writeStartElement(name);
                 }
                 break;
             case ATTRIBUTE:
-                streamWriter.writeAttribute(name, value);
+                try {
+                    streamWriter.writeAttribute(name, value);
+                } catch (XMLStreamException exception) {
+                    throw exception;
+                }
                 break;
             default:
                 endsWithNewLine = true;
@@ -80,18 +86,18 @@ public class GraphXmlWriter {
 
         switch (nodeType) {
             case ELEMENT:
-                if (!valueEmptyOrNull(value)) {
+                if (!emptyElement && !valueEmptyOrNull(value)) {
                     streamWriter.writeCharacters(value);
                 }
                 //close element if an empty element was not written
-                if (!valueEmptyOrNull(value) || !xmlGraph.getChildren().isEmpty()) {
+                if (!emptyElement) {
                     if (valueEmptyOrNull(value)) {
                         writeIndentation(depth, streamWriter);
                     }
                     streamWriter.writeEndElement();
-                    streamWriter.writeCharacters(System.lineSeparator());
-                    endsWithNewLine = true;
                 }
+                streamWriter.writeCharacters(System.lineSeparator());
+                endsWithNewLine = true;
                 break;
             default:
                 //noop

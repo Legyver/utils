@@ -1,0 +1,21 @@
+<?xml version="1.0" ?>
+<course>
+    <reg_num>10626</reg_num>
+    <subj>BIOL</subj>
+    <crs>431</crs>
+    <sect>F03</sect>
+    <title>Bacterial Pathogenesis</title>
+    <credit>0.5</credit>
+    <section>
+        <instructor></instructor>
+        <days></days>
+        <times>
+            <start></start>
+            <end></end>
+        </times>
+        <place>
+            <building></building>
+            <room>Mellies RESCHEDULED TO OTHER SEMESTER</room>
+        </place>
+    </section>
+</course>

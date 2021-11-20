@@ -5,21 +5,21 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.legyver.core.exception.CoreException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
+
 
 public class MapBackedLocalDateTest {
 	@Test
 	public void addValue() throws Exception {
 		Map map = new LinkedHashMap();
 		MapBackedLocalDate mb = new MapBackedLocalDate(map, "field");
-		assertThat(mb.get(), is(LocalDate.now()));
+		assertThat(mb.get()).isEqualTo(LocalDate.now());
 	
 		LocalDate ld2 = LocalDate.now().minusDays(1).minusMonths(1).minusYears(1);
 		mb.set(ld2);
-		assertThat(mb.get(), is(ld2));
+		assertThat(mb.get()).isEqualTo(ld2);
 	}
 	
 	@Test
@@ -29,9 +29,9 @@ public class MapBackedLocalDateTest {
 		LocalDate ld1 = LocalDate.now();
 		LocalDate ld2 = LocalDate.now().minusDays(1).minusMonths(1).minusYears(1);
 		mb.set(ld1);
-		assertThat(mb.get(), is(ld1));
+		assertThat(mb.get()).isEqualTo(ld1);
 		mb.set(ld2);
-		assertThat(mb.get(), is(ld2));
+		assertThat(mb.get()).isEqualTo(ld2);
 	}
 	
 	@Test
@@ -41,8 +41,8 @@ public class MapBackedLocalDateTest {
 		LocalDate ld2 = LocalDate.now().minusDays(1).minusMonths(1).minusYears(1);
 		entity.setLocalDate1(ld1);
 		entity.setLocalDate2(ld2);
-		assertThat(entity.getLocalDate1(), is(ld1));
-		assertThat(entity.getLocalDate2(), is(ld2));
+		assertThat(entity.getLocalDate1()).isEqualTo(ld1);
+		assertThat(entity.getLocalDate2()).isEqualTo(ld2);
 	}
 
 	private class Entity {

@@ -4,11 +4,10 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.legyver.core.exception.CoreException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
+
 
 public class MapBackedStringTest extends AbstractJacksonSupportTest {
 
@@ -16,10 +15,10 @@ public class MapBackedStringTest extends AbstractJacksonSupportTest {
 	public void addValue() throws Exception {
 		Map map = new LinkedHashMap();
 		MapBackedString mb = new MapBackedString(map, "field");
-		assertThat(mb.get(), is(nullValue()));
-		assertThat(map.get("field"), is(nullValue()));
+		assertThat(mb.get()).isNull();
+		assertThat(map.get("field")).isNull();
 		mb.set("my value");
-		assertThat(mb.get(), is("my value"));
+		assertThat(mb.get()).isEqualTo("my value");
 	}
 	
 	@Test
@@ -27,9 +26,9 @@ public class MapBackedStringTest extends AbstractJacksonSupportTest {
 		Map map = new LinkedHashMap();
 		MapBackedString mb = new MapBackedString(map, "field");
 		mb.set("my value");
-		assertThat(mb.get(), is("my value"));
+		assertThat(mb.get()).isEqualTo("my value");
 		mb.set("my new value");
-		assertThat(mb.get(), is("my new value"));
+		assertThat(mb.get()).isEqualTo("my new value");
 	}
 	
 	@Test
@@ -38,7 +37,7 @@ public class MapBackedStringTest extends AbstractJacksonSupportTest {
 		MapBackedString mb = new MapBackedString(map, "field");
 		mb.set("my value");
 		String result = getJson(map);
-		assertThat(result, is("{\"field\":\"my value\"}"));
+		assertThat(result).isEqualTo("{\"field\":\"my value\"}");
 	}
 	
 	@Test
@@ -46,8 +45,8 @@ public class MapBackedStringTest extends AbstractJacksonSupportTest {
 		Entity entity = new Entity();
 		entity.setString1("first value");
 		entity.setString2("second value");
-		assertThat(entity.getString1(), is("first value"));
-		assertThat(entity.getString2(), is("second value"));
+		assertThat(entity.getString1()).isEqualTo("first value");
+		assertThat(entity.getString2()).isEqualTo("second value");
 	}
 	
 	@Test
@@ -56,7 +55,7 @@ public class MapBackedStringTest extends AbstractJacksonSupportTest {
 		entity.setString1("first value");
 		entity.setString2("second value");
 		String result = getJson(entity.sourceMap);
-		assertThat(result, is("{\"field1\":\"first value\",\"field2\":\"second value\"}"));
+		assertThat(result).isEqualTo("{\"field1\":\"first value\",\"field2\":\"second value\"}");
 	}
 	
 	private class Entity {

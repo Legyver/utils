@@ -1,12 +1,11 @@
 package com.legyver.utils.mapqua.mapbacked;
 
 import com.legyver.core.exception.CoreException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.*;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class MapBackedCollectionTest extends AbstractJacksonSupportTest {
 
@@ -15,29 +14,29 @@ public class MapBackedCollectionTest extends AbstractJacksonSupportTest {
 		Map map = new LinkedHashMap();
 		MapBackedCollection<List<String>, String> mb = new MapBackedNativeCollection(map, "field");
 		Collection coll = (Collection) mb.get();
-		assertThat(coll.size(), is(0));
+		assertThat(coll.size()).isEqualTo(0);
 		List rawValues = (List) map.get("field");
-		assertThat(rawValues.size(), is(0));
+		assertThat(rawValues.size()).isEqualTo(0);
 		coll.add("new value");
 		mb.set(coll);
 		coll = mb.get();
-		assertThat(coll.size(), is(1));
-		assertThat(coll instanceof List, is(true));
-		assertThat(((List) coll).get(0), is ("new value"));
+		assertThat(coll.size()).isEqualTo(1);
+		assertThat(coll).isInstanceOf(List.class);
+		assertThat(((List) coll).get(0)).isEqualTo("new value");
 		mb.add("another value");
 		coll = mb.get();
-		assertThat(coll.size(), is(2));
-		assertThat(((List) coll).get(1), is ("another value"));
+		assertThat(coll.size()).isEqualTo(2);
+		assertThat(((List) coll).get(1)).isEqualTo("another value");
 
 		mb.remove("another value");
 		coll = mb.get();
-		assertThat(coll.size(), is(1));
-		assertThat(((List) coll).get(0), is ("new value"));
+		assertThat(coll.size()).isEqualTo(1);
+		assertThat(((List) coll).get(0)).isEqualTo("new value");
 
 		coll.remove("new value");
 		mb.sync();
 		coll = mb.get();
-		assertThat(coll.size(), is(0));
+		assertThat(coll.size()).isEqualTo(0);
 	}
 
 	@Test
@@ -56,17 +55,17 @@ public class MapBackedCollectionTest extends AbstractJacksonSupportTest {
 		mb.get().add(entityTwo);
 		mb.sync();
 
-		assertThat(mb.get().size(), is(2));
+		assertThat(mb.get().size()).isEqualTo(2);
 
 		mb.remove(entityOne);
 		Collection<Entity> coll = mb.get();
-		assertThat(coll.size(), is(1));
+		assertThat(coll.size()).isEqualTo(1);
 
 		coll.remove(entityTwo);
 		mb.sync();
 
-		assertThat(mb.get().size(), is(0));
-		assertThat(coll.size(), is(0));
+		assertThat(mb.get().size()).isEqualTo(0);
+		assertThat(coll.size()).isEqualTo(0);
 	}
 
 	@Test
@@ -77,7 +76,7 @@ public class MapBackedCollectionTest extends AbstractJacksonSupportTest {
 		entity.setText("number two");
 		listEntity.entityList.add(entity);
 		String result = getJson(listEntity.getRawMap());
-		assertThat(result, is("{\"entityList\":[{\"field1\":2,\"field2\":\"number two\"}]}"));
+		assertThat(result).isEqualTo("{\"entityList\":[{\"field1\":2,\"field2\":\"number two\"}]}");
 	}
 
 	private class ListEntity implements RawMapAware {

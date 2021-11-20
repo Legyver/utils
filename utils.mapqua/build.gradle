@@ -5,10 +5,14 @@ apply from: publishBuildScript
 dependencies {
     api group: 'com.legyver', name: 'core', version: legyverCoreVersion
     api project(':utils.jackiso')
-    testImplementation 'junit:junit:4.13'
-    testImplementation group: 'org.hamcrest', name: 'hamcrest-core', version: '1.3'
-    testImplementation group: 'org.exparity', name: 'hamcrest-date', version: '2.0.4'
+
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.7.0'
+    testImplementation("org.assertj:assertj-core:3.11.1")
     testImplementation group: 'commons-io', name: 'commons-io', version: '2.6'
+}
+
+test {
+    useJUnitPlatform()
 }
 
 java {

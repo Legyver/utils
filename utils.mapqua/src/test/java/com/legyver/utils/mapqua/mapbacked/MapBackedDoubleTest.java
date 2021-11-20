@@ -4,10 +4,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.legyver.core.exception.CoreException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class MapBackedDoubleTest {
 
@@ -15,10 +14,10 @@ public class MapBackedDoubleTest {
 	public void addValue() throws Exception {
 		Map map = new LinkedHashMap();
 		MapBackedDouble mb = new MapBackedDouble(map, "field");
-		assertThat(mb.get(), is(0.0));
-		assertThat(map.get("field"), is(0.0));
+		assertThat(mb.get()).isEqualTo(0.0);
+		assertThat(map.get("field")).isEqualTo(0.0);
 		mb.set(2.0);
-		assertThat(mb.get(), is(2.0));
+		assertThat(mb.get()).isEqualTo(2.0);
 	}
 	
 	@Test
@@ -26,9 +25,9 @@ public class MapBackedDoubleTest {
 		Map map = new LinkedHashMap();
 		MapBackedDouble mb = new MapBackedDouble(map, "field");
 		mb.set(2.0);
-		assertThat(mb.get(), is(2.0));
+		assertThat(mb.get()).isEqualTo(2.0);
 		mb.set(2.3);
-		assertThat(mb.get(), is(2.3));
+		assertThat(mb.get()).isEqualTo(2.3);
 	}
 	
 	@Test
@@ -36,8 +35,8 @@ public class MapBackedDoubleTest {
 		Entity entity = new Entity();
 		entity.setDouble1(1.1);
 		entity.setDouble2(1.2);
-		assertThat(entity.getDouble1(), is(1.1));
-		assertThat(entity.getDouble2(), is(1.2));
+		assertThat(entity.getDouble1()).isEqualTo(1.1);
+		assertThat(entity.getDouble2()).isEqualTo(1.2);
 	}
 	
 	private class Entity {

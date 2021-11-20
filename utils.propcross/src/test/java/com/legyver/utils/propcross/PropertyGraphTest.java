@@ -1,20 +1,20 @@
 package com.legyver.utils.propcross;
 
 import com.legyver.utils.graphrunner.PropertyMap;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class PropertyGraphTest {
 	private static PropertyMap propertyMap;
 
-	@BeforeClass
+	@BeforeAll
 	public static void loadProperties() throws IOException {
 		Properties adjectives = loadProperties(PropertyGraphTest.class.getResourceAsStream("adjective.properties"));
 		Properties directObject = loadProperties(PropertyGraphTest.class.getResourceAsStream("directobject.properties"));

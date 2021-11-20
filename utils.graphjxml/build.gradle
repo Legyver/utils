@@ -8,12 +8,12 @@ dependencies {
     //logging
     api group: 'org.apache.logging.log4j', name: 'log4j-core', version: commonsLogVersion
 
-    testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.7.0'
-    testCompile("org.assertj:assertj-core:3.11.1")
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.7.0'
+    testImplementation("org.assertj:assertj-core:3.11.1")
 }
 
 test {
-    useJUnit()
+    useJUnitPlatform()
 }
 
 

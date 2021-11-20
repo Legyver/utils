@@ -1,11 +1,12 @@
 package com.legyver.utils.mapqua;
 
+import org.junit.jupiter.api.Test;
+
 import java.util.HashMap;
 import java.util.Map;
-import static org.hamcrest.CoreMatchers.is;
-import org.junit.Test;
 
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
+
 
 public class MapMergeTest {
 
@@ -17,7 +18,7 @@ public class MapMergeTest {
 		runMerge(map2, map);
 		
 		Object value = map.get("value");
-		assertThat(value, is(1));
+		assertThat(value).isEqualTo(1);
 	}
 	
 	@Test 
@@ -33,8 +34,8 @@ public class MapMergeTest {
 		
 		runMerge(map2, map);
 		Map result = (Map) map.get("child");
-		assertThat(result.get("a value"), is(1));
-		assertThat(result.get("another value"), is(3));
+		assertThat(result.get("a value")).isEqualTo(1);
+		assertThat(result.get("another value")).isEqualTo(3);
 	}
 
 	private void runMerge(Map map2, Map map) {
