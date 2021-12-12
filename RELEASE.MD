@@ -1,4 +1,7 @@
 # Releases
+## 2.1.1.3
+### Security
+- Update log4j version to 2.15.0
 ## 2.1.1.2
 ### Refactoring
 - GraphJXML
