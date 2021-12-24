@@ -2,7 +2,7 @@
 Map-backed object representation to solve the problem of forward and backward compatibility.
 
 ```gradle
-implementation group: 'com.legyver', name: 'utils-mapqua', version: '2.0.0.0'
+implementation group: 'com.legyver', name: 'utils-mapqua', version: '2.1.1.4'
 ```
 ## Features
 Allows any of the following to be represented as Maps

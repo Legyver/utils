@@ -2,7 +2,7 @@
 A graph utility for evaluating cross-referencing properties
 
 ```gradle
-implementation group: 'com.legyver', name: 'utils-propcross', version: '2.0.0.0'
+implementation group: 'com.legyver', name: 'utils-propcross', version: '2.1.1.4'
 ```
 
 ## Usage
