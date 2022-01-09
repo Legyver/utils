@@ -2,7 +2,7 @@
 Extract a specified exception by type from wrapped exception hell.
 
 ```gradle
-implementation group: 'com.legyver', name: 'utils-extractex', version: '2.1.1.4'
+implementation group: 'com.legyver', name: 'utils-extractex', version: '2.1.1.5'
 ```
 ## Features
 Null-safe and InvocationTargetException handling.

@@ -2,7 +2,7 @@
 An extraction adapter
 
 ```gradle
-implementation group: 'com.legyver', name: 'utils-extractex', version: '2.1.1.4'
+implementation group: 'com.legyver', name: 'utils-extractex', version: '2.1.1.5'
 ```
 
 ## Features

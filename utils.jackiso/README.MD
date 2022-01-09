@@ -2,7 +2,7 @@
 Jackson wrapper that exposes a simplified JSON processing interface
 
 ```gradle
-implementation group: 'com.legyver', name: 'utils-jackiso', version: '2.1.1.4'
+implementation group: 'com.legyver', name: 'utils-jackiso', version: '2.1.1.5'
 ```
 ## Features
 - Exposes a properly configured ObjectMapper in a singleton

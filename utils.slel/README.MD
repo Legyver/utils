@@ -2,7 +2,7 @@
 Super-Lightweight Expression Language
 
 ```gradle
-implementation group: 'com.legyver', name: 'utils-slel', version: '2.1.1.4'
+implementation group: 'com.legyver', name: 'utils-slel', version: '2.1.1.5'
 ```
 
 ## Use cases
