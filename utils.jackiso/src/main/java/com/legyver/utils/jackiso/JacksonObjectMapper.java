@@ -9,6 +9,8 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.legyver.core.exception.CoreException;
 import com.legyver.utils.adaptex.ExceptionToCoreExceptionFunctionDecorator;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.temporal.Temporal;
 
 /**
@@ -64,7 +66,23 @@ public enum JacksonObjectMapper {
 		try {
 			return objectMapper.readValue(content, valueType);
 		} catch (JsonProcessingException e) {
-			throw new CoreException("Error processsing json: " + e.getMessage(), e);
+			throw new CoreException("Error processing JSON: " + e.getMessage(), e);
+		}
+	}
+
+	/**
+	 * Read JSON from an InputStream
+	 * @param inputStream the input stream to read the JSON from
+	 * @param valueType the POJO class type
+	 * @param <T> the type of the class
+	 * @return the POJO as read from input stream
+	 * @throws CoreException wrapping any IOException or JSONProcessingException that might be thrown
+	 */
+	public <T> T readValue(InputStream inputStream, Class<T> valueType) throws CoreException {
+		try {
+			return objectMapper.readValue(inputStream, valueType);
+		} catch (IOException e) {
+			throw new CoreException("Error processing JSON: " + e.getMessage(), e);
 		}
 	}
 

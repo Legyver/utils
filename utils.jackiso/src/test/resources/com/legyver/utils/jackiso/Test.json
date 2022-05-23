@@ -1,0 +1,7 @@
+{
+  "testString":"test",
+  "testInt": 1,
+  "testLong": 2,
+  "testDouble": 3.3,
+  "testBoolean": true
+}

@@ -1,4 +1,10 @@
 # Releases
+## 2.1.1.6
+### Minimum JDK
+Built on JDK 17 for LTS
+### New Stuff
+- Jackiso
+  - Added ability to read from InputStream
 ## 2.1.1.5
 ### Security
 - Update log4j version to 2.17.1

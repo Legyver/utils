@@ -2,11 +2,13 @@ package com.legyver.utils.jackiso;
 
 import org.junit.jupiter.api.Test;
 
+import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.in;
 
 public class JacksonObjectMapperTest {
 	private static final String LOCAL_DATE_TIME = "2018-07-15T17:10:57";
@@ -49,4 +51,22 @@ public class JacksonObjectMapperTest {
 		assertThat(back).isEqualTo(localTime);
 	}
 
+	@Test
+	public void readFromResource() throws Exception {
+		InputStream inputStream = JacksonObjectMapperTest.class.getResourceAsStream("Test.json");
+		TestJson result = JacksonObjectMapper.INSTANCE.readValue(inputStream, TestJson.class);
+		assertThat(result.testString).isEqualTo("test");
+		assertThat(result.testInt).isEqualTo(1);
+		assertThat(result.testLong).isEqualTo(2L);
+		assertThat(result.testDouble).isEqualTo(3.3);
+		assertThat(result.testBoolean).isEqualTo(true);
+	}
+
+	public static class TestJson {
+		public String testString;
+		public Integer testInt;
+		public Long testLong;
+		public Double testDouble;
+		public Boolean testBoolean;
+	}
 }
