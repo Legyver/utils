@@ -1,4 +1,8 @@
 # Releases
+## 2.1.2.0
+### New Stuff
+- mapadapt
+  - New library for retrieving typed values from a map
 ## 2.1.1.6
 ### Minimum JDK
 Built on JDK 17 for LTS

@@ -10,4 +10,5 @@ include ':utils.slel'
 include ':utils.propcross'
 include ':utils.jackiso'
 include ':utils.graphjxml'
+include 'utils.mapadapt'
 

@@ -12,8 +12,10 @@ Handy Java solutions to common problems.
   - Run functions in order defined in a directed graph
 - [utils.jackiso](utils.jackiso/README.MD)
     - Jackson wrapper with built-in Java Time API support for ISO 8601 dates
+- [utils.mapadapt](utils.mapadapt/README.MD)
+  - Retrieved typed vales from a map. 
 - [utils.mapqua](utils.mapqua/README.MD)
-    - A Map-based representation utility for POJOs
+  - A Map-based representation utility for POJOs
 - [utils.nippe](utils.nippe/README.MD)
     - A Null Pointer Exception utility
 - [utils.propcross](utils.propcross/README.MD)
