@@ -1,4 +1,7 @@
 # Releases
+## 2.1.2.1
+### Security
+- Upgrade Jackson to 2.13.3
 ## 2.1.2.0
 ### New Stuff
 - mapadapt
