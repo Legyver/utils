@@ -1,6 +1,12 @@
 description = 'An extraction adapter'
 
 apply from: publishBuildScript
+apply plugin: 'com.legyver.update-readme-version'
+
+updateReadmeVersion {
+    versionScheme = libraryVersionScheme
+    versionSchemeVersion = libraryVersionSchemeVersion
+}
 
 dependencies {
     //exception

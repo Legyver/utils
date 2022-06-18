@@ -1,7 +1,7 @@
 # utils-graphrunner
 Process directed graph relations to guarantee all node operations run in correct order
-```gradle
-implementation group: 'com.legyver', name: 'utils-graphrunner', version: '2.1.1.5'
+```groovy
+implementation group: 'com.legyver', name: 'utils-graphrunner', version: '3.0.0-alpha.1'
 ```
 
 ## Features

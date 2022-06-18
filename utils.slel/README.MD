@@ -1,8 +1,8 @@
 # Slel
 Super-Lightweight Expression Language
 
-```gradle
-implementation group: 'com.legyver', name: 'utils-slel', version: '2.1.1.5'
+```groovy
+implementation group: 'com.legyver', name: 'utils-slel', version: '3.0.0-alpha.1'
 ```
 
 ## Use cases

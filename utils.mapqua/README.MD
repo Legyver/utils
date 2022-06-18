@@ -1,8 +1,8 @@
 # utils-mapqua
 Map-backed object representation to solve the problem of forward and backward compatibility.
 
-```gradle
-implementation group: 'com.legyver', name: 'utils-mapqua', version: '2.1.1.5'
+```groovy
+implementation group: 'com.legyver', name: 'utils-mapqua', version: '3.0.0-alpha.1'
 ```
 ## Features
 Allows any of the following to be represented as Maps

@@ -1,9 +1,10 @@
 # utils-nippe
 An if-not-null-then utility
 
-```gradle
-implementation group: 'com.legyver', name: 'utils-nippe', version: '2.1.1.5'
+```groovy
+implementation group: 'com.legyver', name: 'utils-nippe', version: '3.0.0-alpha.1'
 ```
+
 ## Features
 Collapse this:
 ```java

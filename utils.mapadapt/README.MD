@@ -1,8 +1,8 @@
 # utils-mapadapt
 An adapter for typed retrieval of values from a map
 
-```gradle
-implementation group: 'com.legyver', name: 'utils-mapadapt', version: '2.1.2.0'
+```groovy
+implementation group: 'com.legyver', name: 'utils-mapadapt', version: '3.0.0-alpha.1'
 ```
 ## Features
 Adapter for typed value retrieval

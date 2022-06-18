@@ -1,6 +1,10 @@
 # utils
 Handy Java solutions to common problems.
 
+## Built with
+- [Java 11](https://www.azul.com/downloads/?version=java-11-lts&os=windows&architecture=x86-64-bit&package=jdk): Zulu11.56+19-CA (build 11.0.15+10-LTS)
+- [Gradle](https://docs.gradle.org/7.4/release-notes.html)
+
 ## Features
 - [utils.adaptex](utils.adaptex/README.MD)
     - Adapt any function throwing a checked Exception into a function throwing a CoreException
@@ -28,12 +32,10 @@ Handy Java solutions to common problems.
 See the individual README for details
 
 ## Versioning
-Release.Breaking.Feature.Fix
-- Release: Used for major milestone releases.
-- Breaking: Used when the change breaks backward compatibility.
-- Feature: Used when introducing features that do not break backward compatability.
-- Fix: Used for small bug fixes
+As of version 3.0.0 follows [SemVer 2.0](https://semver.org/spec/v2.0.0.html)
+
 ## Releases
 * [Release Notes](https://github.com/Legyver/utils/blob/master/RELEASE.MD)
+
 ## Licensing
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/Legyver/utils/blob/master/LICENSE)

@@ -1,6 +1,12 @@
 description = 'Run functions in order defined in a directed graph.'
 
 apply from: publishBuildScript
+apply plugin: 'com.legyver.update-readme-version'
+
+updateReadmeVersion {
+    versionScheme = libraryVersionScheme
+    versionSchemeVersion = libraryVersionSchemeVersion
+}
 
 dependencies {
     api group: 'com.legyver', name: 'core', version: legyverCoreVersion
