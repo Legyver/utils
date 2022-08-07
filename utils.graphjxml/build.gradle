@@ -1,12 +1,6 @@
 description = 'A Java Graph to XML conversion utility'
 
 apply from: publishBuildScript
-apply plugin: 'com.legyver.update-readme-version'
-
-updateReadmeVersion {
-    versionScheme = libraryVersionScheme
-    versionSchemeVersion = libraryVersionSchemeVersion
-}
 
 dependencies {
     //exception

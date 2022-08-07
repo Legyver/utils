@@ -1,12 +1,6 @@
 description = 'An Super-Light Expression Language (SLEL) for string variable resolution'
 
 apply from: publishBuildScript
-apply plugin: 'com.legyver.update-readme-version'
-
-updateReadmeVersion {
-    versionScheme = libraryVersionScheme
-    versionSchemeVersion = libraryVersionSchemeVersion
-}
 
 dependencies {
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.7.0'

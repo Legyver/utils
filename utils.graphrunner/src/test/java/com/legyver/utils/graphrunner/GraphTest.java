@@ -11,7 +11,7 @@ public class GraphTest {
 	@Test
 	public void resolvesCDependsOnAandB() throws Exception {
 		TestData testData = new TestData();
-		Graph graph = testData.makeGraph();
+		Graph<Evaluated> graph = testData.makeGraph();
 		graph.setStrategy(new RunAllStrategy());//this is also the default strategy
 		Counter counter = new Counter();
 
@@ -29,7 +29,7 @@ public class GraphTest {
 	@Test
 	public void justRunOrphan() throws Exception {
 		TestData testData = new TestData();
-		Graph graph = testData.makeGraph();
+		Graph<Evaluated> graph = testData.makeGraph();
 		graph.setStrategy(new RunWithDependentsStrategy(testData.d.name));
 		Counter counter = new Counter();
 
@@ -48,7 +48,7 @@ public class GraphTest {
 	@Test
 	public void justRunB() throws Exception {
 		TestData testData = new TestData();
-		Graph graph = testData.makeGraph();
+		Graph<Evaluated> graph = testData.makeGraph();
 		graph.setStrategy(new RunWithDependentsStrategy(testData.b.name));
 		Counter counter = new Counter();
 
@@ -67,7 +67,7 @@ public class GraphTest {
 	@Test
 	public void runningCRunsAAndB() throws Exception {
 		TestData testData = new TestData();
-		Graph graph = testData.makeGraph();
+		Graph<Evaluated> graph = testData.makeGraph();
 		graph.setStrategy(new RunWithDependentsStrategy(testData.c.name));
 		Counter counter = new Counter();
 
@@ -111,7 +111,7 @@ public class GraphTest {
 		Evaluated c = new Evaluated("C");
 		Evaluated d = new Evaluated("D");
 
-		Graph makeGraph() {
+		Graph<Evaluated> makeGraph() {
 			return new Graph.Builder()
 					.nodes(a, b, c, d)
 					.connect(new Graph.Connection()

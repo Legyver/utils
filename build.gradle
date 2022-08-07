@@ -1,8 +1,15 @@
+plugins {
+    id 'org.javamodularity.moduleplugin' version '1.8.10' apply false
+    id 'com.legyver.update-readme-version' version '1.0.0' apply false
+    id 'net.nemerosa.versioning' version '3.0.0' apply false
+}
+
 allprojects {
-    repositories {
-        mavenLocal()
-        mavenCentral()
-        jcenter()
+    apply plugin: 'com.legyver.update-readme-version'
+
+    updateReadmeVersion {
+        versionScheme = "SEMVER"
+        versionSchemeVersion = "2.0"
     }
 }
 
@@ -11,22 +18,10 @@ subprojects {
         legyverCoreVersion = '2.0.0'
         commonsLogVersion = '2.17.1'
         publishBuildScript = 'https://raw.githubusercontent.com/Legyver/common-build/1.7.1/publishLibraryModule.gradle' //java 9+ multi-module
-        libraryVersionScheme = "SEMVER"
-        libraryVersionSchemeVersion = "2.0"
     }
-    buildscript {
-        repositories {
-            maven {
-                url "https://plugins.gradle.org/m2/"
-            }
-            maven {
-                name = 'localPluginRepository'
-                url = 'C:/dev/local-plugin-repository'
-            }
-        }
-        dependencies {
-            classpath "gradle.plugin.net.nemerosa:versioning:3.0.0"
-            classpath "com.legyver:update-readme-version:0.1.1"
-        }
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
     }
 }

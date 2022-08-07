@@ -1,12 +1,6 @@
 description = 'Utility to drill down into an Exception stack'
 
 apply from: publishBuildScript
-apply plugin: 'com.legyver.update-readme-version'
-
-updateReadmeVersion {
-    versionScheme = libraryVersionScheme
-    versionSchemeVersion = libraryVersionSchemeVersion
-}
 
 dependencies {
     //exception
