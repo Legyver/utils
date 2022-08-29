@@ -1,0 +1,17 @@
+description = 'An ordered property alternative to java.util.properties'
+
+apply from: publishBuildScript
+
+dependencies {
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.7.0'
+    testImplementation("org.assertj:assertj-core:3.11.1")
+}
+
+test {
+    useJUnitPlatform()
+}
+
+
+java {
+    modularity.inferModulePath = true
+}

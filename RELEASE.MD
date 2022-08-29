@@ -1,4 +1,13 @@
 # Releases
+## 3.1
+### New Stuff
+- Propl
+  - An ordered alternative to java.util.Properties
+## 3.0
+### Minimum JDK
+Built on JDK 11 for LTS
+### Versioning
+Updated to SemVer 2.0
 ## 2.1.2.1
 ### Security
 - Upgrade Jackson to 2.13.3

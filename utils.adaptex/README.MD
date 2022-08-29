@@ -2,7 +2,7 @@
 An extraction adapter
 
 ```groovy
-implementation group: 'com.legyver', name: 'utils-extractex', version: '3.0.0'
+implementation group: 'com.legyver', name: 'utils-extractex', version: '3.1.0'
 ```
 
 ## Features

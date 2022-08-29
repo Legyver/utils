@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class PropertyGraphTest {
-	private static PropertyMap propertyMap;
+	private static PropertyMap sentencePropertyMap;
 
 	@BeforeAll
 	public static void loadProperties() throws IOException {
@@ -23,7 +23,7 @@ public class PropertyGraphTest {
 		Properties sentence = loadProperties(PropertyGraphTest.class.getResourceAsStream("sentence.properties"));
 		Properties subject = loadProperties(PropertyGraphTest.class.getResourceAsStream("subject.properties"));
 		Properties verbs = loadProperties(PropertyGraphTest.class.getResourceAsStream("verb.properties"));
-		propertyMap = PropertyMap.of(adjectives,
+		sentencePropertyMap = PropertyMap.of(adjectives,
 				directObject,
 				nouns,
 				prepositions,
@@ -40,12 +40,17 @@ public class PropertyGraphTest {
 
 	@Test
 	public void quickRedFox() throws Exception {
-		String sentence = (String) propertyMap.get("sentence");
+		String sentence = (String) sentencePropertyMap.get("sentence");
 		assertNull(sentence);
 
-		PropertyGraph propertyGraph = new PropertyGraph(propertyMap);
+		PropertyGraph propertyGraph = new PropertyGraph(sentencePropertyMap);
 		propertyGraph.runGraph(new SlelOperationContext(".format"));
-		sentence = (String) propertyMap.get("sentence");
+		sentence = (String) sentencePropertyMap.get("sentence");
 		assertEquals("The quick red fox jumped over the lazy brown dog", sentence);
+	}
+
+	@Test
+	public void i18nDate() throws Exception {
+
 	}
 }
