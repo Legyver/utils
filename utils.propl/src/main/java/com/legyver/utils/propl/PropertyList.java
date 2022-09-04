@@ -111,7 +111,35 @@ public class PropertyList {
      * @param value the property value
      */
     public void put(String key, String value) {
-        valueList.add(new PropertyTuple(key, value));
+        int index = findIndex(key);
+        if (index > -1) {
+            valueList.remove(index);
+        } else {
+            index = valueList.size();
+        }
+        valueList.add(index, new PropertyTuple(key, value));
+    }
+
+    private int findIndex(String key) {
+        for (int i = 0; i < valueList.size(); i++) {
+            PropertyValue propertyValue = valueList.get(i);
+            if (key.equals(propertyValue.getKey())) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public String remove(String key) {
+        int index = findIndex(key);
+        String result = null;
+        if (index > -1) {
+            PropertyValue propertyValue = valueList.remove(index);
+            if (propertyValue instanceof PropertyTuple) {
+                result = ((PropertyTuple) propertyValue).getValue();
+            }
+        }
+        return result;
     }
 
     /**

@@ -1,4 +1,12 @@
 # Releases
+## 3.2
+### Refactoring
+- Propl
+  - Added remove(String) functionality
+### Bug fixes
+- Propl
+  - put(String, String) should replace existing value
+
 ## 3.1
 ### New Stuff
 - Propl

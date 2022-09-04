@@ -54,4 +54,42 @@ public class PropertyListTest {
                 "three.value"
         ));
     }
+
+    @Test
+    public void overrideProperties() {
+        PropertyList modified = new PropertyList();
+        for (String s : propertyList.stringPropertyNames()) {
+            modified.put(s, propertyList.getProperty(s));
+        }
+        assertThat(modified.size()).isEqualTo(4);
+        modified.put( "three.value", "thrice");
+        assertThat(modified.size()).isEqualTo(4);//it should have replaced the value
+        assertThat(modified.getProperty("three.value")).isEqualTo("thrice");
+
+        modified.put("two.value", "twice");
+        assertThat(modified.size()).isEqualTo(4);//it should have replaced the value
+        assertThat(modified.stringPropertyNames()).containsExactly(
+                "one.value",
+                "two.value",//it should have replaced in same position
+                "generic.comment.followup",
+                "three.value"
+        );
+        assertThat(modified.getProperty("two.value")).isEqualTo("twice");
+    }
+
+    @Test
+    public void removeProperties() {
+        PropertyList modified = new PropertyList();
+        for (String s : propertyList.stringPropertyNames()) {
+            modified.put(s, propertyList.getProperty(s));
+        }
+        assertThat(modified.size()).isEqualTo(4);
+        modified.remove("three.value");
+        assertThat(modified.size()).isEqualTo(3);//it should have removed the value
+        assertThat(modified.stringPropertyNames()).containsExactlyElementsOf(Arrays.asList(
+                "one.value",
+                "two.value",
+                "generic.comment.followup"
+        ));
+    }
 }
