@@ -1,4 +1,9 @@
 # Releases
+## 3.2.1
+### Bug fixes
+- Propl
+  - parsing updated to handle/respect blank lines
+
 ## 3.2
 ### Refactoring
 - Propl

@@ -2,7 +2,9 @@ package com.legyver.utils.propl;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 import java.util.stream.Collectors;
 
 /**
@@ -18,19 +20,7 @@ public class PropertyList {
      */
     public void load(File file) throws FileNotFoundException {
         try (Scanner scanner = new Scanner(file)) {
-            while (scanner.hasNextLine()) {
-                String line = scanner.nextLine();
-                PropertyValue added;
-                if (line.startsWith("#")) {
-                    added = new PropertyComment(line);
-                } else {
-                    String[] parts = line.split("=");
-                    String key = parts[0].trim();
-                    String value = parts[1].trim();
-                    added = new PropertyTuple(key, value);
-                }
-                valueList.add(added);
-            }
+            load(scanner);
         }
     }
 
@@ -40,21 +30,27 @@ public class PropertyList {
      */
     public void load(InputStream inputStream) {
         try (Scanner scanner = new Scanner(inputStream)) {
-            while (scanner.hasNextLine()) {
-                String line = scanner.nextLine();
-                if (!line.isBlank()) {
-                    if (line.startsWith("#")) {
-                        valueList.add(new PropertyComment(line));
-                    } else {
-                        String[] parts = line.split("=");
-                        String key = parts[0].trim();
-                        String value = parts[1].trim();
-                        valueList.add(new PropertyTuple(key, value));
-                    }
-                }
-            }
+            load(scanner);
         }
     }
+
+    private void load(Scanner scanner) {
+        while (scanner.hasNextLine()) {
+            String line = scanner.nextLine().trim();
+            PropertyValue added;
+            if (line.startsWith("#") || line.isBlank() || !line.contains("=")) {
+                added = new PropertyComment(line);
+            } else {
+                int firstEquals = line.indexOf('=');
+                String key = line.substring(0, firstEquals);
+                String value = line.substring(firstEquals + 1);
+                added = new PropertyTuple(key, value);
+            }
+            valueList.add(added);
+        }
+    }
+
+
 
     /**
      * Write the properties to file
@@ -130,6 +126,11 @@ public class PropertyList {
         return -1;
     }
 
+    /**
+     * Remove the specified item from the list
+     * @param key the key of the item to remove
+     * @return the removed item or null
+     */
     public String remove(String key) {
         int index = findIndex(key);
         String result = null;
