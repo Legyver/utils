@@ -9,14 +9,15 @@ implementation group: 'com.legyver', name: 'utils-propl', version: '3.2.1'
 Preserve order and comments in property files
 
 ## Ported methods
-- load(InputStream)
+- load(InputStream): void
 - stringPropertyNames(): List\<String\>
 - getProperty(String): String
-- put(String, Object)
+- put(String, Object): void
+- remove(String): String
 
 ## Additional methods
-- load(File)
-- save(File)
+- load(File): void
+- save(File): void
 - size(): int
 
 Example:
