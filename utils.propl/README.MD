@@ -2,7 +2,7 @@
 Ordered property alternative to java.util.Properties
 
 ```groovy
-implementation group: 'com.legyver', name: 'utils-propl', version: '3.1.0'
+implementation group: 'com.legyver', name: 'utils-propl', version: '3.2.1'
 ```
 
 ## Use cases

@@ -2,7 +2,7 @@
 An if-not-null-then utility
 
 ```groovy
-implementation group: 'com.legyver', name: 'utils-nippe', version: '3.1.0'
+implementation group: 'com.legyver', name: 'utils-nippe', version: '3.2.1'
 ```
 
 ## Features

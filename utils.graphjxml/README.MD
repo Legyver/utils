@@ -1,7 +1,7 @@
 # utils-graphjxml
 A Java Graph to XML conversion utility
 ```groovy
-implementation group: 'com.legyver', name: 'utils-graphjxml', version: '3.1.0'
+implementation group: 'com.legyver', name: 'utils-graphjxml', version: '3.2.1'
 ```
 
 ## Features
