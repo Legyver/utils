@@ -45,7 +45,7 @@ public class PropertyGraph {
 				Matcher m = jexlVar.matcher(currentValue);
 				if (m.find()) {
 					ExpressionInterpreter expressionInterpreter = new ExpressionInterpreter(map);
-					String value = (String) expressionInterpreter.evaluate(currentValue);
+					String value = expressionInterpreter.evaluate(currentValue);
 					//update the map with the value
 					String key = nodeName;
 					//avoid overwriting the <transformationSuffix> property

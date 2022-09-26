@@ -11,7 +11,6 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.events.XMLEvent;
 import java.io.Reader;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Read and parse an XML file into a graph
@@ -84,7 +83,7 @@ public class GraphXmlReader {
                     break;
                 case XMLEvent.CHARACTERS:
                     String content = xmlr.getText().trim();
-                    if (!(content == null || content.isEmpty())) {
+                    if (!content.isEmpty()) {
                         valueParts.add(content);
                         lastReadProcessed = XMLEvent.CHARACTERS;
                     }
@@ -122,7 +121,7 @@ public class GraphXmlReader {
 
     private void setValue(XmlGraph parent, List<String> valueParts) {
         if (!valueParts.isEmpty()) {
-            String joined = valueParts.stream().collect(Collectors.joining(" "));
+            String joined = String.join(" ", valueParts);
             parent.setValue(joined);
             valueParts.clear();
         }

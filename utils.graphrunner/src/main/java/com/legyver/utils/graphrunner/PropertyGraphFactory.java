@@ -66,7 +66,7 @@ public class PropertyGraphFactory {
 	public <T extends Graph.Payload> Graph<T> make(Map<String, Object> propertyMap, BiFunction<String, Object, T> newNodeFactory) {
 		Graph.Builder<T> builder = new Graph.Builder<>();
 		//add all properties to graph
-		propertyMap.entrySet().stream().forEach(entry-> {
+		propertyMap.entrySet().forEach(entry-> {
 			builder.nodes(newNodeFactory.apply(entry.getKey(), entry.getValue()));
 		});
 
@@ -108,7 +108,7 @@ public class PropertyGraphFactory {
 		return result;
 	}
 
-	private class DirectionalProperty {
+	private static class DirectionalProperty {
 		private final String key;
 		private final Set<String> depends = new HashSet<>();
 

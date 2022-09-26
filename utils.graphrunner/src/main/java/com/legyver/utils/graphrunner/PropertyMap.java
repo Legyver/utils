@@ -80,9 +80,8 @@ public class PropertyMap implements Map<String, Object> {
 	public static PropertyMap of(Properties...properties) {
 		PropertyMap propertyMap = new PropertyMap();
 		if (properties != null) {
-			for (Properties p: properties) {
-				p.stringPropertyNames().stream().forEach(s -> propertyMap.internalMap.put(s, p.get(s)));
-			}
+			for (Properties p: properties)
+				p.stringPropertyNames().forEach(s -> propertyMap.internalMap.put(s, p.get(s)));
 		}
 		return propertyMap;
 	}

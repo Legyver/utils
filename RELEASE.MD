@@ -1,4 +1,8 @@
 # Releases
+## 3.3.1
+### Refactoring
+- graphjxml
+  - now can read from both File and InputStream
 ## 3.2.1
 ### Bug fixes
 - Propl

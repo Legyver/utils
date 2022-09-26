@@ -281,7 +281,7 @@ public class TypedMapAdapter {
         return get(name, LocalTime.class);
     }
 
-    private class NumberFormatCatchingClosure<T> implements Function<Object, T> {
+    private static class NumberFormatCatchingClosure<T> implements Function<Object, T> {
         private final Class<T> type;
         private final Function<Object, T> parser;
 

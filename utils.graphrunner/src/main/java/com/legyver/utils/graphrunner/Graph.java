@@ -82,9 +82,7 @@ public class Graph<T> {
 
 		if (!dependent.equals(predecessor)) {
 			//remove dependent from root
-			if (graph.containsKey(dependent)) {
-				graph.remove(dependent);
-			}
+			graph.remove(dependent);
 			graphNode.addDependent(dependentNode);
 			dependentNode.addPrerequisite(graphNode);
 		}
@@ -146,7 +144,7 @@ public class Graph<T> {
 			graphNode.satisfiedNodeNames.clear();
 		}
 		graphNode.satisfiedNodeNames.clear();
-		graphNode.graph.values().stream().forEach(node -> resetNode(options, node));
+		graphNode.graph.values().forEach(node -> resetNode(options, node));
 	}
 
 	/**
@@ -154,7 +152,7 @@ public class Graph<T> {
 	 * @param options: what to reset
 	 */
 	public void reset(ResetOptions options) {
-		this.graph.values().stream()
+		this.graph.values()
 				.forEach(node -> resetNode(options, node));
 	}
 
