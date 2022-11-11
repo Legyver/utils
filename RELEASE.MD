@@ -1,4 +1,8 @@
 # Releases
+## 3.4.0
+### New stuff
+- JsonPathV
+  - Version annotation-based JsonPath parsing
 ## 3.3.1
 ### Refactoring
 - graphjxml
