@@ -2,7 +2,7 @@
 Map-backed object representation to solve the problem of forward and backward compatibility.
 
 ```groovy
-implementation group: 'com.legyver', name: 'utils-mapqua', version: '3.4.0'
+implementation group: 'com.legyver', name: 'utils-mapqua', version: '3.4.0-alpha.1'
 ```
 ## Features
 Allows any of the following to be represented as Maps
