@@ -2,6 +2,19 @@ package com.legyver.utils.jsonmigration.version;
 
 import java.util.Comparator;
 
+/**
+ * Compare versions of SemVer 1.0.
+ * Using this to sort a list will result in the list sorted in ascending order.
+ *
+ * Example
+ * 1.0.0
+ * 1.0.1
+ * 1.0
+ * 1.11
+ * 1
+ *
+ * @since 3.4
+ */
 public class VersionComparator implements Comparator<String> {
 
     @Override

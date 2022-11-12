@@ -21,13 +21,39 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Adapt a Map to a POJO.
+ * Migration is taken into account if the field value is not already known.
+ *
+ * For example, if you have version 1 JSON and the POJO has changed since then but you want those values to be migrated,
+ * then the value will be null when reading the field name from the map.  The field is then examined for possible migrations.
+ * If there are migrations, the value is read from the JSONPath identified on the @Migration.
+ *
+ * Once the value has been saved in the new format to json, when re-reading this JSON, the migration will not be needed.
+ *
+ * @param <T> the type of the class the JSON is to be mapped on to.
+ *
+ * @since 3.4
+ */
 public class JSONPathInputAdapter<T> {
     private static final Logger logger = LogManager.getLogger(JSONPathInputAdapter.class);
     private final Class<T> klass;
+
+    /**
+     * Construct an adapter for a specified POJO class
+     * @param klass the class of the POJO the JSON will be mapped onto
+     */
     public JSONPathInputAdapter(Class<T> klass) {
         this.klass = klass;
     }
 
+    /**
+     * Map the values specified in a map onto a POJO taking into account any identified migration.
+     * @param version the version of the input JSON (as read to the Map)
+     * @param data the mapped data
+     * @return the POJO
+     * @throws CoreException if there is an error accessing or writing to the fields.
+     */
     public T adapt(String version, Map<String, Object> data) throws CoreException {
         try {
             T result = klass.getDeclaredConstructor().newInstance();
@@ -93,6 +119,7 @@ public class JSONPathInputAdapter<T> {
         return JsonPath.read(data, jsonPath.path());
     }
 
+    @SuppressWarnings(value = "unchecked")
     private Object getAdaptedValue(String version, Field field, Map<String, Object> data) throws CoreException {
         String fieldName = field.getName();
         TypedMapAdapter adapter = new TypedMapAdapter(data);
@@ -118,7 +145,12 @@ public class JSONPathInputAdapter<T> {
         } else if (field.getType().isAssignableFrom(LocalDateTime.class)) {
             value = adapter.getLocalDateTime(fieldName);
         } else if (value instanceof Map) {
-            value = new JSONPathInputAdapter<>(field.getType()).adapt(version, (Map<String, Object>) value);
+            if (!field.getType().isAssignableFrom(Map.class)) {
+                //convert to entity
+                value = new JSONPathInputAdapter<>(field.getType()).adapt(version, (Map<String, Object>) value);
+            } else {
+                //Rely on Jackson converting the map values correctly.
+            }
         }
 
         return value;

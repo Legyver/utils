@@ -1,3 +1,7 @@
+plugins {
+    id 'extra-java-module-info' // apply my own plugin written in buildSrc
+}
+
 description = 'An annotation-based implementation of JsonPath with versioning'
 
 apply from: publishBuildScript
@@ -31,6 +35,12 @@ test {
 
 java {
     modularity.inferModulePath = true
+}
+
+extraJavaModuleInfo {
+    automaticModule('json-path-2.7.0.jar', 'com.jayway.jsonpath')
+    automaticModule('json-smart-2.4.7.jar', 'net.minidev.json')
+    automaticModule('accessors-smart-2.4.7.jar', 'net.minidev.accessors')
 }
 
 tasks.withType(JavaCompile) {
