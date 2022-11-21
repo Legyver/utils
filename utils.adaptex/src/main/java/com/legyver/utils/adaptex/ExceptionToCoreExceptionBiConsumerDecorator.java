@@ -27,6 +27,8 @@ public class ExceptionToCoreExceptionBiConsumerDecorator<T, U> {
 	public void accept(T t, U u) throws CoreException {
 		try {
 			biConsumer.accept(t, u);
+		} catch (CoreException coreException) {
+			throw coreException;
 		} catch (Exception ex) {
 			throw new CoreException(ex);
 		}

@@ -26,6 +26,8 @@ public class ExceptionToCoreExceptionPredicateDecorator<T> {
 	public boolean test(T arg) throws CoreException {
 		try {
 			return predicate.test(arg);
+		} catch (CoreException coreException) {
+			throw coreException;
 		} catch (Exception ex) {
 			throw new CoreException(ex);
 		}

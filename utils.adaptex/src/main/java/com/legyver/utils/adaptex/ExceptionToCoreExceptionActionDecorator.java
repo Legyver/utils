@@ -25,6 +25,8 @@ public class ExceptionToCoreExceptionActionDecorator<T> {
 	public T execute() throws CoreException {
 		try {
 			return action.execute();
+		} catch (CoreException coreException) {
+			throw coreException;
 		} catch (Exception ex) {
 			throw new CoreException(ex);
 		}

@@ -16,10 +16,8 @@ import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.temporal.Temporal;
+import java.util.*;
 
 /**
  * Adapt a Map to a POJO.
@@ -37,7 +35,7 @@ import java.util.Map;
  */
 public class JSONPathInputAdapter<T> {
     private static final Logger logger = LogManager.getLogger(JSONPathInputAdapter.class);
-    private final Class<T> klass;
+    private Class<T> klass;
 
     /**
      * Construct an adapter for a specified POJO class
@@ -57,17 +55,15 @@ public class JSONPathInputAdapter<T> {
     public T adapt(String version, Map<String, Object> data) throws CoreException {
         try {
             T result = klass.getDeclaredConstructor().newInstance();
-            for (Field field: FieldUtils.getAllFields(klass)) {
+
+            for (Field field : FieldUtils.getAllFields(klass)) {
                 Boolean valueReady = Boolean.FALSE;
                 String fieldName = field.getName();
                 Object value = data.get(fieldName);
 
-                boolean skipMigration = false;
-
                 if (value != null) {
                     //assume latest spec
                     valueReady = Boolean.TRUE;
-                    skipMigration = Boolean.TRUE;
                 } else {
                     //try to get the value from migration path
                     MultiMigration multiMigration = field.getAnnotation(MultiMigration.class);
@@ -84,9 +80,10 @@ public class JSONPathInputAdapter<T> {
                     }
                 }
 
-                if (!valueReady) {
+                if (!valueReady && fieldIsEntity(field)) {
+                    JSONPathInputAdapter<?> adapter = new JSONPathInputAdapter<>(field.getType());
                     //handle objects that may contain variables and migrations
-                    value = new JSONPathInputAdapter<>(field.getType()).adapt(version, data);
+                    value = adapter.adapt(version, data);
                 }
                 if (value != null) {
                     value = getAdaptedValue(version, field, Map.of(fieldName, value));
@@ -94,9 +91,30 @@ public class JSONPathInputAdapter<T> {
                 }
             }
             return result;
+        } catch (CoreException coreException) {
+            throw coreException;
         } catch (Exception e) {
             throw new CoreException(e);
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private boolean fieldIsEntity(Field field) {
+        Class fieldType = field.getType();
+        boolean result;
+        if (fieldType.isPrimitive()
+                || String.class.isAssignableFrom(fieldType)
+                || Number.class.isAssignableFrom(fieldType)
+                || Temporal.class.isAssignableFrom(fieldType)
+                || Boolean.class.isAssignableFrom(fieldType)
+                || Collection.class.isAssignableFrom(fieldType)
+                || Map.class.isAssignableFrom(fieldType)
+        ) {
+            result = false;
+        } else {
+            result = true;
+        }
+        return result;
     }
 
     private Migration selectMigration(String version, MultiMigration multiMigration) {
@@ -120,34 +138,35 @@ public class JSONPathInputAdapter<T> {
     }
 
     @SuppressWarnings(value = "unchecked")
-    private Object getAdaptedValue(String version, Field field, Map<String, Object> data) throws CoreException {
+    private Object getAdaptedValue(String version, Field field, Map<String, Object> data) throws CoreException, IllegalAccessException {
         String fieldName = field.getName();
         TypedMapAdapter adapter = new TypedMapAdapter(data);
         Object value = data.get(fieldName);
-        if (field.getType().isAssignableFrom(String.class)) {
+        if (String.class.isAssignableFrom(field.getType())) {
             value = adapter.getString(fieldName);
-        } else if (field.getType().isAssignableFrom(Integer.class)) {
+        } else if (Integer.class.isAssignableFrom(field.getType())) {
             value = adapter.getInteger(fieldName);
-        } else if (field.getType().isAssignableFrom(Double.class)) {
+        } else if (Double.class.isAssignableFrom(field.getType())) {
             value = adapter.getDouble(fieldName);
-        } else if (field.getType().isAssignableFrom(Long.class)) {
+        } else if (Long.class.isAssignableFrom(field.getType())) {
             value = adapter.getLong(fieldName);
-        } else if (field.getType().isAssignableFrom(BigInteger.class)) {
+        } else if (BigInteger.class.isAssignableFrom(field.getType())) {
             value = adapter.getBigInteger(fieldName);
-        } else if (field.getType().isAssignableFrom(BigDecimal.class)) {
+        } else if (BigDecimal.class.isAssignableFrom(field.getType())) {
             value = adapter.getBigDecimal(fieldName);
-        } else if (field.getType().isAssignableFrom(Boolean.class)) {
+        } else if (Boolean.class.isAssignableFrom(field.getType())) {
             value = adapter.getBoolean(fieldName);
-        } else if (field.getType().isAssignableFrom(LocalDate.class)) {
+        } else if (LocalDate.class.isAssignableFrom(field.getType())) {
             value = adapter.getLocalDate(fieldName);
-        } else if (field.getType().isAssignableFrom(LocalTime.class)) {
+        } else if (LocalTime.class.isAssignableFrom(field.getType())) {
             value = adapter.getLocalTime(fieldName);
-        } else if (field.getType().isAssignableFrom(LocalDateTime.class)) {
+        } else if (LocalDateTime.class.isAssignableFrom(field.getType())) {
             value = adapter.getLocalDateTime(fieldName);
         } else if (value instanceof Map) {
             if (!field.getType().isAssignableFrom(Map.class)) {
                 //convert to entity
-                value = new JSONPathInputAdapter<>(field.getType()).adapt(version, (Map<String, Object>) value);
+                JSONPathInputAdapter<?> inputAdapter = new JSONPathInputAdapter<>(field.getType());
+                value = inputAdapter.adapt(version, (Map<String, Object>) value);
             } else {
                 //Rely on Jackson converting the map values correctly.
             }

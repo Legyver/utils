@@ -25,6 +25,8 @@ public class ExceptionToCoreExceptionConsumerDecorator<T> {
 	public void accept(T arg) throws CoreException {
 		try {
 			consumer.accept(arg);
+		} catch (CoreException coreException) {
+			throw coreException;
 		} catch (Exception ex) {
 			throw new CoreException(ex);
 		}

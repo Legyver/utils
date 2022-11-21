@@ -29,6 +29,8 @@ public class ExceptionToCoreExceptionBiFunctionDecorator<T, U, R> {
 	public R apply(T t, U u) throws CoreException {
 		try {
 			return biFunction.apply(t, u);
+		} catch (CoreException coreException) {
+			throw coreException;
 		} catch (Exception ex) {
 			throw new CoreException(ex);
 		}

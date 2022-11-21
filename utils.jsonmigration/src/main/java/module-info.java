@@ -1,3 +1,7 @@
+/**
+ * Annotation based JSON migration
+ * @since 3.4
+ */
 module com.legyver.utils.jsonmigration {
     requires org.apache.logging.log4j;
     requires org.apache.commons.lang3;

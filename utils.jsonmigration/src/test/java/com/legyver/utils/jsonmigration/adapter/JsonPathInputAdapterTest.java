@@ -75,10 +75,24 @@ public class JsonPathInputAdapterTest {
                 + "}"
                 + "}";
 
-            Map<String, Object> data = JacksonObjectMapper.INSTANCE.readValue(spec3Json, Map.class);
+        Map<String, Object> data = JacksonObjectMapper.INSTANCE.readValue(spec3Json, Map.class);
 
-            Spec3 spec3 = new JSONPathInputAdapter<>(Spec3.class).adapt("3.0.0", data);
-            assertThat(spec3.data.name).isEqualTo("Test name");
+        Spec3 spec3 = new JSONPathInputAdapter<>(Spec3.class).adapt("3.0.0", data);
+        assertThat(spec3.data.name).isEqualTo("Test name");
+    }
+
+    @Test
+    public void missingSection() throws Exception {
+        String spec3Json = "{"
+                + "\"version\": \"3.0.0\","
+                + "\"data\": {"
+                + "\"name\": \"Test name\""
+                + "}"
+                + "}";
+        Map<String, Object> data = JacksonObjectMapper.INSTANCE.readValue(spec3Json, Map.class);
+        Spec4 spec4 = new JSONPathInputAdapter<>(Spec4.class).adapt("4.0.0", data);
+        assertThat(spec4.data.name).isEqualTo("Test name");
+        assertThat(spec4.data4.missingData).isNull();
     }
 
     public static class Spec1 {
@@ -102,5 +116,16 @@ public class JsonPathInputAdapterTest {
         @Migration(pre = "3.0.0", path = "$.renamed")
         @Migration(pre = "2.0.0", path = "$.named")
         private String name;
+    }
+
+    public static class Spec4 {
+        private String version = "4.0.0";
+
+        private Data3 data;
+        private Data4 data4;
+    }
+
+    public static class Data4 {
+        private String missingData;
     }
 }

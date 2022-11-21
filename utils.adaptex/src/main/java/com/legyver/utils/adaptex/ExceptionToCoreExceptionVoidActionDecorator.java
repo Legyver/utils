@@ -23,6 +23,8 @@ public class ExceptionToCoreExceptionVoidActionDecorator {
 	public void execute() throws CoreException {
 		try {
 			action.execute();
+		} catch (CoreException coreException) {
+			throw coreException;
 		} catch (Exception ex) {
 			throw new CoreException(ex);
 		}

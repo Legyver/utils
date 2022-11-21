@@ -25,6 +25,8 @@ public class ExceptionToCoreExceptionSupplierDecorator<T> {
 	public T get() throws CoreException {
 		try {
 			return supplier.get();
+		} catch (CoreException coreException) {
+			throw coreException;
 		} catch (Exception ex) {
 			throw new CoreException(ex);
 		}

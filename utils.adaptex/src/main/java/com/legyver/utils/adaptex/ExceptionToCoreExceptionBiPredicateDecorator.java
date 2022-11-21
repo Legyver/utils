@@ -28,6 +28,8 @@ public class ExceptionToCoreExceptionBiPredicateDecorator<T, U> {
 	public boolean test(T t, U u) throws CoreException {
 		try {
 			return biPredicate.test(t, u);
+		} catch (CoreException coreException) {
+			throw coreException;
 		} catch (Exception ex) {
 			throw new CoreException(ex);
 		}

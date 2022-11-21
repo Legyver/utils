@@ -27,6 +27,8 @@ public class ExceptionToCoreExceptionFunctionDecorator<T, R> {
 	public R apply(T arg) throws CoreException {
 		try {
 			return function.apply(arg);
+		} catch (CoreException coreException) {
+			throw coreException;
 		} catch (Exception ex) {
 			throw new CoreException(ex);
 		}
