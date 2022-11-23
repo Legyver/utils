@@ -4,6 +4,9 @@ import com.legyver.utils.jackiso.JacksonObjectMapper;
 import com.legyver.utils.jsonmigration.annotation.Migration;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -95,6 +98,71 @@ public class JsonPathInputAdapterTest {
         assertThat(spec4.data4.missingData).isNull();
     }
 
+    @Test
+    public void withListOfString() throws Exception {
+        String spec5Json = "{"
+                + "\"version\": \"5.0.0\","
+                + "\"values\": [\"Test 1\", \"Test 2\"]"
+                + "}";
+        Map<String, Object> data = JacksonObjectMapper.INSTANCE.readValue(spec5Json, Map.class);
+        Spec5 spec = new JSONPathInputAdapter<>(Spec5.class).adapt("5.0.0", data);
+        assertThat(spec.values).isNotNull();
+        assertThat(spec.values).containsExactly("Test 1", "Test 2");
+    }
+
+    @Test
+    public void withListOfEntities() throws Exception {
+        String spec6Json = "{\n" +
+                "  \"version\": \"6.0.0\",\n" +
+                "  \"config\": {\n" +
+                "    \"lastOpened\": {\n" +
+                "      \"filePath\": \"/temp/tmp/Name 1.ext\"\n" +
+                "    },\n" +
+                "    \"recentFiles\": {\n" +
+                "      \"limit\": 5,\n" +
+                "      \"values\": [\n" +
+                "        {\n" +
+                "          \"lastAccessed\": \"2018-07-14T17:10:57\",\n" +
+                "          \"name\": \"Name 1\",\n" +
+                "          \"path\": \"/temp/tmp/Name 1.ext\"\n" +
+                "        },\n" +
+                "        {\n" +
+                "          \"lastAccessed\": \"2018-07-14T13:10:57\",\n" +
+                "          \"name\": \"Name 2\",\n" +
+                "          \"path\": \"/temp/tmp/Name 2.ext\"\n" +
+                "        }\n" +
+                "      ]\n" +
+                "    }\n" +
+                "  }\n" +
+                "}\n" +
+                " ";
+        Map<String, Object> data = JacksonObjectMapper.INSTANCE.readValue(spec6Json, Map.class);
+        Spec6 spec = new JSONPathInputAdapter<>(Spec6.class).adapt("6.0.0", data);
+
+
+        Config config = spec.config;
+        assertThat(config).isNotNull();
+        assertThat(config.lastOpened).isNotNull();
+        assertThat(config.lastOpened.filePath).isEqualTo("/temp/tmp/Name 1.ext");
+        assertThat(config.recentFiles).isNotNull();
+        assertThat(config.recentFiles.limit).isEqualTo(5);
+
+        RecentFiles recentFiles = config.recentFiles;
+        {
+            RecentFile file = recentFiles.values.get(0);
+            assertThat(file.lastAccessed).isEqualTo("2018-07-14T17:10:57");
+            assertThat(file.name).isEqualTo("Name 1");
+            assertThat(file.path).isEqualTo("/temp/tmp/Name 1.ext");
+        }
+        {
+            RecentFile file = recentFiles.values.get(1);
+            assertThat(file.lastAccessed).isEqualTo("2018-07-14T13:10:57");
+            assertThat(file.name).isEqualTo("Name 2");
+            assertThat(file.path).isEqualTo("/temp/tmp/Name 2.ext");
+        }
+
+    }
+
     public static class Spec1 {
         private String version = "1.0.0";
         private String name;
@@ -127,5 +195,36 @@ public class JsonPathInputAdapterTest {
 
     public static class Data4 {
         private String missingData;
+    }
+
+    public static class Spec5 {
+        private String version = "5.0.0";
+        private List<String> values;
+    }
+
+    public static class Spec6 {
+        private String version = "6.0.0";
+        private Config config;
+    }
+
+    public static class Config {
+        private RecentFiles recentFiles;
+        private LastOpened lastOpened;
+    }
+
+    public static class RecentFiles {
+        private List<RecentFile> values = new ArrayList<>();
+        private int limit = 10;
+    }
+
+    public static class LastOpened {
+        private String filePath;
+    }
+
+    public
+    static class RecentFile {
+        private String name;
+        private String path;
+        private LocalDateTime lastAccessed;
     }
 }

@@ -11,6 +11,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
@@ -36,13 +38,19 @@ import java.util.*;
 public class JSONPathInputAdapter<T> {
     private static final Logger logger = LogManager.getLogger(JSONPathInputAdapter.class);
     private Class<T> klass;
+    private boolean setOnParent;
 
     /**
      * Construct an adapter for a specified POJO class
      * @param klass the class of the POJO the JSON will be mapped onto
      */
-    public JSONPathInputAdapter(Class<T> klass) {
+    public JSONPathInputAdapter(Class<T> klass, boolean setOnParent) {
         this.klass = klass;
+        this.setOnParent = setOnParent;
+    }
+
+    public JSONPathInputAdapter(Class<T> klass) {
+        this(klass, false);
     }
 
     /**
@@ -138,7 +146,7 @@ public class JSONPathInputAdapter<T> {
     }
 
     @SuppressWarnings(value = "unchecked")
-    private Object getAdaptedValue(String version, Field field, Map<String, Object> data) throws CoreException, IllegalAccessException {
+    private Object getAdaptedValue(String version, Field field, Map<String, Object> data) throws CoreException, IllegalAccessException, ClassNotFoundException {
         String fieldName = field.getName();
         TypedMapAdapter adapter = new TypedMapAdapter(data);
         Object value = data.get(fieldName);
@@ -163,17 +171,59 @@ public class JSONPathInputAdapter<T> {
         } else if (LocalDateTime.class.isAssignableFrom(field.getType())) {
             value = adapter.getLocalDateTime(fieldName);
         } else if (value instanceof Map) {
-            if (!field.getType().isAssignableFrom(Map.class)) {
+            if (!Map.class.isAssignableFrom(field.getType())) {
                 //convert to entity
                 JSONPathInputAdapter<?> inputAdapter = new JSONPathInputAdapter<>(field.getType());
                 value = inputAdapter.adapt(version, (Map<String, Object>) value);
             } else {
                 //Rely on Jackson converting the map values correctly.
             }
+        } else if (value instanceof Collection) {
+            Collection collection = (Collection) value;
+            if (!collection.isEmpty()) {
+                Collection newCollection = null;
+                Class klass = null;
+                //below assumes collection does not mix native types with entities
+                for (Iterator collIt = collection.iterator(); collIt.hasNext(); ) {
+                    Object collectionObject = collIt.next();
+                    if (collectionObject instanceof Map) {
+                        if (newCollection == null) {
+                            //just do this once
+                            newCollection = instantiateNewCollection(field);
+                            value = newCollection;
+                            klass = getParameterizedClass(field);
+                        }
+                        //convert to entity
+                        JSONPathInputAdapter<?> inputAdapter = new JSONPathInputAdapter<>(klass);
+                        Object convertedObject = inputAdapter.adapt(version, (Map<String, Object>) collectionObject);
+                        newCollection.add(convertedObject);
+                    } else {
+                        break;
+                    }
+                }
+            }
         }
-
         return value;
     }
 
+    private static Class getParameterizedClass(Field field) throws ClassNotFoundException {
+        Class klass;
+        Type[] types = ((ParameterizedType) field.getGenericType()).getActualTypeArguments();
+        Type type = types[0];
+        String typeName = type.getTypeName();
+        klass = Class.forName(typeName);
+        return klass;
+    }
 
+    private static Collection instantiateNewCollection(Field field) throws CoreException {
+        Collection newCollection;
+        if (List.class.isAssignableFrom(field.getType())) {
+            newCollection = new ArrayList();
+        } else if (Set.class.isAssignableFrom(field.getType())) {
+            newCollection = new HashSet();
+        } else {
+            throw new CoreException("Unsupported collection type: " + field.getType());
+        }
+        return newCollection;
+    }
 }
