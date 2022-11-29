@@ -6,11 +6,15 @@ import com.legyver.utils.jsonmigration.annotation.MultiMigration;
 import com.legyver.utils.jsonmigration.annotation.Migration;
 import com.legyver.utils.jsonmigration.version.VersionSelector;
 import com.legyver.utils.mapadapt.TypedMapAdapter;
+import com.legyver.utils.ruffles.SetByMethod;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
+import org.apache.commons.lang3.reflect.MethodUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
@@ -38,19 +42,13 @@ import java.util.*;
 public class JSONPathInputAdapter<T> {
     private static final Logger logger = LogManager.getLogger(JSONPathInputAdapter.class);
     private Class<T> klass;
-    private boolean setOnParent;
 
     /**
      * Construct an adapter for a specified POJO class
      * @param klass the class of the POJO the JSON will be mapped onto
      */
-    public JSONPathInputAdapter(Class<T> klass, boolean setOnParent) {
-        this.klass = klass;
-        this.setOnParent = setOnParent;
-    }
-
     public JSONPathInputAdapter(Class<T> klass) {
-        this(klass, false);
+        this.klass = klass;
     }
 
     /**
@@ -95,7 +93,8 @@ public class JSONPathInputAdapter<T> {
                 }
                 if (value != null) {
                     value = getAdaptedValue(version, field, Map.of(fieldName, value));
-                    FieldUtils.writeField(field, result, value, true);
+                    String mutatorName = "set" + StringUtils.capitalize(fieldName);
+                    new SetByMethod(field).set(result, value);
                 }
             }
             return result;

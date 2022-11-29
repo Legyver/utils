@@ -26,6 +26,8 @@ Handy Java solutions to common problems.
     - A cross-referencing properties utility
 - [utils.propl](utils.propl/README.MD)
   - An ordered alternative to java.util.properties
+- [utils.ruffles](utils.ruffles/README.MD)
+  - Reflection utilities for modular applications
 - [utils.slel](utils.slel/README.MD)
     - A super-lightweight expression language for String concatenation
 - [utils.wrapadapt](utils.wrapadapt/README.MD)

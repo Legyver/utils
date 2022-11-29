@@ -13,18 +13,9 @@ dependencies {
     api group: 'org.apache.logging.log4j', name: 'log4j-core', version: commonsLogVersion
     //string manipulation
     api group: 'org.apache.commons', name: 'commons-lang3', version: commonsLangVersion
-    //jsonpath
-    api group: 'com.jayway.jsonpath', name: 'json-path', version: '2.7.0'
     //io
     api group: 'commons-io', name: 'commons-io', version: commonsIoVersion
 
-    //adapt values for common types
-    api project(':utils.mapadapt')
-    //reflection utilities
-    api project(':utils.ruffles')
-
-
-    testImplementation project(':utils.jackiso')
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
     testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.19.0'

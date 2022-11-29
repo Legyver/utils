@@ -3,6 +3,8 @@
 ### New stuff
 - JsonPathV
   - Version annotation-based JsonPath parsing
+- Ruffles
+  - Reflection utilities to set a value on a field
 ## 3.3.1
 ### Refactoring
 - graphjxml
