@@ -16,10 +16,10 @@ allprojects {
 subprojects {
     ext {
         legyverCoreVersion = '2.0.0'
-        commonsLogVersion = '2.17.1'
-        commonsLangVersion = '3.11'
-        commonsIoVersion = '2.7'
-        jacksonVersion = '2.13.4'
+        commonsLogVersion = '2.19.0'
+        commonsLangVersion = '3.12.0'
+        commonsIoVersion = '2.11.0'
+        jacksonVersion = '2.14.1'
         publishBuildScript = 'https://raw.githubusercontent.com/Legyver/common-build/1.7.1/publishLibraryModule.gradle' //java 9+ multi-module
     }
 
