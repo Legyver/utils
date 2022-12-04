@@ -9,6 +9,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Collection;
 
 /**
@@ -39,7 +40,7 @@ public class SetByMethod {
         String mutatorName = "set" + StringUtils.capitalize(fieldName);
         boolean success = false;
         try {
-            MethodUtils.invokeMethod(object, mutatorName, value);
+            setWithMethodName(object, mutatorName, value);
             success = true;
         } catch (NoSuchMethodException|InvocationTargetException|IllegalAccessException exception) {
             logger.debug(exception);
@@ -56,16 +57,15 @@ public class SetByMethod {
                                 if (!mutatorNameFinalized) {
                                     mutatorName = "add" + StringUtils.capitalize(fieldName);
                                 }
-                                MethodUtils.invokeMethod(object, mutatorName, v);
+                                setWithMethodName(object, mutatorName, v);
                                 mutatorNameFinalized = true;
                                 success = true;
-
                             } catch (InvocationTargetException | NoSuchMethodException exception1) {
                                 logger.debug(exception1);
                                 if (!mutatorNameFinalized && mutatorName.endsWith("s")) {
                                     mutatorName = mutatorName.substring(0, mutatorName.length() - 1);
                                 }
-                                MethodUtils.invokeMethod(object, mutatorName, v);
+                                setWithMethodName(object, mutatorName, v);
                                 mutatorNameFinalized = true;
                                 success = true;
                             }
@@ -83,6 +83,16 @@ public class SetByMethod {
                     throw new CoreException(e);
                 }
             }
+        }
+    }
+
+    private static void setWithMethodName(Object object, String mutatorName, Object v) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        Method method = object.getClass().getMethod(mutatorName, v.getClass());
+        if (method.canAccess(object)) {
+            method.invoke(object, v);
+        } else {
+            //Check if Apache has access
+            MethodUtils.invokeMethod(object, mutatorName, v);
         }
     }
 }
