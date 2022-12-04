@@ -78,7 +78,11 @@ public class SetByMethod {
         } finally {
             if (!success) {
                 try {
-                    FieldUtils.writeField(field, object, value, true);
+                    if (field.canAccess(object)) {
+                        field.set(object, value);
+                    } else {
+                        FieldUtils.writeField(field, object, value, true);
+                    }
                 } catch (IllegalAccessException e) {
                     throw new CoreException(e);
                 }

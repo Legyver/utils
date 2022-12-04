@@ -1,18 +1,35 @@
 # utils-ruffles
-Utility to set a field's value by guessing its method name prior to resorting to reflection.
+Utility to set/get a field's value by guessing its method name prior to resorting to reflection.
+
+Uses Apache's MethodUtils/FieldUtils as a backup to cut down on number of targets in modular ***opens*** directives.
 
 ```groovy
 implementation group: 'com.legyver', name: 'utils-ruffles', version: '3.4.0-alpha.4'
 ```
 
-
 ## Features
-1. Set a value of a field via a method prior to resorting to reflection
-   1. If the value is not a Collection
-      1. Try set + (capitalized) field name
-   2. If the value is a Collection
-      1. try add + (capitalized) field name
-      2. try add + (capitalized and singularized) fieldName
+### Setting a value
+Set a value of a field via a method prior to resorting to reflection
+1. If the value is not a Collection
+   1. Try set + (capitalized) field name
+   2. Same but with commons-lang3 in case the module of the bean opens package to org.apache.commons.lang3
+2. If the value is a Collection
+   1. Try add + (capitalized) field name
+   2. Same but with commons-lang3 in case the module of the bean opens package to org.apache.commons.lang3
+   3. Try add + (capitalized and singularized) fieldName
+   4. Same but with commons-lang3 in case the module of the bean opens package to org.apache.commons.lang3
+3. If none of the above work
+   1. Try setting the value on the field by reflection directly
+   2. Same but with commons-lang3 in case the module of the bean opens package to org.apache.commons.lang3 
+
+### Getting a value
+Get a value of a field via the method
+1. Try by method name
+   1. Try get + (capitalized) field name
+   2. Same but with commons-lang3 in case the module of the bean opens package to org.apache.commons.lang3
+2. If neither above work, 
+   1. Try getting the value of the field by reflection directly
+   2. Same but with commons-lang3 in case the module of the bean opens package to org.apache.commons.lang3
 
 ## Example
 ### Field with no setter
