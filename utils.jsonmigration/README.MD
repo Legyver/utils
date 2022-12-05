@@ -1,8 +1,8 @@
-# utils-jsonpathv
+# utils-jsonmigration
 Annotation-based marshalling of JsonPath defined fields.
 
 ```groovy
-implementation group: 'com.legyver', name: 'utils-jsonmigration', version: '3.4.0-alpha.4'
+implementation group: 'com.legyver', name: 'utils-jsonmigration', version: '3.4.0'
 ```
 
 **Note:** If your consuming application is modular, you will need to provide automatic modules for several legacy dependencies.
@@ -71,6 +71,8 @@ Version 2 JSON
 
 We can then ensure that we can read the version 1 file by annotating the renamed field with @Migration
 ```java
+import com.legyver.utils.jsonmigration.annotation.Migration;
+
 public class Spec2 {
     private String version = "2.0.0";
     @Migration(pre = "2.0.0", path = "$.name")
@@ -94,6 +96,8 @@ The version 3 JSON is shown below.
 We can populate this container object from v1 and v2 json with @Migration annotations
 
 ```java
+import com.legyver.utils.jsonmigration.annotation.Migration;
+
 public class Spec3 {
     private String version = "3.0.0";
     private Data3 data;

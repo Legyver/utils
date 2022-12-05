@@ -1,10 +1,14 @@
 # Releases
 ## 3.4.0
 ### New stuff
-- JsonPathV
+- JSONMigration
   - Version annotation-based JsonPath parsing
 - Ruffles
   - Reflection utilities to set a value on a field
+### Refactoring
+- Dependency bumps
+- AdaptEx
+  - Limit number of same-type exceptions wrapped
 ## 3.3.1
 ### Refactoring
 - graphjxml

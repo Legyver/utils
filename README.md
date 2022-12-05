@@ -16,6 +16,8 @@ Handy Java solutions to common problems.
   - Run functions in order defined in a directed graph
 - [utils.jackiso](utils.jackiso/README.MD)
     - Jackson wrapper with built-in Java Time API support for ISO 8601 dates
+- [utils.jsonmigration](utils.jsonmigration/README.MD)
+    - Annotation-based marshalling of JsonPath defined fields.
 - [utils.mapadapt](utils.mapadapt/README.MD)
   - Retrieved typed vales from a map. 
 - [utils.mapqua](utils.mapqua/README.MD)

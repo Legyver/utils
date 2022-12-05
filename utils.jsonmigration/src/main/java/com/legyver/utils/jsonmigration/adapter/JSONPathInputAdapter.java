@@ -6,6 +6,7 @@ import com.legyver.utils.jsonmigration.annotation.MultiMigration;
 import com.legyver.utils.jsonmigration.annotation.Migration;
 import com.legyver.utils.jsonmigration.version.VersionSelector;
 import com.legyver.utils.mapadapt.TypedMapAdapter;
+import com.legyver.utils.ruffles.ClassInstantiator;
 import com.legyver.utils.ruffles.SetByMethod;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
@@ -59,7 +60,7 @@ public class JSONPathInputAdapter<T> {
      */
     public T adapt(String version, Map<String, Object> data) throws CoreException {
         try {
-            T result = klass.getDeclaredConstructor().newInstance();
+            T result = new ClassInstantiator<>(klass).getNewInstance();
 
             for (Field field : FieldUtils.getAllFields(klass)) {
                 Boolean valueReady = Boolean.FALSE;

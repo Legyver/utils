@@ -4,12 +4,15 @@ Utility to set/get a field's value by guessing its method name prior to resortin
 Uses Apache's MethodUtils/FieldUtils as a backup to cut down on number of targets in modular ***opens*** directives.
 
 ```groovy
-implementation group: 'com.legyver', name: 'utils-ruffles', version: '3.4.0-alpha.4'
+implementation group: 'com.legyver', name: 'utils-ruffles', version: '3.4.0'
 ```
 
 ## Features
 ### Setting a value
 Set a value of a field via a method prior to resorting to reflection
+```java
+new SetByMethod(field).set(object, valueToSet); 
+```
 1. If the value is not a Collection
    1. Try set + (capitalized) field name
    2. Same but with commons-lang3 in case the module of the bean opens package to org.apache.commons.lang3
@@ -20,10 +23,13 @@ Set a value of a field via a method prior to resorting to reflection
    4. Same but with commons-lang3 in case the module of the bean opens package to org.apache.commons.lang3
 3. If none of the above work
    1. Try setting the value on the field by reflection directly
-   2. Same but with commons-lang3 in case the module of the bean opens package to org.apache.commons.lang3 
+   2. Same but with commons-lang3 in case the module of the bean opens package to org.apache.commons.lang3
 
 ### Getting a value
 Get a value of a field via the method
+```java
+MyValue value = new GetByMethod(field).get(config);
+```
 1. Try by method name
    1. Try get + (capitalized) field name
    2. Same but with commons-lang3 in case the module of the bean opens package to org.apache.commons.lang3
@@ -31,7 +37,16 @@ Get a value of a field via the method
    1. Try getting the value of the field by reflection directly
    2. Same but with commons-lang3 in case the module of the bean opens package to org.apache.commons.lang3
 
-## Example
+### Constructing a new instance of a class
+```java
+My entity = new ClassInstantiator(My.class).getNewInstance();
+```
+
+Get a new instance of a class
+1. Try by calling new instance on the declared constructor
+2. Same but with commons-lang3 in case the module of the bean opens package to org.apache.commons.lang3
+
+## Examples
 ### Field with no setter
 Below will set the value by reflection
 ```java
