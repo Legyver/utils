@@ -16,3 +16,10 @@ java {
 test {
     useJUnitPlatform()
 }
+
+legyverLicenseData {
+    targetFile = 'com/legyver/utils/nippe/license/license.properties'
+    applyV2LicenseDataForModules = [
+            'com.legyver.core'
+    ]
+}

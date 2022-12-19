@@ -1,4 +1,7 @@
 # Releases
+## 3.4.1
+### Refactoring
+- Migrated license.properties to v2
 ## 3.4.0
 ### New stuff
 - JSONMigration

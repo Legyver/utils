@@ -19,3 +19,10 @@ test {
 java {
     modularity.inferModulePath = true
 }
+
+legyverLicenseData {
+    targetFile = 'com/legyver/utils/adaptex/license/license.properties'
+    applyV2LicenseDataForModules = [
+            'com.legyver.core'
+    ]
+}

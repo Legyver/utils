@@ -20,3 +20,11 @@ test {
 java {
     modularity.inferModulePath = true
 }
+
+legyverLicenseData {
+    targetFile = 'com/legyver/utils/graphjxml/license/license.properties'
+    applyV2LicenseDataForModules = [
+            'com.legyver.core',
+            'org.apache.logging.log4j'
+    ]
+}

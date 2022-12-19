@@ -15,3 +15,7 @@ test {
 java {
     modularity.inferModulePath = true
 }
+
+legyverLicenseData {
+    targetFile = 'com/legyver/utils/propl/license/license.properties'
+}

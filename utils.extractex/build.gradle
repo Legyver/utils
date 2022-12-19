@@ -22,3 +22,10 @@ tasks.withType(JavaCompile) {
     options.compilerArgs << '-Xlint:unchecked'
     options.deprecation = true
 }
+
+legyverLicenseData {
+    targetFile = 'com/legyver/utils/extractex/license/license.properties'
+    applyV2LicenseDataForModules = [
+            'com.legyver.core'
+    ]
+}

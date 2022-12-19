@@ -27,3 +27,14 @@ tasks.withType(JavaCompile) {
     options.compilerArgs << '-Xlint:unchecked'
     options.deprecation = true
 }
+
+
+legyverLicenseData {
+    targetFile = 'com/legyver/utils/jackiso/license/license.properties'
+    applyV2LicenseDataForModules = [
+            'com.legyver.core',
+            'com.legyver.utils',
+            'com.fasterxml.jackson.databind',
+            'com.fasterxml.jackson.datatype.jsr310'
+    ]
+}

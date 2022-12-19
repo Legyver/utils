@@ -40,3 +40,14 @@ tasks.withType(JavaCompile) {
     options.compilerArgs << '-Xlint:unchecked'
     options.deprecation = true
 }
+
+legyverLicenseData {
+    targetFile = 'com/legyver/utils/ruffles/license/license.properties'
+    applyV2LicenseDataForModules = [
+            'com.legyver.core',
+            'com.legyver.utils',
+            'org.apache.commons.io',
+            'org.apache.commons.lang3',
+            'org.apache.logging.log4j'
+    ]
+}

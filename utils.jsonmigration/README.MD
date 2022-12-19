@@ -2,7 +2,7 @@
 Annotation-based marshalling of JsonPath defined fields.
 
 ```groovy
-implementation group: 'com.legyver', name: 'utils-jsonmigration', version: '3.4.0'
+implementation group: 'com.legyver', name: 'utils-jsonmigration', version: '3.4.1'
 ```
 
 **Note:** If your consuming application is modular, you will need to provide automatic modules for several legacy dependencies.
