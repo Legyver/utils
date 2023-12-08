@@ -6,7 +6,7 @@ dependencies {
     api group: 'com.legyver', name: 'core', version: legyverCoreVersion
 
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.7.0'
-    testImplementation("org.assertj:assertj-core:3.11.1")
+    testImplementation('org.assertj:assertj-core:3.24.2')
 }
 
 java {

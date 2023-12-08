@@ -23,4 +23,6 @@ include ':utils.graphjxml'
 include ':utils.mapadapt'
 include ':utils.propl'
 include ':utils.ruffles'
+include ':utils.cli'
+include ':utils.httpclient'
 

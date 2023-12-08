@@ -1,4 +1,12 @@
 # Releases
+## 3.5.0
+### New stuff
+- CLI
+  - Java Command Line Menu support
+- HttpClient
+  - An HTTP client wrapper around Http(s)URLConnection with GZIP content handling
+### Refactoring
+- Dependency bumps
 ## 3.4.1
 ### Refactoring
 - Migrated license.properties to v2

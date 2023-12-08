@@ -2,7 +2,7 @@
 Extract a specified exception by type from wrapped exception hell.
 
 ```groovy
-implementation group: 'com.legyver', name: 'utils-extractex', version: '3.4.1'
+implementation group: 'com.legyver', name: 'utils-extractex', version: '3.5.0'
 ```
 ## Features
 Null-safe and InvocationTargetException handling.

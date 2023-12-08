@@ -8,12 +8,16 @@ Handy Java solutions to common problems.
 ## Features
 - [utils.adaptex](utils.adaptex/README.MD)
     - Adapt any function throwing a checked Exception into a function throwing a CoreException
+- [utils.cli](utils.cli/README.MD)
+    - Command line interface for Java
 - [utils.extractex](utils.extractex/README.MD)
     - Extract exceptions of specific types from wrapped exceptions
 - [utils.graphjxml](utils.graphjxml/README.MD)
     - A Java-based directed graph to XML conversion utility
 - [utils.graphrunner](utils.graphrunner/README.MD)
   - Run functions in order defined in a directed graph
+- [utils.httpclient](utils.httpclient/README.MD)
+  - An HTTP client wrapper around Http(s)URLConnection
 - [utils.jackiso](utils.jackiso/README.MD)
     - Jackson wrapper with built-in Java Time API support for ISO 8601 dates
 - [utils.jsonmigration](utils.jsonmigration/README.MD)
