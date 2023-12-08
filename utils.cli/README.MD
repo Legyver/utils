@@ -51,17 +51,6 @@ Error: Menu item [-auth:basic] requires additional context.  See --help for opti
             (Menu.SubOption) Menu.subOption("--file")
                     .description("reads credentials from file")
                     .onArgument(s -> operatingContext.authFile = s),
-            (Menu.SubOption) Menu.subOption("--creds")
-                    .description("specifies credentials (username/password)")
-                    .onArgument(s -> {
-                        int firstSlash = s.indexOf('/');
-                        if (firstSlash < 0) {
-                            operatingContext.username = s;
-                        } else {
-                            operatingContext.username = s.substring(0, firstSlash);
-                            operatingContext.password = s.substring(firstSlash + 1);
-                        }
-                    }),
             (Menu.SubOption) Menu.subOption("--user")
                     .description("specifies a username")
                     .onArgument(s -> operatingContext.username = s),
@@ -96,7 +85,7 @@ MyProgram --help
 
 Collisions result in the automatically generated ones being removed.  If two identical entries are specified an InvalidOptionException is thrown.  
 
-- Any handled option starting with '-' raises an Exception.
+- Any unhandled option starting with '-' raises an Exception.
 ```shell
 MyProgram --invalid
 InvalidOptionException: No such option '--invalid'
