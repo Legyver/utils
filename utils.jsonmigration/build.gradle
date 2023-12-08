@@ -14,7 +14,7 @@ dependencies {
     //string manipulation
     api group: 'org.apache.commons', name: 'commons-lang3', version: commonsLangVersion
     //jsonpath
-    api group: 'com.jayway.jsonpath', name: 'json-path', version: '2.7.0'
+    api group: 'com.jayway.jsonpath', name: 'json-path', version: '2.8.0'
     //io
     api group: 'commons-io', name: 'commons-io', version: commonsIoVersion
 
@@ -40,9 +40,9 @@ java {
 }
 
 legacyJavaModuleInfo {
-    automaticModule('json-path-2.7.0.jar', 'com.jayway.jsonpath')
-    automaticModule('json-smart-2.4.7.jar', 'net.minidev.json')
-    automaticModule('accessors-smart-2.4.7.jar', 'net.minidev.accessors')
+    automaticModule('json-path-2.8.0.jar', 'com.jayway.jsonpath')
+    automaticModule('json-smart-2.4.10.jar', 'net.minidev.json')
+    automaticModule('accessors-smart-2.4.9.jar', 'net.minidev.accessors')
 }
 
 tasks.withType(JavaCompile) {
