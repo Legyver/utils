@@ -1,4 +1,10 @@
 # Releases
+## 3.5.1
+### Security
+- Upgrade json-path dependencies to 2.9
+### Refactoring
+- Ruffles/JSONMigration
+  - Use automatic modules
 ## 3.5.0
 ### New stuff
 - CLI

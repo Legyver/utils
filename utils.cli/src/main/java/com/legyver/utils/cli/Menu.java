@@ -337,6 +337,12 @@ public class Menu {
             return requireInput != null ? requireInput : this.onArgument != null;
         }
 
+        /**
+         * Set a flag to require the context (sub options) to be provided when specifying a menu item
+         *
+         * @param requireContext true if an error should be thrown when transitioning prematurely
+         * @return
+         */
         public Option requireContext(boolean requireContext) {
             this.requireContext = requireContext;
             return this;
@@ -752,6 +758,10 @@ public class Menu {
      */
     @FunctionalInterface
     public interface Validator {
+        /**
+         * Validate menu input
+         * @throws InvalidUsageException if the usage is invalid
+         */
         void validate() throws InvalidUsageException;
     }
 }

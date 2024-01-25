@@ -1,7 +1,3 @@
-plugins {
-    id 'com.legyver.legacy-java-module-info' version '1.0.0'
-}
-
 description = 'An annotation-based implementation of JsonPath with versioning'
 
 apply from: publishBuildScript
@@ -30,11 +26,6 @@ java {
     modularity.inferModulePath = true
 }
 
-legacyJavaModuleInfo {
-    automaticModule('json-path-2.7.0.jar', 'com.jayway.jsonpath')
-    automaticModule('json-smart-2.4.7.jar', 'net.minidev.json')
-    automaticModule('accessors-smart-2.4.7.jar', 'net.minidev.accessors')
-}
 
 tasks.withType(JavaCompile) {
     options.compilerArgs << '-Xlint:unchecked'

@@ -1,7 +1,3 @@
-plugins {
-    id 'com.legyver.legacy-java-module-info' version '1.0.0'
-}
-
 description = 'An annotation-based implementation of JsonPath with versioning'
 
 apply from: publishBuildScript
@@ -14,7 +10,7 @@ dependencies {
     //string manipulation
     api group: 'org.apache.commons', name: 'commons-lang3', version: commonsLangVersion
     //jsonpath
-    api group: 'com.jayway.jsonpath', name: 'json-path', version: '2.8.0'
+    api group: 'com.jayway.jsonpath', name: 'json-path', version: '2.9.0'
     //io
     api group: 'commons-io', name: 'commons-io', version: commonsIoVersion
 
@@ -37,12 +33,6 @@ test {
 
 java {
     modularity.inferModulePath = true
-}
-
-legacyJavaModuleInfo {
-    automaticModule('json-path-2.8.0.jar', 'com.jayway.jsonpath')
-    automaticModule('json-smart-2.4.10.jar', 'net.minidev.json')
-    automaticModule('accessors-smart-2.4.9.jar', 'net.minidev.accessors')
 }
 
 tasks.withType(JavaCompile) {

@@ -2,7 +2,7 @@
 An adapter for typed retrieval of values from a map
 
 ```groovy
-implementation group: 'com.legyver', name: 'utils-mapadapt', version: '3.5.0'
+implementation group: 'com.legyver', name: 'utils-mapadapt', version: '3.5.1'
 ```
 ## Features
 Adapter for typed value retrieval

@@ -3,7 +3,7 @@
  * @since 3.4
  */
 module com.legyver.utils.jsonmigration {
-    requires com.jayway.jsonpath;
+    requires json.path;
     requires com.legyver.core;
     requires com.legyver.utils.mapadapt;
     requires com.legyver.utils.ruffles;
