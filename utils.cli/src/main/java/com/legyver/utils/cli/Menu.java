@@ -341,7 +341,7 @@ public class Menu {
          * Set a flag to require the context (sub options) to be provided when specifying a menu item
          *
          * @param requireContext true if an error should be thrown when transitioning prematurely
-         * @return
+         * @return this builder
          */
         public Option requireContext(boolean requireContext) {
             this.requireContext = requireContext;
