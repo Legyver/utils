@@ -1,4 +1,6 @@
 # Releases
+## 3.5.2
+- No code change.  3.5.1 was built with JDK 17 by mistake.  Rebuilding with JDK 11
 ## 3.5.1
 ### Security
 - Upgrade json-path dependencies to 2.9
