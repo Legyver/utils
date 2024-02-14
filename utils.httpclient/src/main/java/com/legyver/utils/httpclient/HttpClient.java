@@ -28,12 +28,14 @@ public class HttpClient {
     private final Map<String, String> defaultQueryParams;
     private final Auth auth;
     private final AuthOptions authOptions;
+    private final String[] pathVariables;
 
-    private HttpClient(Map<String, String> defaultHeaders, Map<String, String> queryParams, Auth auth, AuthOptions authOptions) {
+    private HttpClient(Map<String, String> defaultHeaders, Map<String, String> queryParams, Auth auth, AuthOptions authOptions, String[] pathVariables) {
         this.defaultHeaders = defaultHeaders;
         this.defaultQueryParams = queryParams;
         this.auth = auth;
         this.authOptions = authOptions;
+        this.pathVariables = pathVariables;
     }
 
     /**
@@ -65,7 +67,7 @@ public class HttpClient {
      * @throws ResponseCodeException if the request returns a response code other than 200
      */
     public InputStream send(Method method, String sUrl) throws IOException, ResponseCodeException {
-        return send(method, sUrl, defaultHeaders, defaultQueryParams, auth, authOptions);
+        return send(method, sUrl, defaultHeaders, defaultQueryParams, auth, authOptions, pathVariables);
     }
 
     /**
@@ -76,16 +78,43 @@ public class HttpClient {
      * @param queryParams query parameters to add to the request URL. If any of these query parameters are already in the URL, those will be usurped by these
      * @param auth the authentication scheme to apply to the request
      * @param authOptions authentication data for the authentication scheme
+     * @param pathVariables any path variables to be resolved. Replace (in order)of first occurrence marked by regex \{([a-zA-Z0-9\-])+\})
      * @return the response InputStream
      * @throws IOException if there is an error communicating with the remote server
      * @throws ResponseCodeException if the request returns a response code other than 200
      */
-    public InputStream send(Method method, String sUrl, Map<String, String> headers, Map<String, String> queryParams, Auth auth, AuthOptions authOptions) throws IOException, ResponseCodeException {
+    public InputStream send(Method method, String sUrl, Map<String, String> headers, Map<String, String> queryParams, Auth auth, AuthOptions authOptions, String... pathVariables) throws IOException, ResponseCodeException {
+        sUrl = manipulateUrl(sUrl, queryParams, pathVariables);
         HttpURLConnection conn = defaultConnection(method, new URL(sUrl), auth, authOptions);
+        if (headers != null) {
+            for (Map.Entry<String, String> header: headers.entrySet()) {
+                conn.addRequestProperty(header.getKey(), header.getValue());
+            }
+        }
+        return send(conn);
+    }
+
+    private static String manipulateUrl(String sUrl, Map<String, String> queryParams, String[] pathVariables) {
+        sUrl = includeQueryParams(sUrl, queryParams);
+        sUrl = embedPathVariables(sUrl, pathVariables);
+        return sUrl;
+    }
+
+    private static String embedPathVariables(String sUrl, String[] pathVariables) {
+        if (pathVariables != null) {
+            for (String pathVariable : pathVariables) {
+                sUrl = sUrl.replaceFirst("\\{([a-zA-Z0-9\\-])+\\}", pathVariable);
+            }
+        }
+        return sUrl;
+    }
+
+    private static String includeQueryParams(String sUrl, Map<String, String> queryParams) {
         if (queryParams != null) {
             boolean applyQuestion = !sUrl.contains("?");
-            for (String key : queryParams.keySet()) {
-                String value = queryParams.get(key);
+            for (Map.Entry<String, String> entry : queryParams.entrySet()) {
+                String key = entry.getKey();
+                String value = entry.getValue();
                 if (sUrl.contains(key + "=")) {
                     String pre = sUrl.substring(0, sUrl.lastIndexOf(key + "="));
                     String post = sUrl.substring(sUrl.lastIndexOf(key + "=") + key.length() + 1);
@@ -94,21 +123,25 @@ public class HttpClient {
                     } else {
                         post = "";
                     }
-                    sUrl = pre + key + "=" + value + post;
+                    sUrl = new StringBuilder(pre)
+                            .append(key)
+                            .append("=")
+                            .append(value)
+                            .append(post)
+                            .toString();
                 } else if (applyQuestion) {
                     sUrl = "?" + key + "=" + value;
                     applyQuestion = false;
                 } else {
-                    sUrl = sUrl + "&" + key + "=" + value;
+                    sUrl = new StringBuilder(sUrl)
+                            .append("&")
+                            .append(key)
+                            .append("=")
+                            .append(value).toString();
                 }
             }
         }
-        if (headers != null) {
-            for (String key: headers.keySet()) {
-                conn.addRequestProperty(key, headers.get(key));
-            }
-        }
-        return send(conn);
+        return sUrl;
     }
 
     private HttpURLConnection defaultConnection(Method method, URL url, Auth auth, AuthOptions authOptions) throws IOException {
@@ -121,13 +154,15 @@ public class HttpClient {
     }
 
     private InputStream send(HttpURLConnection conn) throws IOException, ResponseCodeException {
-        logger.debug("Sending URL [{}] with headers {{}}",
-                conn.getURL(),
-                getLoggableHeaders(conn));
+        if (logger.isDebugEnabled()) {
+            logger.debug("Sending URL [{}] with headers {{}}",
+                    conn.getURL(),
+                    getLoggableHeaders(conn));
+        }
         int responseCode = conn.getResponseCode();
         if (responseCode != 200) {
             logErrorResponse(conn);
-            throw new ResponseCodeException("Error with response from external API.  Response code: " + responseCode);
+            throw new ResponseCodeException("Error with response from external API.  Response code: " + responseCode, responseCode);
         }
         logResponseHeaders(conn);
         String contentEncoding = conn.getHeaderField("Content-Encoding");
@@ -153,10 +188,10 @@ public class HttpClient {
     private void logResponseHeaders(HttpURLConnection conn) {
         StringJoiner stringJoiner = new StringJoiner(",");
         Map<String, List<String>> responseHeaders = conn.getHeaderFields();
-        for (String headerName : responseHeaders.keySet()) {
-            String headerValue = responseHeaders.get(headerName).stream()
+        for (Map.Entry<String, List<String>> header : responseHeaders.entrySet()) {
+            String headerValue = header.getValue().stream()
                     .collect(Collectors.joining(","));
-            stringJoiner.add(headerName + "=" + headerValue);
+            stringJoiner.add(header.getKey() + "=" + headerValue);
         }
         logger.debug("Response headers: {{}}", stringJoiner);
     }
@@ -199,6 +234,7 @@ public class HttpClient {
         private Auth auth;
         private String username;
         private String password;
+        private String[] pathVariables;
 
         /**
          * Build the HttpClient
@@ -208,7 +244,7 @@ public class HttpClient {
             AuthOptions authOptions = new AuthOptions();
             authOptions.setUsername(username);
             authOptions.setPassword(password);
-            return new HttpClient(headers, queryParams, auth, authOptions);
+            return new HttpClient(headers, queryParams, auth, authOptions, pathVariables);
         }
 
         /**
@@ -266,6 +302,16 @@ public class HttpClient {
          */
         public Builder password(String password) {
             this.password = password;
+            return this;
+        }
+
+        /**
+         * Add path variables to be resolved in url
+         * @param pathVariables any path variables to be resolved. Replace (in order)of first occurrence marked by regex \{([a-zA-Z0-9\-])+\})
+         * @return this builder
+         */
+        public Builder pathVariables(String... pathVariables) {
+            this.pathVariables = pathVariables;
             return this;
         }
 
