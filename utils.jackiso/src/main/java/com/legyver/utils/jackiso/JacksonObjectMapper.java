@@ -1,6 +1,8 @@
 package com.legyver.utils.jackiso;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.exc.StreamWriteException;
+import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -9,8 +11,10 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.legyver.core.exception.CoreException;
 import com.legyver.utils.adaptex.ExceptionToCoreExceptionFunctionDecorator;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.time.temporal.Temporal;
 
 /**
@@ -58,10 +62,8 @@ public enum JacksonObjectMapper {
 	 * @throws CoreException if there is a problem marshalling to/from JSON
 	 */
 	public <T> T readValue(String content, Class<T> valueType) throws CoreException {
-		if (Temporal.class.isAssignableFrom(valueType)) {
-			if (!content.startsWith("\"")) {
-				content = '"' + content + '"';
-			}
+		if (Temporal.class.isAssignableFrom(valueType) && (!content.startsWith("\""))) {
+			content = '"' + content + '"';
 		}
 		try {
 			return objectMapper.readValue(content, valueType);
@@ -93,7 +95,7 @@ public enum JacksonObjectMapper {
 	 * @throws CoreException if there is a problem marshalling to/from JSON
 	 */
 	public String writeValueAsString(Object value) throws CoreException {
-		return writeValueAsString(value, new ExceptionToCoreExceptionFunctionDecorator<>((o) -> {
+		return writeValueAsString(value, new ExceptionToCoreExceptionFunctionDecorator<>(o -> {
 			return objectMapper.writeValueAsString(value);
 		}));
 	}
@@ -105,21 +107,43 @@ public enum JacksonObjectMapper {
 	 * @throws CoreException if there is a problem marshalling to/from JSON
 	 */
 	public String writeValueAsStringWithPrettyPrint(Object value) throws CoreException {
-		return writeValueAsString(value, new ExceptionToCoreExceptionFunctionDecorator<>((o) -> {
+		return writeValueAsString(value, new ExceptionToCoreExceptionFunctionDecorator<>(o -> {
 			return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(value);
 		}));
 	}
 
 	private String writeValueAsString(Object value, ExceptionToCoreExceptionFunctionDecorator<Object, String> action) throws CoreException {
 		String result = action.apply(value);
-		if (value instanceof Temporal) {
+		if (value instanceof Temporal && (result.startsWith("\""))) {
 			//remove the extra quotes that for some reason are included
-			if (result.startsWith("\"")) {
-				int lastQuote = result.lastIndexOf('"');
-				result = result.substring(1, lastQuote);
-			}
+			int lastQuote = result.lastIndexOf('"');
+			result = result.substring(1, lastQuote);
 		}
 		return result;
+	}
+
+	/**
+	 * Write a value to a file
+	 * @param resultFile the file to write the value to
+	 * @param value the value to write
+	 * @throws IOException if the underlying Jackson library throws an IOException
+	 * @throws StreamWriteException if the underlying Jackson library throws a StreamWriteException
+	 * @throws DatabindException if the underlying Jackson library throws a DatabindException
+	 */
+	public void writeValue(File resultFile, Object value) throws IOException {
+		objectMapper.writeValue(resultFile, value);
+	}
+
+	/**
+	 * Write a value to an output stream
+	 * @param out the output stream to write to
+	 * @param value the value to write
+	 * @throws IOException if the underlying Jackson library throws an IOException
+	 * @throws StreamWriteException if the underlying Jackson library throws a StreamWriteException
+	 * @throws DatabindException if the underlying Jackson library throws a DatabindException
+	 */
+	public void writeValue(OutputStream out, Object value) throws IOException {
+		objectMapper.writeValue(out, value);
 	}
 
 }
