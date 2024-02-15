@@ -3,6 +3,7 @@
 ### Bug fixes
 - HttpClient
   - ResponseCodeException should accept a response code
+  - Query parameters should be included in request url
 ### New functionality
 - HttpClient
   - Builder and client should accept path variables
