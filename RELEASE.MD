@@ -1,4 +1,13 @@
 # Releases
+## 3.6.0
+### Bug fixes
+- HttpClient
+  - ResponseCodeException should accept a response code
+### New functionality
+- HttpClient
+  - Builder and client should accept path variables
+- Jackiso
+  - Expand JacksonObjectMapper functionality to include writing to file/output stream
 ## 3.5.2
 - No code change.  3.5.1 was built with JDK 17 by mistake.  Rebuilding with JDK 11
 ## 3.5.1

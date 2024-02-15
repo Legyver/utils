@@ -2,7 +2,7 @@
 Super-Lightweight Expression Language
 
 ```groovy
-implementation group: 'com.legyver', name: 'utils-slel', version: '3.5.2'
+implementation group: 'com.legyver', name: 'utils.slel', version: '3.6.0'
 ```
 
 ## Use cases
