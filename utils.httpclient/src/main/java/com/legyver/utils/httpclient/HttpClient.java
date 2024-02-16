@@ -3,6 +3,8 @@ package com.legyver.utils.httpclient;
 import com.legyver.utils.httpclient.auth.Auth;
 import com.legyver.utils.httpclient.auth.AuthOptions;
 import com.legyver.utils.httpclient.exception.ResponseCodeException;
+import com.legyver.utils.httpclient.internal.PathVariableProcessor;
+import com.legyver.utils.httpclient.internal.QueryParamProcessor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -95,52 +97,8 @@ public class HttpClient {
     }
 
     private static String manipulateUrl(String sUrl, Map<String, String> queryParams, String[] pathVariables) {
-        sUrl = includeQueryParams(sUrl, queryParams);
-        sUrl = embedPathVariables(sUrl, pathVariables);
-        return sUrl;
-    }
-
-    private static String embedPathVariables(String sUrl, String[] pathVariables) {
-        if (pathVariables != null) {
-            for (String pathVariable : pathVariables) {
-                sUrl = sUrl.replaceFirst("\\{([a-zA-Z0-9\\-])+\\}", pathVariable);
-            }
-        }
-        return sUrl;
-    }
-
-    private static String includeQueryParams(String sUrl, Map<String, String> queryParams) {
-        if (queryParams != null) {
-            boolean applyQuestion = !sUrl.contains("?");
-            for (Map.Entry<String, String> entry : queryParams.entrySet()) {
-                String key = entry.getKey();
-                String value = entry.getValue();
-                if (sUrl.contains(key + "=")) {
-                    String pre = sUrl.substring(0, sUrl.lastIndexOf(key + "="));
-                    String post = sUrl.substring(sUrl.lastIndexOf(key + "=") + key.length() + 1);
-                    if (post.contains("&")) {
-                        post = post.substring(post.indexOf('&'));
-                    } else {
-                        post = "";
-                    }
-                    sUrl = new StringBuilder(pre)
-                            .append(key)
-                            .append("=")
-                            .append(value)
-                            .append(post)
-                            .toString();
-                } else if (applyQuestion) {
-                    sUrl = "?" + key + "=" + value;
-                    applyQuestion = false;
-                } else {
-                    sUrl = new StringBuilder(sUrl)
-                            .append("&")
-                            .append(key)
-                            .append("=")
-                            .append(value).toString();
-                }
-            }
-        }
+        sUrl = new QueryParamProcessor(queryParams).process(sUrl);
+        sUrl = new PathVariableProcessor(pathVariables).process(sUrl);
         return sUrl;
     }
 
