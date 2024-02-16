@@ -1,4 +1,10 @@
 # Releases
+## 3.6.1
+### Bug fixes
+- HttpClient
+  - Query Param processing can lead to malformed URLs
+- Jackiso
+  - JacksonObjectMapper should be able to read from file
 ## 3.6.0
 ### Bug fixes
 - HttpClient

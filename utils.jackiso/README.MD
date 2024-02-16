@@ -2,7 +2,7 @@
 Jackson wrapper that exposes a simplified JSON processing interface
 
 ```groovy
-implementation group: 'com.legyver', name: 'utils.jackiso', version: '3.6.0'
+implementation group: 'com.legyver', name: 'utils.jackiso', version: '3.6.1'
 ```
 ## Features
 - Exposes a properly configured ObjectMapper in a singleton
