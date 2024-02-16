@@ -89,6 +89,18 @@ public enum JacksonObjectMapper {
 	}
 
 	/**
+	 * Read the value from a file
+	 * @param src the file to read the value from
+	 * @param valueType the type of the value to read
+	 * @return the value
+	 * @param <T> the type of the value to read
+	 * @throws IOException if the underlying implementation throws an IOException
+	 */
+	public <T> T readValue(File src, Class<T> valueType) throws IOException {
+		return objectMapper.readValue(src, valueType);
+	}
+
+	/**
 	 * Write a POJO to a String
 	 * @param value the value to write
 	 * @return the String value
