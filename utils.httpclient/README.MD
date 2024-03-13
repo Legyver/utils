@@ -10,7 +10,8 @@ implementation group: 'com.legyver', name: 'utils.httpclient', version: '3.7.0'
 - Supports GET requests (only, currently)
 - Supports Basic Authentication (only, currently)
 - Supports mixing map-based query params with query parameters already in URL
-- Robust (DEBUG) logging of inbound and outbound headers
+- Supports auto-retry for Retry-After response headers on 429 and 503 responses
+- Robust (DEBUG) logging of inbound and outbound
 
 Example GET request with Basic authentication
 ```Java
@@ -21,6 +22,7 @@ Example GET request with Basic authentication
         .auth(Auth.BASIC)
             .username("myuser")
             .password("mypass")
+        .autoHandleRetryAfter()
         .build();
     InputStream is = httpClient.get("https://example.com");
 ```
