@@ -1,11 +1,12 @@
 package com.legyver.utils.adaptex;
 
 import com.legyver.core.exception.CoreException;
+import com.legyver.core.function.ThrowingVoidAction;
 
 /**
  * Decorate a ThrowingVoidAction so that the Exception type will always be wrapped in a {@link CoreException}
  */
-public class ExceptionToCoreExceptionVoidActionDecorator {
+public class ExceptionToCoreExceptionVoidActionDecorator implements ThrowingVoidAction {
 	private final ThrowingVoidAction action;
 
 	/**
@@ -20,6 +21,7 @@ public class ExceptionToCoreExceptionVoidActionDecorator {
 	 * Execute an action
 	 * @throws CoreException any thrown Exception wrapped in a CoreException
 	 */
+	@Override
 	public void execute() throws CoreException {
 		try {
 			action.execute();

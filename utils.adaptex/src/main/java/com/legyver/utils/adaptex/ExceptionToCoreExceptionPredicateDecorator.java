@@ -1,12 +1,13 @@
 package com.legyver.utils.adaptex;
 
 import com.legyver.core.exception.CoreException;
+import com.legyver.core.function.ThrowingPredicate;
 
 /**
  * Decorate a ThrowingPredicate so that the Exception type will always be wrapped in a {@link CoreException}
  * @param <T> the argument type of the predicate
  */
-public class ExceptionToCoreExceptionPredicateDecorator<T> {
+public class ExceptionToCoreExceptionPredicateDecorator<T> implements ThrowingPredicate<T> {
 	private final ThrowingPredicate<T> predicate;
 
 	/**
@@ -23,6 +24,7 @@ public class ExceptionToCoreExceptionPredicateDecorator<T> {
 	 * @return the result of the test
 	 * @throws CoreException if the test throws an Exception
 	 */
+	@Override
 	public boolean test(T arg) throws CoreException {
 		try {
 			return predicate.test(arg);

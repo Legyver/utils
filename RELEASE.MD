@@ -1,4 +1,12 @@
 # Releases
+## 3.7.0
+### New functionality
+- HttpClient
+  - ResponseCodeException should allow response headers to be retrieved
+  - Handle Retry-After response header automatically if configured
+### Refactoring
+- Adaptex
+  - Decorators now implement the com.legyver.core.function interfaces
 ## 3.6.1
 ### Bug fixes
 - HttpClient

@@ -1,12 +1,13 @@
 package com.legyver.utils.adaptex;
 
 import com.legyver.core.exception.CoreException;
+import com.legyver.core.function.ThrowingConsumer;
 
 /**
  * Decorate a ThrowingConsumer so that the Exception type will always be wrapped in a {@link CoreException}
  * @param <T> the type of the consumer's argument
  */
-public class ExceptionToCoreExceptionConsumerDecorator<T> {
+public class ExceptionToCoreExceptionConsumerDecorator<T> implements ThrowingConsumer<T> {
 	private final ThrowingConsumer<T> consumer;
 
 	/**
@@ -22,6 +23,7 @@ public class ExceptionToCoreExceptionConsumerDecorator<T> {
 	 * @param arg the argument
 	 * @throws CoreException any thrown Exception wrapped in a CoreException
 	 */
+	@Override
 	public void accept(T arg) throws CoreException {
 		try {
 			consumer.accept(arg);

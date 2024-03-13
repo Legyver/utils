@@ -5,6 +5,7 @@
 module com.legyver.utils.cli {
     requires com.legyver.core;
     requires org.apache.logging.log4j;
+    requires com.legyver.utils.adaptex;
 
     exports com.legyver.utils.httpclient;
     exports com.legyver.utils.httpclient.auth;

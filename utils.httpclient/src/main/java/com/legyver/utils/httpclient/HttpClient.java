@@ -1,10 +1,13 @@
 package com.legyver.utils.httpclient;
 
+import com.legyver.utils.adaptex.ExceptionToCoreExceptionSupplierDecorator;
 import com.legyver.utils.httpclient.auth.Auth;
 import com.legyver.utils.httpclient.auth.AuthOptions;
+import com.legyver.utils.httpclient.exception.ErrorResponseCodeRetryHandler;
 import com.legyver.utils.httpclient.exception.ResponseCodeException;
 import com.legyver.utils.httpclient.internal.PathVariableProcessor;
 import com.legyver.utils.httpclient.internal.QueryParamProcessor;
+import com.legyver.utils.httpclient.internal.RetryAfterHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -15,7 +18,10 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.StringJoiner;
 import java.util.stream.Collectors;
 import java.util.zip.GZIPInputStream;
 
@@ -31,13 +37,15 @@ public class HttpClient {
     private final Auth auth;
     private final AuthOptions authOptions;
     private final String[] pathVariables;
+    private final Map<Integer, ErrorResponseCodeRetryHandler> autoRetryHandlers;
 
-    private HttpClient(Map<String, String> defaultHeaders, Map<String, String> queryParams, Auth auth, AuthOptions authOptions, String[] pathVariables) {
+    private HttpClient(Map<String, String> defaultHeaders, Map<String, String> queryParams, Auth auth, AuthOptions authOptions, Map<Integer, ErrorResponseCodeRetryHandler> autoRetryHandlers, String[] pathVariables) {
         this.defaultHeaders = defaultHeaders;
         this.defaultQueryParams = queryParams;
         this.auth = auth;
         this.authOptions = authOptions;
         this.pathVariables = pathVariables;
+        this.autoRetryHandlers = autoRetryHandlers;
     }
 
     /**
@@ -93,7 +101,16 @@ public class HttpClient {
                 conn.addRequestProperty(header.getKey(), header.getValue());
             }
         }
-        return send(conn);
+        try {
+            return send(conn);
+        } catch (ResponseCodeException e) {
+            ErrorResponseCodeRetryHandler retryHandler = autoRetryHandlers.get(e.getResponseCode());
+            if (retryHandler != null && retryHandler.handles(e)) {
+                return retryHandler.retry(e, new ExceptionToCoreExceptionSupplierDecorator<>(() -> send(conn)));
+            } else {
+                throw e;
+            }
+        }
     }
 
     private static String manipulateUrl(String sUrl, Map<String, String> queryParams, String[] pathVariables) {
@@ -120,7 +137,7 @@ public class HttpClient {
         int responseCode = conn.getResponseCode();
         if (responseCode != 200) {
             logErrorResponse(conn);
-            throw new ResponseCodeException("Error with response from external API.  Response code: " + responseCode, responseCode);
+            throw new ResponseCodeException("Error with response from external API.  Response code: " + responseCode, responseCode, conn.getHeaderFields());
         }
         logResponseHeaders(conn);
         String contentEncoding = conn.getHeaderField("Content-Encoding");
@@ -193,6 +210,7 @@ public class HttpClient {
         private String username;
         private String password;
         private String[] pathVariables;
+        private Map<Integer, ErrorResponseCodeRetryHandler> autoRetryHandlers;
 
         /**
          * Build the HttpClient
@@ -202,7 +220,7 @@ public class HttpClient {
             AuthOptions authOptions = new AuthOptions();
             authOptions.setUsername(username);
             authOptions.setPassword(password);
-            return new HttpClient(headers, queryParams, auth, authOptions, pathVariables);
+            return new HttpClient(headers, queryParams, auth, authOptions, autoRetryHandlers, pathVariables);
         }
 
         /**
@@ -273,5 +291,26 @@ public class HttpClient {
             return this;
         }
 
+        /**
+         * Auto retry 429 and 503 responses when there is a retry-after response header returned
+         * @return this builder
+         */
+        public Builder autoHandleRetryAfter() {
+            autoHandleErrorResponse(429, new RetryAfterHandler(429));
+            autoHandleErrorResponse(503, new RetryAfterHandler(503));
+            return this;
+        }
+
+        /**
+         * Auto handle an error response code using the specified handler
+         * @param statusCode status code of responses to apply handler to
+         * @param responseCodeHandler response code handler
+         * @return this builder
+         */
+        public Builder autoHandleErrorResponse(Integer statusCode, ErrorResponseCodeRetryHandler responseCodeHandler) {
+            this.autoRetryHandlers.put(statusCode, responseCodeHandler);
+            return this;
+        }
     }
+
 }

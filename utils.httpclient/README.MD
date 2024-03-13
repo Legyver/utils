@@ -2,7 +2,7 @@
 An HTTP client wrapper around Http(s)URLConnection
 
 ```groovy
-implementation group: 'com.legyver', name: 'utils.httpclient', version: '3.6.1'
+implementation group: 'com.legyver', name: 'utils.httpclient', version: '3.7.0'
 ```
 
 ## Features

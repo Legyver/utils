@@ -1,13 +1,14 @@
 package com.legyver.utils.adaptex;
 
 import com.legyver.core.exception.CoreException;
+import com.legyver.core.function.ThrowingBiPredicate;
 
 /**
  * Decorate a ThrowingBiPredicate so that the Exception type will always be wrapped in a {@link CoreException}
  * @param <T> the first argument type of the predicate
  * @param <U> the second argument type of the predicate
  */
-public class ExceptionToCoreExceptionBiPredicateDecorator<T, U> {
+public class ExceptionToCoreExceptionBiPredicateDecorator<T, U> implements ThrowingBiPredicate<T, U> {
 	private final ThrowingBiPredicate<T, U> biPredicate;
 
 	/**
@@ -25,6 +26,7 @@ public class ExceptionToCoreExceptionBiPredicateDecorator<T, U> {
 	 * @return the result of the test
 	 * @throws CoreException if the test throws an Exception
 	 */
+	@Override
 	public boolean test(T t, U u) throws CoreException {
 		try {
 			return biPredicate.test(t, u);

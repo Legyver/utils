@@ -1,13 +1,14 @@
 package com.legyver.utils.adaptex;
 
 import com.legyver.core.exception.CoreException;
+import com.legyver.core.function.ThrowingBiConsumer;
 
 /**
  * Decorate a ThrowingBiConsumer so that the Exception type will always be wrapped in a {@link CoreException}
  * @param <T> the type of the consumer's first argument
  * @param <U> the type of the consumer's second argument
  */
-public class ExceptionToCoreExceptionBiConsumerDecorator<T, U> {
+public class ExceptionToCoreExceptionBiConsumerDecorator<T, U> implements ThrowingBiConsumer<T,U> {
 	private final ThrowingBiConsumer<T, U> biConsumer;
 
 	/**
@@ -24,6 +25,7 @@ public class ExceptionToCoreExceptionBiConsumerDecorator<T, U> {
 	 * @param u the second argument
 	 * @throws CoreException any thrown Exception wrapped in a CoreException
 	 */
+	@Override
 	public void accept(T t, U u) throws CoreException {
 		try {
 			biConsumer.accept(t, u);

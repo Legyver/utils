@@ -2,7 +2,7 @@
 description = 'A library to make benefit command line interfaces'
 
 ```groovy
-implementation group: 'com.legyver', name: 'utils.cli', version: '3.6.1'
+implementation group: 'com.legyver', name: 'utils.cli', version: '3.7.0'
 ```
 
 ## Features

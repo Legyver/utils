@@ -2,7 +2,7 @@
 An if-instanceof-then-execute utility
 
 ```groovy
-implementation group: 'com.legyver', name: 'utils.wrapadapt', version: '3.6.1'
+implementation group: 'com.legyver', name: 'utils.wrapadapt', version: '3.7.0'
 ```
 ## Features
 Get rid of the if-then mess

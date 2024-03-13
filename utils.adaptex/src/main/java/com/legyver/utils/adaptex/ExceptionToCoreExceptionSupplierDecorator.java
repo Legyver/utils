@@ -1,12 +1,13 @@
 package com.legyver.utils.adaptex;
 
 import com.legyver.core.exception.CoreException;
+import com.legyver.core.function.ThrowingSupplier;
 
 /**
  * Decorate a ThrowingSupplier so that the Exception type will always be wrapped in a {@link CoreException}
  * @param <T> the return type of the decorated supplier
  */
-public class ExceptionToCoreExceptionSupplierDecorator<T> {
+public class ExceptionToCoreExceptionSupplierDecorator<T> implements ThrowingSupplier<T> {
 	private final ThrowingSupplier<T> supplier;
 
 	/**
@@ -22,6 +23,7 @@ public class ExceptionToCoreExceptionSupplierDecorator<T> {
 	 * @return the value
 	 * @throws CoreException if the supplier throws an exception
 	 */
+	@Override
 	public T get() throws CoreException {
 		try {
 			return supplier.get();

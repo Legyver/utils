@@ -6,6 +6,7 @@ dependencies {
     //exception
     api group: 'com.legyver', name: 'core', version: legyverCoreVersion
     api group: 'org.apache.logging.log4j', name: 'log4j-api', version: commonsLogVersion
+    api project(':utils.adaptex')
 
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.7.0'
     testImplementation('org.assertj:assertj-core:3.24.2')

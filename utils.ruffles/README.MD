@@ -4,7 +4,7 @@ Utility to set/get a field's value by guessing its method name prior to resortin
 Uses Apache's MethodUtils/FieldUtils as a backup to cut down on number of targets in modular ***opens*** directives.
 
 ```groovy
-implementation group: 'com.legyver', name: 'utils.ruffles', version: '3.6.1'
+implementation group: 'com.legyver', name: 'utils.ruffles', version: '3.7.0'
 ```
 
 ## Features
