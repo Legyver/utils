@@ -3,6 +3,7 @@ package com.legyver.utils.graphrunner.ctx.shared;
 import com.legyver.utils.graphrunner.Graph;
 
 import java.util.Map;
+import java.util.Objects;
 
 /**
  *
@@ -25,7 +26,7 @@ public class SharedMapCtx implements Graph.Payload {
 	 */
 	public SharedMapCtx(String name, Map<String, Object> sharedContextMap) {
 		this.name = name;
-		this.sharedContextMap = sharedContextMap;
+		this.sharedContextMap = Objects.requireNonNull(sharedContextMap, "sharedContextMap must not be null");
 	}
 
 	/**
