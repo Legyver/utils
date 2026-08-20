@@ -5,6 +5,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.xml.stream.XMLStreamException;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
 
@@ -58,42 +59,43 @@ public abstract class AbstractInputReader<T> {
      */
     private static class LineFeedReader extends Reader {
         private final Reader reader;
-        private boolean firstLine = true;
-        int offset = 0;
+        private boolean leadingNewlineChecked = false;
+
         public LineFeedReader(Reader reader) {
-            this.reader = reader;
+            //mark/reset must be reliably supported to skip a leading line terminator without
+            //losing (or corrupting) the character(s) that follow it
+            this.reader = reader.markSupported() ? reader : new BufferedReader(reader);
         }
 
         @Override
         public int read(char[] cbuf, int off, int len) throws IOException {
-            int result = reader.read(cbuf, off, len);
-            if (firstLine) {
-                int start = -1;
-                if ('\r' == cbuf[0]) {
-                    start = 2;
-                } else if ('\n' == cbuf[0]) {
-                    start = 1;
-                }
-                if (start > -1) {
-                    offset += start;
-                    int stopAt = cbuf.length - 1;
-                    for (int i = start; i < len; i++) {
-                        char copy = cbuf[i];
-                        if (i > len - start) {
-                            if (start == 1) {
-                                cbuf[i - 2] = '\n';
-                            } else if (start == 2) {
-                                cbuf[i - 2] = '\r';
-                                cbuf[i - 1] = '\n';
-                            }
-                            break;
-                        }
-                        cbuf[i - 2] = copy;
-                    }
-                }
-                firstLine = false;
+            if (!leadingNewlineChecked) {
+                skipLeadingNewline();
+                leadingNewlineChecked = true;
             }
-            return result;
+            return reader.read(cbuf, off, len);
+        }
+
+        /**
+         * Skip a single leading line terminator - "\r", "\n", or "\r\n" - if present, so the
+         * (picky) underlying {@link javax.xml.stream.XMLStreamReader} doesn't choke on a blank
+         * line before the XML content. Only ever consumes characters actually present at the
+         * start of the stream; anything else is left untouched for the caller to read normally.
+         */
+        private void skipLeadingNewline() throws IOException {
+            reader.mark(2);
+            int c = reader.read();
+            if (c == '\r') {
+                int next = reader.read();
+                if (next != '\n') {
+                    //not a "\r\n" pair - rewind and consume only the "\r"
+                    reader.reset();
+                    reader.read();
+                }
+            } else if (c != '\n') {
+                //no leading line terminator (or end of stream) - put everything back
+                reader.reset();
+            }
         }
 
         @Override
