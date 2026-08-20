@@ -1,4 +1,42 @@
 # Releases
+## 3.8.0
+### Bug fixes
+- HttpClient
+  - autoHandleErrorResponse/autoHandleRetryAfter threw NullPointerException because the builder's retry-handler map was never initialized
+  - Any non-200 response threw NullPointerException even for clients that never configured retry handling
+  - Retries reused the already-connected HttpURLConnection from the failed attempt instead of issuing a fresh HTTP request
+  - Error response logging called getInputStream() instead of getErrorStream(), causing an IOException before ResponseCodeException could be thrown for non-200 responses
+  - ResponseCodeException header lookups were case-sensitive; Retry-After (and other headers) sent with different casing were not recognized
+  - Module name collided with utils.cli, preventing both modules from being used together on the module path
+- Ruffles
+  - ClassInstantiator built the constructor parameter types from parameters[0] instead of parameters[i], so multi-argument constructor lookups failed even when a matching constructor existed
+  - GetByMethod's direct-field-read fallback passed the reflected Field where the target instance was expected, breaking the fallback whenever no getter method was found
+  - SetByMethod silently left a collection field unchanged when setting an empty collection and no bulk setter existed, instead of falling through to the direct field write
+- MapQua
+  - MapQuery's typed-read type check had its operands reversed, causing every typed read to run an unnecessary (and, for date types, potentially lossy) JSON round-trip
+  - MapQuery.set()/add() threw an undocumented NoSuchElementException instead of a CoreException when an intermediate path segment was missing from the source map
+  - MapBackedMap.put()/get(key) could NPE if called before the no-arg get() had lazily initialized the backing map
+- GraphJXml
+  - AbstractInputReader's leading-newline handling could throw ArrayIndexOutOfBoundsException (or otherwise corrupt the stream) when the XML input began with a bare "\n"; replaced with a correct implementation
+- PropCross
+  - PropertyGraph's constructor accepted a null map, deferring the failure to a confusing NullPointerException deep inside graph traversal instead of failing fast
+- Slel
+  - ExpressionInterpreter's constructor accepted a null context, deferring the failure to a NullPointerException only when a variable expression was encountered
+- GraphRunner
+  - SharedMapCtx's constructor accepted a null sharedContextMap, deferring the failure to a NullPointerException on first read/write
+- CLI
+  - Menu silently swallowed a failure constructing the built-in --help option, leaving it null and surfacing as a confusing NPE on first use instead of failing fast at construction
+### New functionality
+- HttpClient
+  - RetryAfterHandler and Builder#autoHandleRetryAfter now support a configurable maximum retry count (default 3) instead of retrying exactly once
+  - When Retry-After is absent on a 429/503, a default exponential backoff is now used instead of giving up immediately
+### Known issues / follow-up
+AI-assisted review of the httpclient fixes above prompted a wider sweep for similar defects across the other modules; a few findings were flagged but intentionally left unfixed here because addressing them changes a public method's signature or behavior:
+- GraphJXml: XmlFileWriter#writeToFile and AbstractInputReader#parse swallow IOException/XMLStreamException from the primary read/write operation (logging only) and return void/null instead of surfacing the failure to the caller
+- JsonMigration: VersionSelector mutates the caller-supplied list in place instead of taking a defensive copy
+- JsonMigration: JSONPathInputAdapter#getAdaptedValue silently truncates a collection at the first non-Map element instead of raising an error for a mixed-type collection
+- MapAdapt: TypedMapAdapter's lazy registerTransformers() guard can skip registering the built-in transformers if a subclass registers a custom transformer before the first get() call
+- Cross-module: every generated license/LicenseServiceImpl#load NPEs via Properties.load(null) if license.properties is missing from the classpath at runtime (packaging-time issue, same generated boilerplate in every module)
 ## 3.7.0
 ### New functionality
 - HttpClient
