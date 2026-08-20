@@ -1,9 +1,13 @@
 pluginManagement {
     repositories {
         gradlePluginPortal()
+        // maven {
+        //     name = 'localPluginRepository'
+        //     url = 'C:/dev/local-plugin-repository'
+        // }
         maven {
             name = 'localPluginRepository'
-            url = 'C:/dev/local-plugin-repository'
+            url = "${System.properties['user.home']}/dev/local-plugin-repository"
         }
     }
 }

@@ -3,6 +3,28 @@ plugins {
     id 'com.legyver.update-readme-version' version '1.0.0' apply false
     id 'com.legyver.legyver-license-data' version '1.0.0' apply false
     id 'net.nemerosa.versioning' version '3.0.0' apply false
+    id 'io.github.gradle-nexus.publish-plugin' version '2.0.0'
+}
+
+// Manages the staging repository lifecycle (create/close/release) on the Central
+// Publisher Portal (central.sonatype.com), which replaced OSSRH/oss.sonatype.org
+// (sunset 2025-06-30). It registers a "sonatype" maven-publish repository in every
+// subproject that applies maven-publish (see common-build's publishLibraryModule.gradle).
+// Credentials: sonatypeUsername / sonatypePassword in ${user.home}/gradle.properties,
+// generated as a Central Portal "User Token" (not your account password).
+//
+// Usage (mirrors the old Nexus UI close/release buttons):
+//   ./gradlew publishToSonatype                       # uploads to a new staging repo
+//   ./gradlew closeSonatypeStagingRepository           # validates it
+//   ./gradlew releaseSonatypeStagingRepository         # promotes it to Central
+// or combine the last two with closeAndReleaseSonatypeStagingRepository.
+nexusPublishing {
+    repositories {
+        sonatype {
+            nexusUrl.set(uri("https://ossrh-staging-api.central.sonatype.com/service/local/"))
+            snapshotRepositoryUrl.set(uri("https://central.sonatype.com/repository/maven-snapshots/"))
+        }
+    }
 }
 
 allprojects {
@@ -23,7 +45,7 @@ subprojects {
         commonsLangVersion = '3.12.0'
         commonsIoVersion = '2.11.0'
         jacksonVersion = '2.14.1'
-        publishBuildScript = 'https://raw.githubusercontent.com/Legyver/common-build/1.7.1/publishLibraryModule.gradle' //java 9+ multi-module
+        publishBuildScript = 'https://raw.githubusercontent.com/Legyver/common-build/1.8.0/publishLibraryModule.gradle' //java 9+ multi-module
     }
 
     repositories {
