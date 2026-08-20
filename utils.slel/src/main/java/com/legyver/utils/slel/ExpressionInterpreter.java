@@ -1,6 +1,7 @@
 package com.legyver.utils.slel;
 
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Simple Expression interpreter that only resolves sequential expressions as String concatenations
@@ -17,7 +18,7 @@ public class ExpressionInterpreter {
 	 * @param context a Map of values that contains variables
 	 */
 	public ExpressionInterpreter(Map<String, ? extends Object> context) {
-		this.context = context;
+		this.context = Objects.requireNonNull(context, "context must not be null");
 	}
 
 	/**
