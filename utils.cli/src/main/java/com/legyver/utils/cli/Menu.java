@@ -88,7 +88,10 @@ public class Menu {
                         this.helpRequested = true;
                     });
         } catch (InvalidOptionException e) {
-            logger.error(e);
+            //this option is entirely defined by this class, not by caller input, so a failure here
+            //is a programming error - swallowing it would leave helpOption null and defer the failure
+            //to a confusing NPE the first time getSelectedOption(...) is called
+            throw new IllegalStateException("Failed to construct built-in help option", e);
         }
     }
 
