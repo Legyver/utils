@@ -1,8 +1,8 @@
 /**
- * Command line interface module
+ * HTTP client module - a wrapper around Http(s)URLConnection
  * @since 3.5
  */
-module com.legyver.utils.cli {
+module com.legyver.utils.httpclient {
     requires com.legyver.core;
     requires org.apache.logging.log4j;
     requires com.legyver.utils.adaptex;

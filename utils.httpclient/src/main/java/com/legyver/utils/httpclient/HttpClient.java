@@ -18,6 +18,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,7 +46,9 @@ public class HttpClient {
         this.auth = auth;
         this.authOptions = authOptions;
         this.pathVariables = pathVariables;
-        this.autoRetryHandlers = autoRetryHandlers;
+        //never null: a client that hasn't opted into any retry handling must still be able to look up
+        //(and miss) a handler without NPE-ing, so a plain ResponseCodeException can surface as documented
+        this.autoRetryHandlers = autoRetryHandlers != null ? autoRetryHandlers : Collections.emptyMap();
     }
 
     /**
@@ -94,23 +97,34 @@ public class HttpClient {
      * @throws ResponseCodeException if the request returns a response code other than 200
      */
     public InputStream send(Method method, String sUrl, Map<String, String> headers, Map<String, String> queryParams, Auth auth, AuthOptions authOptions, String... pathVariables) throws IOException, ResponseCodeException {
-        sUrl = manipulateUrl(sUrl, queryParams, pathVariables);
-        HttpURLConnection conn = defaultConnection(method, new URL(sUrl), auth, authOptions);
-        if (headers != null) {
-            for (Map.Entry<String, String> header: headers.entrySet()) {
-                conn.addRequestProperty(header.getKey(), header.getValue());
-            }
-        }
+        final String resolvedUrl = manipulateUrl(sUrl, queryParams, pathVariables);
         try {
-            return send(conn);
+            return openAndSend(method, resolvedUrl, headers, auth, authOptions);
         } catch (ResponseCodeException e) {
             ErrorResponseCodeRetryHandler retryHandler = autoRetryHandlers.get(e.getResponseCode());
             if (retryHandler != null && retryHandler.handles(e)) {
-                return retryHandler.retry(e, new ExceptionToCoreExceptionSupplierDecorator<>(() -> send(conn)));
+                return retryHandler.retry(e, new ExceptionToCoreExceptionSupplierDecorator<>(
+                        () -> openAndSend(method, resolvedUrl, headers, auth, authOptions)));
             } else {
                 throw e;
             }
         }
+    }
+
+    /**
+     * Open a brand-new connection, apply auth and headers, and send it.
+     * Used for the initial attempt and for every retry attempt so each attempt is a genuine,
+     * independent HTTP request - an already-connected {@link HttpURLConnection} cannot be reused
+     * to issue a second request.
+     */
+    private InputStream openAndSend(Method method, String resolvedUrl, Map<String, String> headers, Auth auth, AuthOptions authOptions) throws IOException, ResponseCodeException {
+        HttpURLConnection conn = defaultConnection(method, new URL(resolvedUrl), auth, authOptions);
+        if (headers != null) {
+            for (Map.Entry<String, String> header : headers.entrySet()) {
+                conn.addRequestProperty(header.getKey(), header.getValue());
+            }
+        }
+        return send(conn);
     }
 
     private static String manipulateUrl(String sUrl, Map<String, String> queryParams, String[] pathVariables) {
@@ -136,7 +150,7 @@ public class HttpClient {
         }
         int responseCode = conn.getResponseCode();
         if (responseCode != 200) {
-            logErrorResponse(conn);
+            logErrorResponse(conn, responseCode);
             throw new ResponseCodeException("Error with response from external API.  Response code: " + responseCode, responseCode, conn.getHeaderFields());
         }
         logResponseHeaders(conn);
@@ -148,15 +162,28 @@ public class HttpClient {
         return inputStream;
     }
 
-    private void logErrorResponse(HttpURLConnection conn) throws IOException {
-        try (InputStreamReader isReader = new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8);
-             BufferedReader reader = new BufferedReader(isReader)) {
-            StringBuilder sb = new StringBuilder();
-            String str;
-            while ((str = reader.readLine()) != null) {
-                sb.append(str);
+    /**
+     * Best-effort logging of the error response body.
+     * Never allowed to throw - a logging failure must not prevent {@link ResponseCodeException} from being thrown.
+     */
+    private void logErrorResponse(HttpURLConnection conn, int responseCode) {
+        try {
+            InputStream errorStream = conn.getErrorStream();
+            if (errorStream == null) {
+                logger.error("Error received from external API. Response code: {}. No error body available.", responseCode);
+                return;
             }
-            logger.error("Error received from external API: {}", sb);
+            try (InputStreamReader isReader = new InputStreamReader(errorStream, StandardCharsets.UTF_8);
+                 BufferedReader reader = new BufferedReader(isReader)) {
+                StringBuilder sb = new StringBuilder();
+                String str;
+                while ((str = reader.readLine()) != null) {
+                    sb.append(str);
+                }
+                logger.error("Error received from external API: {}", sb);
+            }
+        } catch (IOException ex) {
+            logger.warn("Unable to read error response body for response code {}", responseCode, ex);
         }
     }
 
@@ -210,7 +237,7 @@ public class HttpClient {
         private String username;
         private String password;
         private String[] pathVariables;
-        private Map<Integer, ErrorResponseCodeRetryHandler> autoRetryHandlers;
+        private Map<Integer, ErrorResponseCodeRetryHandler> autoRetryHandlers = new HashMap<>();
 
         /**
          * Build the HttpClient
@@ -292,12 +319,35 @@ public class HttpClient {
         }
 
         /**
-         * Auto retry 429 and 503 responses when there is a retry-after response header returned
+         * Auto retry 429 and 503 responses, honoring a 'Retry-After' response header when present
+         * and falling back to a default exponential backoff otherwise, up to
+         * {@link RetryAfterHandler#DEFAULT_MAX_RETRIES} additional attempts.
          * @return this builder
          */
         public Builder autoHandleRetryAfter() {
-            autoHandleErrorResponse(429, new RetryAfterHandler(429));
-            autoHandleErrorResponse(503, new RetryAfterHandler(503));
+            return autoHandleRetryAfter(RetryAfterHandler.DEFAULT_MAX_RETRIES);
+        }
+
+        /**
+         * Auto retry 429 and 503 responses, honoring a 'Retry-After' response header when present
+         * and falling back to a default exponential backoff otherwise.
+         * @param maxRetries maximum number of additional attempts (beyond the first failed attempt) before giving up
+         * @return this builder
+         */
+        public Builder autoHandleRetryAfter(int maxRetries) {
+            return autoHandleRetryAfter(maxRetries, RetryAfterHandler.DEFAULT_BASE_BACKOFF_MILLIS);
+        }
+
+        /**
+         * Auto retry 429 and 503 responses, honoring a 'Retry-After' response header when present
+         * and falling back to an exponential backoff (starting at baseBackoffMillis) otherwise.
+         * @param maxRetries maximum number of additional attempts (beyond the first failed attempt) before giving up
+         * @param baseBackoffMillis the base delay (in milliseconds) for the exponential backoff used when no 'Retry-After' value is present
+         * @return this builder
+         */
+        public Builder autoHandleRetryAfter(int maxRetries, long baseBackoffMillis) {
+            autoHandleErrorResponse(429, new RetryAfterHandler(429, maxRetries, baseBackoffMillis));
+            autoHandleErrorResponse(503, new RetryAfterHandler(503, maxRetries, baseBackoffMillis));
             return this;
         }
 

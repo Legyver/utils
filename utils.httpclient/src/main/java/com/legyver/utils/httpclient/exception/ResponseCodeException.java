@@ -6,6 +6,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * An exception thrown when a response code other than 200 hundred is received
@@ -24,7 +25,7 @@ public class ResponseCodeException extends CoreException {
     public ResponseCodeException(String aMessage, int responseCode, Map<String, List<String>> responseHeaders) {
         super(aMessage);
         this.responseCode = responseCode;
-        this.responseHeaders = responseHeaders;
+        this.responseHeaders = toCaseInsensitiveMap(responseHeaders);
     }
 
     /**
@@ -93,5 +94,27 @@ public class ResponseCodeException extends CoreException {
 
     private static boolean isNumeric(String string) {
         return string != null && !string.isBlank() && string.matches("^\\d+$");
+    }
+
+    /**
+     * HTTP header names are case-insensitive, so copy into a case-insensitive map to make lookups
+     * robust to however the server (or an intermediary) cased them on the wire.
+     * {@link java.net.HttpURLConnection#getHeaderFields()} also includes one entry keyed by
+     * {@code null} representing the HTTP status line, which must be dropped since a case-insensitive
+     * {@link TreeMap} rejects null keys.
+     * @param source the raw response headers, or null
+     * @return a case-insensitive copy of the response headers, or null if source was null
+     */
+    private static Map<String, List<String>> toCaseInsensitiveMap(Map<String, List<String>> source) {
+        if (source == null) {
+            return null;
+        }
+        Map<String, List<String>> caseInsensitive = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+        for (Map.Entry<String, List<String>> entry : source.entrySet()) {
+            if (entry.getKey() != null) {
+                caseInsensitive.put(entry.getKey(), entry.getValue());
+            }
+        }
+        return caseInsensitive;
     }
 }
