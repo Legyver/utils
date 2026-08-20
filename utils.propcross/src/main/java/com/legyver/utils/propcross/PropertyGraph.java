@@ -7,6 +7,7 @@ import com.legyver.utils.graphrunner.ctx.shared.SharedMapCtx;
 import com.legyver.utils.slel.ExpressionInterpreter;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -23,7 +24,7 @@ public class PropertyGraph {
 	 *            You may wish to use {@link com.legyver.utils.graphrunner.PropertyMap#of(Properties...)} to construct this    
 	 */
 	public PropertyGraph(Map<String, Object> map) {
-		this.map = map;
+		this.map = Objects.requireNonNull(map, "map must not be null");
 	}
 
 	/**
