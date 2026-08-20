@@ -47,7 +47,7 @@ public class GetByMethod {
         } catch (NoSuchMethodException|InvocationTargetException|IllegalAccessException exception) {
             logger.debug("Failed to retrieve value by method", exception);
             logger.debug("Attempting to read the value of field [{}] directly", field.getName());
-            return getByField(field);
+            return getByField(object);
         }
         return result;
     }

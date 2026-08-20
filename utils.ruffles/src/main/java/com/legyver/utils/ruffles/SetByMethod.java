@@ -50,7 +50,7 @@ public class SetByMethod {
                 if (value instanceof Collection && Collection.class.isAssignableFrom(field.getType())) {
                     Collection collection = (Collection) value;
                     if (collection.isEmpty()) {
-                        success = true;
+                        //no per-element mutator/adder to try - fall through to the direct field write in `finally`
                     } else {
                         for (Object v : collection) {
                             try {

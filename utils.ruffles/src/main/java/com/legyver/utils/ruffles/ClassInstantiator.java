@@ -38,7 +38,7 @@ public class ClassInstantiator<T> {
         if (parameters != null) {
             Class<?>[] parameterTypes = new Class[parameters.length];
             for (int i = 0; i < parameters.length; i++) {
-                Object parameter = parameters[0];
+                Object parameter = parameters[i];
                 parameterTypes[i] = parameter.getClass();
             }
             try {
