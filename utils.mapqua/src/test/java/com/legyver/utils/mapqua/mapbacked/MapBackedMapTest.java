@@ -29,4 +29,18 @@ public class MapBackedMapTest {
 		assertThat(mapMap.get("2012.12")).isEqualTo(200);
 		assertThat(mapMap.get("2013.01")).isEqualTo(150);
 	}
+
+	@Test
+	public void putGetWithoutPriorGetCall() throws Exception {
+		//put/get(key) must lazily resolve the internal map themselves - the no-arg get() must not
+		//be a required precondition
+		Map rootMap = new LinkedHashMap();
+		MapBackedMap mb = new MapBackedMap(rootMap, "field");
+
+		mb.put("2012.12", 200);
+
+		assertThat(mb.get("2012.12")).isEqualTo(200);
+		Map mapMap = (Map) rootMap.get("field");
+		assertThat(mapMap.get("2012.12")).isEqualTo(200);
+	}
 }

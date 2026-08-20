@@ -6,6 +6,7 @@ import com.legyver.utils.mapqua.MapQuery.KeyValueFilter;
 import com.legyver.utils.mapqua.MapQuery.KeyValueFilter.Cond;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -19,6 +20,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class MapQueryTest {
 
@@ -41,6 +43,16 @@ public class MapQueryTest {
 
 		Optional number = new MapQuery.Query().integer(NUMBER_FIELD).execute(map);
 		assertThat(number.get()).isEqualTo(NUMBER_INT_VALUE);
+
+		{
+			//regression test: the typed-read type check must gate on the *target* class, not the
+			//source class - a Double value read as an integer() must still be coerced to Integer
+			map.put(NUMBER_FIELD, 5.0d);
+			Optional coerced = new MapQuery.Query().integer(NUMBER_FIELD).execute(map);
+			assertThat(coerced.get()).isInstanceOf(Integer.class);
+			assertThat(coerced.get()).isEqualTo(5);
+			map.put(NUMBER_FIELD, NUMBER_INT_VALUE);
+		}
 
 		{
 			Optional settings = new MapQuery.Query().object(CONFIG_FIELD)
@@ -212,6 +224,24 @@ public class MapQueryTest {
 		assertThat(newFound.isPresent()).isTrue();
 		Map foundValue = newFound.get();
 		assertThat(foundValue.get(SETTINGS_KEY_KEY)).isEqualTo("new settings key");
+	}
+
+	@Test
+	public void setWithMissingIntermediateMapThrowsCoreExceptionNotNoSuchElementException() throws Exception {
+		Map<String, Object> map = getJsonAsMap();
+		//"doesNotExist" is not present in the map, so there is no intermediate map to set "key" on
+		Executable executable = () ->
+				new MapQuery.Query().object("doesNotExist").set("key", "value").execute(map);
+		assertThrows(CoreException.class, executable);
+	}
+
+	@Test
+	public void addWithMissingIntermediateCollectionThrowsCoreExceptionNotNoSuchElementException() throws Exception {
+		Map<String, Object> map = getJsonAsMap();
+		//"doesNotExist" is not present in the map, so there is no intermediate collection to add to
+		Executable executable = () ->
+				new MapQuery.Query().object("doesNotExist").collection(CONFIG_SETTINGS_FIELD).add("value").execute(map);
+		assertThrows(CoreException.class, executable);
 	}
 
 	private class Setting {

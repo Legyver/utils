@@ -55,7 +55,7 @@ public class MapQuery {
 		}
 		if (i == stop && val != null) {
 			Ctx ctx = keys.get(i - 1);
-			if (!val.getClass().isInstance(ctx.fromClass)) {
+			if (!ctx.toClass.isInstance(val)) {
 				val = adjustForType(val, ctx.toClass);
 			}
 			return Optional.of(val);
@@ -100,7 +100,11 @@ public class MapQuery {
 		if (keys.size() == 1) {
 			objectMap = map;
 		} else {
-			objectMap = (Map) execute(map, keys.size() - 1).get();
+			Optional<Map> option = execute(map, keys.size() - 1);
+			if (!option.isPresent()) {
+				throw new CoreException("Unable to resolve intermediate map for query - an intermediate path segment is missing from the source map");
+			}
+			objectMap = option.get();
 		}
 		return objectMap;
 	}
@@ -117,6 +121,9 @@ public class MapQuery {
 
 	private void executeAdd(Map map, Object value) throws CoreException {
 		Optional<Collection> optional = execute(map, keys.size() - 1);
+		if (!optional.isPresent()) {
+			throw new CoreException("Unable to resolve target collection for query - an intermediate path segment is missing from the source map");
+		}
 		Collection valueCollection = optional.get();
 		value = mapPojo(value);
 		valueCollection.add(value);

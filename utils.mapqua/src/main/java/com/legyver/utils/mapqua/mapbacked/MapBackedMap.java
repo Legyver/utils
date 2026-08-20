@@ -55,7 +55,7 @@ public class MapBackedMap extends MapBackedProperty<Map> {
 	 * @param value value to use
 	 */
 	public void put(String key, Object value) {
-		map.put(key, value);
+		lazyGet().put(key, value);
 	}
 
 	/**
@@ -64,7 +64,21 @@ public class MapBackedMap extends MapBackedProperty<Map> {
 	 * @return the value associated with the key
 	 */
 	public Object get(String key) {
-		return map.get(key);
+		return lazyGet().get(key);
+	}
+
+	/**
+	 * {@link #get()}, but without the checked {@link CoreException} - lazily resolving the internal
+	 * map only fails if marshalling the JSON default value fails, which represents a programming
+	 * error (a broken default), not a recoverable runtime condition for callers of {@link #put(String, Object)}/{@link #get(String)}.
+	 * @return the internal map
+	 */
+	private Map lazyGet() {
+		try {
+			return get();
+		} catch (CoreException e) {
+			throw new IllegalStateException("Failed to resolve internal map for property [" + property + "]", e);
+		}
 	}
 
 	/**
